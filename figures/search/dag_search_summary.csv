@@ -1,0 +1,10 @@
+search_method,method_label,dataset,threshold,source,nodes,edges,query_count,query_ratio,first_feasible_query,first_feasible_query_ratio,final_answers,exhaustive_answers,answer_validation,validation_note
+exhaustive,Exhaustive,nginx:REQ,45000.000000,C01,96,288,96,1.000000,1,0.010417,C04|C05,C04|C05,exact,Exhaustive reference baseline.
+balanced,Balanced (Ours),nginx:REQ,45000.000000,C01,96,288,12,0.125000,1,0.010417,C04,C04|C05,subset_sound,Search answers are a feasible subset of exhaustive frontier; conservative under pruning.
+random,Random-candidate,nginx:REQ,45000.000000,C01,96,288,16,0.166667,12,0.125000,C04,C04|C05,subset_sound,Search answers are a feasible subset of exhaustive frontier; conservative under pruning.
+exhaustive,Exhaustive,redis:GET,302000.000000,C01,96,288,96,1.000000,1,0.010417,C08|C13|C14|C15,C08|C13|C14|C15,exact,Exhaustive reference baseline.
+balanced,Balanced (Ours),redis:GET,302000.000000,C01,96,288,33,0.343750,1,0.010417,C08|C13|C14|C15,C08|C13|C14|C15,exact,Search frontier exactly matches exhaustive frontier.
+random,Random-candidate,redis:GET,302000.000000,C01,96,288,35,0.364583,3,0.031250,C08|C13|C14|C15,C08|C13|C14|C15,exact,Search frontier exactly matches exhaustive frontier.
+exhaustive,Exhaustive,redis:SET,140200.000000,C01,96,288,96,1.000000,1,0.010417,C40|C50|C58|C63,C40|C50|C58|C63,exact,Exhaustive reference baseline.
+balanced,Balanced (Ours),redis:SET,140200.000000,C01,96,288,30,0.312500,1,0.010417,C40|C50|C58|C63,C40|C50|C58|C63,exact,Search frontier exactly matches exhaustive frontier.
+random,Random-candidate,redis:SET,140200.000000,C01,96,288,33,0.343750,1,0.010417,C40|C50|C58|C63,C40|C50|C58|C63,exact,Search frontier exactly matches exhaustive frontier.

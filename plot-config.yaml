@@ -1,0 +1,62 @@
+# Unified plotting config for selected targets.
+# Output layout:
+#   figures/<source_group>/<figure_name>/<file>
+
+global:
+  python_bin: "/home/tibless/Desktop/auto_flex/.venv/bin/python"
+  png_dpi: 300
+  figures_root: "figures"
+
+targets:
+  search:
+    enabled: true
+    workdir: "search"
+    source_group: "search"
+    env:
+      PYTHON_BIN: "{python_bin}"
+      PNG_DPI: "{png_dpi}"
+    commands:
+      - "bash run_debug_generate.sh"
+    stem_alias:
+      fig08_plot: "fig08_plot"
+      hypothesis_a2b_scatter_nginx_req: "hypothesis_a2b_scatter_nginx_req"
+      hypothesis_a2b_scatter_redis_get: "hypothesis_a2b_scatter_redis_get"
+      hypothesis_a2b_scatter_redis_set: "hypothesis_a2b_scatter_redis_set"
+      nginx_search_path: "nginx_search_path"
+    collect:
+      - src_glob: "result/svg/*.svg"
+        dst_group: ""
+      - src_glob: "result/png/*.png"
+        dst_group: ""
+
+  figure06:
+    enabled: true
+    workdir: "asplos22-ae/experiments/fig-06_nginx-redis-perm"
+    source_group: "figure06"
+    commands:
+      - "{python_bin} ./plot_fig06.py --formats svg png --output-root {figures_root}/figure06"
+    collect: []
+
+  figure07:
+    enabled: true
+    workdir: "asplos22-ae/experiments/fig-07_nginx-redis-normalized"
+    source_group: "figure07"
+    commands:
+      - "{python_bin} ./plot_fig07.py --python {python_bin} --formats svg png --output-root {figures_root}/figure07"
+    collect: []
+
+  figure09:
+    enabled: true
+    workdir: "asplos22-ae/experiments/fig-09_iperf-throughput"
+    source_group: "figure09"
+    commands:
+      - "{python_bin} ./plot_fig09.py --formats svg png --output-root {figures_root}/figure09"
+    collect: []
+
+  auto_migration_effort:
+    enabled: true
+    workdir: "autoGen"
+    source_group: "autogen"
+    commands:
+      - "{python_bin} ./plot_manual_effort_reduction.py --eval-dir {root}/autoGen/eval_results/flexos_py_plus_v11 --formats svg png --output-root {figures_root}/autogen"
+    collect: []

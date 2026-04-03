@@ -1,0 +1,406 @@
+digraph g {
+    ratio=0.6;
+    graph [labeljust=l, labelloc=t, fontsize=20, fontname="Times New Roman"];
+    label="Nginx Search Path on Config Poset\nthreshold=45000.000000, query_count=12, first_feasible_query=1";
+    node [style="filled,setlinewidth(2)", shape=circle, color=black, fillcolor=white, fontname="Times New Roman"]
+    edge [arrowsize=1.2, len=.75, color="#B0B0B0", penwidth=1.0, fontname="Times New Roman"]
+
+    C01 [label="", tooltip="C01 | layout=R1N1S1L1 | hardening=0 | REQ_mean=64729.242", fillcolor="#d8f5d2", shape=circle, color="#2ca02c", penwidth=3]
+    C02 [label="", tooltip="C02 | layout=R1N1S1L1 | hardening=1 | REQ_mean=62760.272", fillcolor="#d8f5d2", shape=circle, color="#2ca02c", penwidth=3]
+    C03 [label="", tooltip="C03 | layout=R1N1S1L2 | hardening=0 | REQ_mean=50366.246", fillcolor="#d8f5d2", shape=circle, color="#2ca02c", penwidth=3]
+    C04 [label="", tooltip="C04 | layout=R1N1S1L2 | hardening=1 | REQ_mean=49578.388", fillcolor="#d8f5d2", shape=doublecircle, color="#d62728", penwidth=3.2]
+    C05 [label="", tooltip="C05 | layout=R1N1S2L1 | hardening=1 | REQ_mean=45679.510", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C06 [label="", tooltip="C06 | layout=R1N1S2L1 | hardening=0 | REQ_mean=44436.370", fillcolor="#3a3a3a", shape=circle, color="#1f77b4", penwidth=3]
+    C07 [label="", tooltip="C07 | layout=R1N1S1L1 | hardening=1 | REQ_mean=40870.768", fillcolor="#727272", shape=circle, color="#1f77b4", penwidth=3]
+    C08 [label="", tooltip="C08 | layout=R1N1S1L1 | hardening=2 | REQ_mean=40415.146", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C09 [label="", tooltip="C09 | layout=R1N1S3L2 | hardening=1 | REQ_mean=39535.158", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C10 [label="", tooltip="C10 | layout=R1N1S2L3 | hardening=1 | REQ_mean=39410.786", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C11 [label="", tooltip="C11 | layout=R1N1S2L2 | hardening=0 | REQ_mean=39198.640", fillcolor="#3a3a3a", shape=circle, color="black", penwidth=2]
+    C12 [label="", tooltip="C12 | layout=R1N1S2L3 | hardening=0 | REQ_mean=38963.836", fillcolor="#3a3a3a", shape=circle, color="black", penwidth=2]
+    C13 [label="", tooltip="C13 | layout=R1N1S3L2 | hardening=0 | REQ_mean=38914.244", fillcolor="#3a3a3a", shape=circle, color="black", penwidth=2]
+    C14 [label="", tooltip="C14 | layout=R1N1S2L2 | hardening=1 | REQ_mean=38521.466", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C15 [label="", tooltip="C15 | layout=R1N1S1L2 | hardening=1 | REQ_mean=36652.420", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C16 [label="", tooltip="C16 | layout=R1N1S1L2 | hardening=2 | REQ_mean=36519.772", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C17 [label="", tooltip="C17 | layout=R1N1S2L1 | hardening=1 | REQ_mean=35786.488", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C18 [label="", tooltip="C18 | layout=R1N1S1L1 | hardening=1 | REQ_mean=35499.300", fillcolor="#727272", shape=circle, color="#1f77b4", penwidth=3]
+    C19 [label="", tooltip="C19 | layout=R1N1S1L1 | hardening=2 | REQ_mean=34921.476", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C20 [label="", tooltip="C20 | layout=R1N1S2L1 | hardening=2 | REQ_mean=34380.926", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C21 [label="", tooltip="C21 | layout=R1N1S1L2 | hardening=1 | REQ_mean=32055.014", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C22 [label="", tooltip="C22 | layout=R1N1S1L2 | hardening=2 | REQ_mean=31629.964", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C23 [label="", tooltip="C23 | layout=R1N1S2L3 | hardening=1 | REQ_mean=31605.088", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C24 [label="", tooltip="C24 | layout=R1N1S3L2 | hardening=1 | REQ_mean=31581.276", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C25 [label="", tooltip="C25 | layout=R1N1S2L2 | hardening=1 | REQ_mean=31335.286", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C26 [label="", tooltip="C26 | layout=R1N1S2L2 | hardening=2 | REQ_mean=31227.578", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C27 [label="", tooltip="C27 | layout=R1N1S2L3 | hardening=2 | REQ_mean=31012.620", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C28 [label="", tooltip="C28 | layout=R1N1S3L2 | hardening=2 | REQ_mean=30948.302", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C29 [label="", tooltip="C29 | layout=R1N1S2L1 | hardening=2 | REQ_mean=30652.808", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C30 [label="", tooltip="C30 | layout=R1N1S2L1 | hardening=1 | REQ_mean=30569.426", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C31 [label="", tooltip="C31 | layout=R1N1S1L1 | hardening=2 | REQ_mean=29048.964", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C32 [label="", tooltip="C32 | layout=R1N1S1L1 | hardening=3 | REQ_mean=28893.200", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C33 [label="", tooltip="C33 | layout=R1N1S1L1 | hardening=1 | REQ_mean=28414.766", fillcolor="#727272", shape=circle, color="#1f77b4", penwidth=3]
+    C34 [label="", tooltip="C34 | layout=R1N1S1L1 | hardening=2 | REQ_mean=28284.914", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C35 [label="", tooltip="C35 | layout=R1N1S3L2 | hardening=2 | REQ_mean=27826.276", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C36 [label="", tooltip="C36 | layout=R1N1S2L3 | hardening=2 | REQ_mean=27714.508", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C37 [label="", tooltip="C37 | layout=R1N1S2L2 | hardening=1 | REQ_mean=27362.932", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C38 [label="", tooltip="C38 | layout=R1N1S3L2 | hardening=1 | REQ_mean=27290.058", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C39 [label="", tooltip="C39 | layout=R1N1S2L3 | hardening=1 | REQ_mean=27269.218", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C40 [label="", tooltip="C40 | layout=R1N1S2L2 | hardening=2 | REQ_mean=27094.347", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C41 [label="", tooltip="C41 | layout=R1N1S2L1 | hardening=2 | REQ_mean=25999.228", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C42 [label="", tooltip="C42 | layout=R1N1S1L2 | hardening=1 | REQ_mean=25950.128", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C43 [label="", tooltip="C43 | layout=R1N1S1L2 | hardening=3 | REQ_mean=25771.856", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C44 [label="", tooltip="C44 | layout=R1N1S1L2 | hardening=2 | REQ_mean=25764.840", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C45 [label="", tooltip="C45 | layout=R1N1S1L2 | hardening=2 | REQ_mean=25720.364", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C46 [label="", tooltip="C46 | layout=R1N1S2L1 | hardening=2 | REQ_mean=25270.926", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C47 [label="", tooltip="C47 | layout=R1N1S2L1 | hardening=3 | REQ_mean=25198.008", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C48 [label="", tooltip="C48 | layout=R1N1S2L1 | hardening=1 | REQ_mean=25095.378", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C49 [label="", tooltip="C49 | layout=R1N1S2L3 | hardening=2 | REQ_mean=23687.942", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C50 [label="", tooltip="C50 | layout=R1N1S3L2 | hardening=2 | REQ_mean=23652.054", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C51 [label="", tooltip="C51 | layout=R1N1S2L2 | hardening=2 | REQ_mean=23484.640", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C52 [label="", tooltip="C52 | layout=R1N1S2L3 | hardening=2 | REQ_mean=23483.952", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C53 [label="", tooltip="C53 | layout=R1N1S2L2 | hardening=1 | REQ_mean=23442.450", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C54 [label="", tooltip="C54 | layout=R1N1S3L2 | hardening=2 | REQ_mean=23411.350", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C55 [label="", tooltip="C55 | layout=R1N1S2L2 | hardening=3 | REQ_mean=23388.542", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C56 [label="", tooltip="C56 | layout=R1N1S2L2 | hardening=2 | REQ_mean=23354.890", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C57 [label="", tooltip="C57 | layout=R1N1S2L3 | hardening=3 | REQ_mean=23334.824", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C58 [label="", tooltip="C58 | layout=R1N1S3L2 | hardening=3 | REQ_mean=23275.824", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C59 [label="", tooltip="C59 | layout=R1N1S3L2 | hardening=1 | REQ_mean=23244.012", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C60 [label="", tooltip="C60 | layout=R1N1S2L3 | hardening=1 | REQ_mean=23220.852", fillcolor="#727272", shape=circle, color="black", penwidth=2]
+    C61 [label="", tooltip="C61 | layout=R1N1S1L1 | hardening=2 | REQ_mean=22491.700", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C62 [label="", tooltip="C62 | layout=R1N1S1L1 | hardening=3 | REQ_mean=22131.668", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C63 [label="", tooltip="C63 | layout=R1N1S1L1 | hardening=3 | REQ_mean=21407.274", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C64 [label="", tooltip="C64 | layout=R1N1S1L2 | hardening=3 | REQ_mean=21280.602", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C65 [label="", tooltip="C65 | layout=R1N1S2L1 | hardening=2 | REQ_mean=21271.516", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C66 [label="", tooltip="C66 | layout=R1N1S1L1 | hardening=2 | REQ_mean=21264.090", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C67 [label="", tooltip="C67 | layout=R1N1S1L2 | hardening=2 | REQ_mean=21263.040", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C68 [label="", tooltip="C68 | layout=R1N1S2L1 | hardening=3 | REQ_mean=20804.064", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C69 [label="", tooltip="C69 | layout=R1N1S1L2 | hardening=2 | REQ_mean=19971.630", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C70 [label="", tooltip="C70 | layout=R1N1S1L2 | hardening=3 | REQ_mean=19938.728", fillcolor="#d8d8d8", shape=circle, color="#1f77b4", penwidth=3]
+    C71 [label="", tooltip="C71 | layout=R1N1S2L2 | hardening=3 | REQ_mean=19856.046", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C72 [label="", tooltip="C72 | layout=R1N1S2L2 | hardening=2 | REQ_mean=19793.240", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C73 [label="", tooltip="C73 | layout=R1N1S2L1 | hardening=3 | REQ_mean=19773.318", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C74 [label="", tooltip="C74 | layout=R1N1S3L2 | hardening=3 | REQ_mean=19651.596", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C75 [label="", tooltip="C75 | layout=R1N1S3L2 | hardening=2 | REQ_mean=19632.992", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C76 [label="", tooltip="C76 | layout=R1N1S2L3 | hardening=3 | REQ_mean=19630.832", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C77 [label="", tooltip="C77 | layout=R1N1S2L3 | hardening=2 | REQ_mean=19624.696", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C78 [label="", tooltip="C78 | layout=R1N1S2L1 | hardening=2 | REQ_mean=19494.204", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C79 [label="", tooltip="C79 | layout=R1N1S2L3 | hardening=3 | REQ_mean=18722.926", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C80 [label="", tooltip="C80 | layout=R1N1S3L2 | hardening=3 | REQ_mean=18676.202", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C81 [label="", tooltip="C81 | layout=R1N1S2L2 | hardening=2 | REQ_mean=18658.736", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C82 [label="", tooltip="C82 | layout=R1N1S3L2 | hardening=2 | REQ_mean=18557.950", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C83 [label="", tooltip="C83 | layout=R1N1S2L2 | hardening=3 | REQ_mean=18556.572", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C84 [label="", tooltip="C84 | layout=R1N1S2L3 | hardening=2 | REQ_mean=18516.886", fillcolor="#a8a8a8", shape=circle, color="black", penwidth=2]
+    C85 [label="", tooltip="C85 | layout=R1N1S1L1 | hardening=3 | REQ_mean=17966.440", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C86 [label="", tooltip="C86 | layout=R1N1S1L1 | hardening=4 | REQ_mean=17907.260", fillcolor="#f0f0f0", shape=circle, color="black", penwidth=2]
+    C87 [label="", tooltip="C87 | layout=R1N1S2L1 | hardening=3 | REQ_mean=17280.964", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C88 [label="", tooltip="C88 | layout=R1N1S1L2 | hardening=4 | REQ_mean=17210.618", fillcolor="#f0f0f0", shape=circle, color="#1f77b4", penwidth=3]
+    C89 [label="", tooltip="C89 | layout=R1N1S1L2 | hardening=3 | REQ_mean=17206.146", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C90 [label="", tooltip="C90 | layout=R1N1S2L1 | hardening=4 | REQ_mean=17130.632", fillcolor="#f0f0f0", shape=circle, color="black", penwidth=2]
+    C91 [label="", tooltip="C91 | layout=R1N1S2L3 | hardening=3 | REQ_mean=16130.300", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C92 [label="", tooltip="C92 | layout=R1N1S3L2 | hardening=3 | REQ_mean=16107.452", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C93 [label="", tooltip="C93 | layout=R1N1S2L2 | hardening=3 | REQ_mean=16096.476", fillcolor="#d8d8d8", shape=circle, color="black", penwidth=2]
+    C94 [label="", tooltip="C94 | layout=R1N1S2L2 | hardening=4 | REQ_mean=16050.768", fillcolor="#f0f0f0", shape=circle, color="black", penwidth=2]
+    C95 [label="", tooltip="C95 | layout=R1N1S2L3 | hardening=4 | REQ_mean=16022.298", fillcolor="#f0f0f0", shape=circle, color="#1f77b4", penwidth=3]
+    C96 [label="", tooltip="C96 | layout=R1N1S3L2 | hardening=4 | REQ_mean=15993.054", fillcolor="#f0f0f0", shape=circle, color="#1f77b4", penwidth=3]
+
+    C01 -> C02
+    C01 -> C03
+    C01 -> C06
+    C01 -> C07
+    C01 -> C18
+    C01 -> C33
+    C02 -> C04
+    C02 -> C05
+    C02 -> C08
+    C02 -> C19
+    C02 -> C34
+    C03 -> C04
+    C03 -> C11
+    C03 -> C15
+    C03 -> C21
+    C03 -> C42
+    C04 -> C14
+    C04 -> C16
+    C04 -> C22
+    C04 -> C45
+    C05 -> C14
+    C05 -> C20
+    C05 -> C29
+    C05 -> C41
+    C06 -> C05
+    C06 -> C11
+    C06 -> C17
+    C06 -> C30
+    C06 -> C48
+    C07 -> C08
+    C07 -> C15
+    C07 -> C17
+    C07 -> C31
+    C07 -> C61
+    C08 -> C16
+    C08 -> C20
+    C08 -> C32
+    C08 -> C62
+    C09 -> C28
+    C09 -> C35
+    C09 -> C54
+    C10 -> C27
+    C10 -> C36
+    C10 -> C52
+    C11 -> C12
+    C11 -> C13
+    C11 -> C14
+    C11 -> C25
+    C11 -> C37
+    C11 -> C53
+    C12 -> C10
+    C12 -> C23
+    C12 -> C39
+    C12 -> C60
+    C13 -> C09
+    C13 -> C24
+    C13 -> C38
+    C13 -> C59
+    C14 -> C09
+    C14 -> C10
+    C14 -> C26
+    C14 -> C40
+    C14 -> C56
+    C15 -> C16
+    C15 -> C25
+    C15 -> C44
+    C15 -> C67
+    C16 -> C26
+    C16 -> C43
+    C16 -> C64
+    C17 -> C20
+    C17 -> C25
+    C17 -> C46
+    C17 -> C65
+    C18 -> C19
+    C18 -> C21
+    C18 -> C30
+    C18 -> C31
+    C18 -> C66
+    C19 -> C22
+    C19 -> C29
+    C19 -> C32
+    C19 -> C63
+    C20 -> C26
+    C20 -> C47
+    C20 -> C68
+    C21 -> C22
+    C21 -> C37
+    C21 -> C44
+    C21 -> C69
+    C22 -> C40
+    C22 -> C43
+    C22 -> C70
+    C23 -> C27
+    C23 -> C49
+    C23 -> C77
+    C24 -> C28
+    C24 -> C50
+    C24 -> C75
+    C25 -> C23
+    C25 -> C24
+    C25 -> C26
+    C25 -> C51
+    C25 -> C72
+    C26 -> C27
+    C26 -> C28
+    C26 -> C55
+    C26 -> C71
+    C27 -> C57
+    C27 -> C76
+    C28 -> C58
+    C28 -> C74
+    C29 -> C40
+    C29 -> C47
+    C29 -> C73
+    C30 -> C29
+    C30 -> C37
+    C30 -> C46
+    C30 -> C78
+    C31 -> C32
+    C31 -> C44
+    C31 -> C46
+    C31 -> C85
+    C32 -> C43
+    C32 -> C47
+    C32 -> C86
+    C33 -> C34
+    C33 -> C42
+    C33 -> C48
+    C33 -> C61
+    C33 -> C66
+    C34 -> C41
+    C34 -> C45
+    C34 -> C62
+    C34 -> C63
+    C35 -> C58
+    C35 -> C80
+    C36 -> C57
+    C36 -> C79
+    C37 -> C38
+    C37 -> C39
+    C37 -> C40
+    C37 -> C51
+    C37 -> C81
+    C38 -> C35
+    C38 -> C50
+    C38 -> C82
+    C39 -> C36
+    C39 -> C49
+    C39 -> C84
+    C40 -> C35
+    C40 -> C36
+    C40 -> C55
+    C40 -> C83
+    C41 -> C56
+    C41 -> C68
+    C41 -> C73
+    C42 -> C45
+    C42 -> C53
+    C42 -> C67
+    C42 -> C69
+    C43 -> C55
+    C43 -> C88
+    C44 -> C43
+    C44 -> C51
+    C44 -> C89
+    C45 -> C56
+    C45 -> C64
+    C45 -> C70
+    C46 -> C47
+    C46 -> C51
+    C46 -> C87
+    C47 -> C55
+    C47 -> C90
+    C48 -> C41
+    C48 -> C53
+    C48 -> C65
+    C48 -> C78
+    C49 -> C57
+    C49 -> C91
+    C50 -> C58
+    C50 -> C92
+    C51 -> C49
+    C51 -> C50
+    C51 -> C55
+    C51 -> C93
+    C52 -> C76
+    C52 -> C79
+    C53 -> C56
+    C53 -> C59
+    C53 -> C60
+    C53 -> C72
+    C53 -> C81
+    C54 -> C74
+    C54 -> C80
+    C55 -> C57
+    C55 -> C58
+    C55 -> C94
+    C56 -> C52
+    C56 -> C54
+    C56 -> C71
+    C56 -> C83
+    C57 -> C95
+    C58 -> C96
+    C59 -> C54
+    C59 -> C75
+    C59 -> C82
+    C60 -> C52
+    C60 -> C77
+    C60 -> C84
+    C61 -> C62
+    C61 -> C65
+    C61 -> C67
+    C61 -> C85
+    C62 -> C64
+    C62 -> C68
+    C62 -> C86
+    C63 -> C70
+    C63 -> C73
+    C63 -> C86
+    C64 -> C71
+    C64 -> C88
+    C65 -> C68
+    C65 -> C72
+    C65 -> C87
+    C66 -> C63
+    C66 -> C69
+    C66 -> C78
+    C66 -> C85
+    C67 -> C64
+    C67 -> C72
+    C67 -> C89
+    C68 -> C71
+    C68 -> C90
+    C69 -> C70
+    C69 -> C81
+    C69 -> C89
+    C70 -> C83
+    C70 -> C88
+    C71 -> C74
+    C71 -> C76
+    C71 -> C94
+    C72 -> C71
+    C72 -> C75
+    C72 -> C77
+    C72 -> C93
+    C73 -> C83
+    C73 -> C90
+    C74 -> C96
+    C75 -> C74
+    C75 -> C92
+    C76 -> C95
+    C77 -> C76
+    C77 -> C91
+    C78 -> C73
+    C78 -> C81
+    C78 -> C87
+    C79 -> C95
+    C80 -> C96
+    C81 -> C82
+    C81 -> C83
+    C81 -> C84
+    C81 -> C93
+    C82 -> C80
+    C82 -> C92
+    C83 -> C79
+    C83 -> C80
+    C83 -> C94
+    C84 -> C79
+    C84 -> C91
+    C85 -> C86
+    C85 -> C87
+    C85 -> C89
+    C86 -> C88
+    C86 -> C90
+    C87 -> C90
+    C87 -> C93
+    C88 -> C94
+    C89 -> C88
+    C89 -> C93
+    C90 -> C94
+    C91 -> C95
+    C92 -> C96
+    C93 -> C91
+    C93 -> C92
+    C93 -> C94
+    C94 -> C95
+    C94 -> C96
+
+    // Overlay search-path transitions between queried centroids
+    C01 -> C95 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C02 -> C07 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C03 -> C06 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C06 -> C88 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C07 -> C70 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C18 -> C33 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C33 -> C04 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C70 -> C18 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C88 -> C02 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C95 -> C96 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+    C96 -> C03 [color="#ff7f0e", penwidth=2.8, arrowsize=1.4, constraint=false, label="", fontcolor="#ff7f0e"]
+}

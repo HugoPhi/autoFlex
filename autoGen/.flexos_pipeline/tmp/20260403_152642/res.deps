@@ -1,0 +1,8 @@
+lib/nolibc/malloc.c free 67 void free(void *ptr)
+lib/nolibc/malloc.c malloc 41 void *malloc(size_t size)
+lib/nolibc/string.c memcmp 126 int memcmp(const void *ptr1, const void *ptr2, size_t len)
+lib/nolibc/string.c memcpy 65 void *memcpy(void *dst, const void *src, size_t len)
+lib/vfscore/main.c mkdir 1065 mkdir(const char *pathname, mode_t mode)
+lib/vfscore/main.c open 113 int open(const char *pathname, int flags, ...)
+lib/nolibc/string.c strcmp 184 int strcmp(const char *str1, const char *str2)
+lib/nolibc/string.c strlen 139 size_t strlen(const char *str)

@@ -1,0 +1,451 @@
+dataset,threshold,seed,search_method,method_label,nodes,query_count,query_ratio,first_result_query,first_result_query_ratio,final_answers,exhaustive_answers,answer_validation,validation_note
+nginx:REQ,15993.054000,0,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,0,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,0,random,Random-candidate,96,14,0.145833,11.000000,0.114583,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,1,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,1,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,1,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,2,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,2,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,2,random,Random-candidate,96,11,0.114583,7.000000,0.072917,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,3,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,3,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,3,random,Random-candidate,96,7,0.072917,6.000000,0.062500,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,4,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,4,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,4,random,Random-candidate,96,23,0.239583,21.000000,0.218750,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,5,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,5,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,5,random,Random-candidate,96,11,0.114583,7.000000,0.072917,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,6,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,6,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,6,random,Random-candidate,96,13,0.135417,11.000000,0.114583,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,7,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,7,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,7,random,Random-candidate,96,7,0.072917,4.000000,0.041667,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,8,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,8,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,8,random,Random-candidate,96,17,0.177083,15.000000,0.156250,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,9,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C95|C96,C95|C96,exact,Exhaustive reference baseline.
+nginx:REQ,15993.054000,9,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,15993.054000,9,random,Random-candidate,96,15,0.156250,12.000000,0.125000,C95|C96,C95|C96,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,0,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,0,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,0,random,Random-candidate,96,14,0.145833,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,1,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,1,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,1,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,2,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,2,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,2,random,Random-candidate,96,18,0.187500,12.000000,0.125000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,3,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,3,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,3,random,Random-candidate,96,12,0.125000,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,4,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,4,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,4,random,Random-candidate,96,30,0.312500,20.000000,0.208333,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,5,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,5,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,5,random,Random-candidate,96,11,0.114583,1.000000,0.010417,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,6,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,6,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,6,random,Random-candidate,96,14,0.145833,1.000000,0.010417,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,7,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,7,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,7,random,Random-candidate,96,28,0.291667,12.000000,0.125000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,8,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,8,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,8,random,Random-candidate,96,18,0.187500,10.000000,0.104167,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,9,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Exhaustive reference baseline.
+nginx:REQ,16022.298000,9,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,16022.298000,9,random,Random-candidate,96,23,0.239583,17.000000,0.177083,C58|C74|C80|C92|C95,C58|C74|C80|C92|C95,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,0,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,0,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,0,random,Random-candidate,96,17,0.177083,12.000000,0.125000,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,1,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,1,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,1,random,Random-candidate,96,15,0.156250,12.000000,0.125000,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,2,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,2,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,2,random,Random-candidate,96,9,0.093750,5.000000,0.052083,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,3,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,3,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,3,random,Random-candidate,96,25,0.260417,21.000000,0.218750,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,4,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,4,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,4,random,Random-candidate,96,17,0.177083,7.000000,0.072917,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,5,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,5,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,5,random,Random-candidate,96,15,0.156250,7.000000,0.072917,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,6,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,6,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,6,random,Random-candidate,96,23,0.239583,5.000000,0.052083,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,7,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,7,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,7,random,Random-candidate,96,15,0.156250,12.000000,0.125000,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,8,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,8,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,8,random,Random-candidate,96,24,0.250000,6.000000,0.062500,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,9,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C03,C02|C03,exact,Exhaustive reference baseline.
+nginx:REQ,50366.246000,9,balanced,Balanced (Ours),96,12,0.125000,4.000000,0.041667,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,50366.246000,9,random,Random-candidate,96,17,0.177083,11.000000,0.114583,C02|C03,C02|C03,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,0,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,0,random,Random-candidate,96,14,0.145833,13.000000,0.135417,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,1,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,1,random,Random-candidate,96,15,0.156250,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,2,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,2,random,Random-candidate,96,10,0.104167,10.000000,0.104167,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,3,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,3,random,Random-candidate,96,23,0.239583,22.000000,0.229167,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,4,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,4,random,Random-candidate,96,13,0.135417,8.000000,0.083333,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,5,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,5,random,Random-candidate,96,14,0.145833,7.000000,0.072917,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,6,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,6,random,Random-candidate,96,18,0.187500,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,7,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,7,random,Random-candidate,96,15,0.156250,13.000000,0.135417,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,8,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,8,random,Random-candidate,96,19,0.197917,19.000000,0.197917,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+nginx:REQ,62760.272000,9,balanced,Balanced (Ours),96,10,0.104167,5.000000,0.052083,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,62760.272000,9,random,Random-candidate,96,17,0.177083,14.000000,0.145833,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,0,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,0,random,Random-candidate,96,15,0.156250,14.000000,0.145833,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,1,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,1,random,Random-candidate,96,16,0.166667,13.000000,0.135417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,2,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,2,random,Random-candidate,96,10,0.104167,9.000000,0.093750,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,3,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,3,random,Random-candidate,96,23,0.239583,9.000000,0.093750,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,4,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,4,random,Random-candidate,96,13,0.135417,9.000000,0.093750,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,5,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,5,random,Random-candidate,96,15,0.156250,11.000000,0.114583,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,6,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,6,random,Random-candidate,96,19,0.197917,6.000000,0.062500,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,7,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,7,random,Random-candidate,96,15,0.156250,10.000000,0.104167,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,8,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,8,random,Random-candidate,96,19,0.197917,15.000000,0.156250,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+nginx:REQ,64729.242000,9,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+nginx:REQ,64729.242000,9,random,Random-candidate,96,16,0.166667,7.000000,0.072917,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,0,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,0,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,0,random,Random-candidate,96,22,0.229167,13.000000,0.135417,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,121706.286000,1,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,1,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,1,random,Random-candidate,96,27,0.281250,20.000000,0.208333,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,121706.286000,2,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,2,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,2,random,Random-candidate,96,17,0.177083,4.000000,0.041667,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,3,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,3,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,3,random,Random-candidate,96,13,0.135417,6.000000,0.062500,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,4,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,4,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,4,random,Random-candidate,96,22,0.229167,14.000000,0.145833,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,121706.286000,5,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,5,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,5,random,Random-candidate,96,14,0.145833,6.000000,0.062500,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,6,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,6,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,6,random,Random-candidate,96,12,0.125000,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,7,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,7,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,7,random,Random-candidate,96,26,0.270833,15.000000,0.156250,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,8,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,8,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,8,random,Random-candidate,96,22,0.229167,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,9,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,121706.286000,9,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,121706.286000,9,random,Random-candidate,96,22,0.229167,17.000000,0.177083,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,0,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,0,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,0,random,Random-candidate,96,22,0.229167,13.000000,0.135417,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,1,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,1,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,1,random,Random-candidate,96,27,0.281250,20.000000,0.208333,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,2,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,2,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,2,random,Random-candidate,96,17,0.177083,4.000000,0.041667,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,3,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,3,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,3,random,Random-candidate,96,13,0.135417,6.000000,0.062500,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,4,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,4,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,4,random,Random-candidate,96,22,0.229167,14.000000,0.145833,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,5,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,5,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,5,random,Random-candidate,96,15,0.156250,6.000000,0.062500,C58|C63|C64|C74|C77|C86|C88|C90|C91|C92,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,6,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,6,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,6,random,Random-candidate,96,12,0.125000,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,7,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,7,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,7,random,Random-candidate,96,25,0.260417,15.000000,0.156250,C58|C63|C64|C74|C77|C86|C88|C90|C91|C92,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,8,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,8,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,8,random,Random-candidate,96,23,0.239583,2.000000,0.020833,C58|C63|C64|C74|C77|C86|C88|C90|C91|C92,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,125007.950000,9,exhaustive,Exhaustive,96,96,1.000000,19.200000,0.200000,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Exhaustive reference baseline.
+redis:GET,125007.950000,9,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C91|C93,C58|C77|C90|C91|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,125007.950000,9,random,Random-candidate,96,22,0.229167,17.000000,0.177083,C58|C63|C64|C74|C77|C86|C88|C90,C58|C77|C90|C91|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:GET,290740.720000,0,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,0,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,0,random,Random-candidate,96,33,0.343750,23.000000,0.239583,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,1,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,1,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,1,random,Random-candidate,96,27,0.281250,21.000000,0.218750,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,2,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,2,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,2,random,Random-candidate,96,20,0.208333,18.000000,0.187500,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,3,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,3,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,3,random,Random-candidate,96,27,0.281250,3.000000,0.031250,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,4,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,4,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,4,random,Random-candidate,96,23,0.239583,19.000000,0.197917,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,5,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,5,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,5,random,Random-candidate,96,23,0.239583,10.000000,0.104167,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,6,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,6,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,6,random,Random-candidate,96,22,0.229167,8.000000,0.083333,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,7,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,7,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,7,random,Random-candidate,96,24,0.250000,13.000000,0.135417,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,8,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,8,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,8,random,Random-candidate,96,11,0.114583,4.000000,0.041667,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,9,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C15|C17,C15|C17,exact,Exhaustive reference baseline.
+redis:GET,290740.720000,9,balanced,Balanced (Ours),96,21,0.218750,5.000000,0.052083,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,290740.720000,9,random,Random-candidate,96,33,0.343750,25.000000,0.260417,C15|C17,C15|C17,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,0,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,0,random,Random-candidate,96,16,0.166667,15.000000,0.156250,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,1,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,1,random,Random-candidate,96,18,0.187500,14.000000,0.145833,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,2,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,2,random,Random-candidate,96,18,0.187500,18.000000,0.187500,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,3,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,3,random,Random-candidate,96,19,0.197917,18.000000,0.187500,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,4,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,4,random,Random-candidate,96,16,0.166667,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,5,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,5,random,Random-candidate,96,17,0.177083,14.000000,0.145833,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,6,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,6,random,Random-candidate,96,21,0.218750,15.000000,0.156250,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,7,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,7,random,Random-candidate,96,11,0.114583,8.000000,0.083333,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,8,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,8,random,Random-candidate,96,14,0.145833,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:GET,706307.290000,9,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,706307.290000,9,random,Random-candidate,96,25,0.260417,23.000000,0.239583,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,0,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,0,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,1,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,1,random,Random-candidate,96,18,0.187500,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,2,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,2,random,Random-candidate,96,18,0.187500,11.000000,0.114583,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,3,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,3,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,4,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,4,random,Random-candidate,96,16,0.166667,9.000000,0.093750,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,5,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,5,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,6,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,6,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,7,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,7,random,Random-candidate,96,12,0.125000,11.000000,0.114583,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,8,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,8,random,Random-candidate,96,16,0.166667,15.000000,0.156250,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:GET,886732.400000,9,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:GET,886732.400000,9,random,Random-candidate,96,25,0.260417,8.000000,0.083333,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,0,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,0,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,0,random,Random-candidate,96,14,0.145833,9.000000,0.093750,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,1,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,1,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,1,random,Random-candidate,96,9,0.093750,7.000000,0.072917,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,2,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,2,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,2,random,Random-candidate,96,8,0.083333,5.000000,0.052083,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,3,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,3,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,3,random,Random-candidate,96,7,0.072917,6.000000,0.062500,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,4,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,4,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,4,random,Random-candidate,96,26,0.270833,24.000000,0.250000,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,5,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,5,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,5,random,Random-candidate,96,12,0.125000,10.000000,0.104167,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,6,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,6,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,6,random,Random-candidate,96,9,0.093750,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,7,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,7,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,7,random,Random-candidate,96,23,0.239583,20.000000,0.208333,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,8,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,8,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,8,random,Random-candidate,96,12,0.125000,6.000000,0.062500,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,9,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C93|C95,C93|C95,exact,Exhaustive reference baseline.
+redis:SET,100936.388000,9,balanced,Balanced (Ours),96,3,0.031250,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,100936.388000,9,random,Random-candidate,96,7,0.072917,2.000000,0.020833,C93|C95,C93|C95,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,0,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,0,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,0,random,Random-candidate,96,22,0.229167,13.000000,0.135417,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,1,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,1,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,1,random,Random-candidate,96,27,0.281250,20.000000,0.208333,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,2,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,2,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,2,random,Random-candidate,96,27,0.281250,4.000000,0.041667,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,3,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,3,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,3,random,Random-candidate,96,13,0.135417,6.000000,0.062500,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,4,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,4,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,4,random,Random-candidate,96,21,0.218750,14.000000,0.145833,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,5,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,5,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,5,random,Random-candidate,96,25,0.260417,10.000000,0.104167,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,6,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,6,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,6,random,Random-candidate,96,12,0.125000,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,7,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,7,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,7,random,Random-candidate,96,26,0.270833,15.000000,0.156250,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,8,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,8,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,8,random,Random-candidate,96,25,0.260417,2.000000,0.020833,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,105020.116000,9,exhaustive,Exhaustive,96,96,1.000000,24.000000,0.250000,C58|C77|C90|C93,C58|C77|C90|C93,exact,Exhaustive reference baseline.
+redis:SET,105020.116000,9,balanced,Balanced (Ours),96,8,0.083333,2.000000,0.020833,C58|C77|C90|C93,C58|C77|C90|C93,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,105020.116000,9,random,Random-candidate,96,25,0.260417,17.000000,0.177083,C58|C63|C64|C74|C77|C86|C87|C90,C58|C77|C90|C93,overlap_partial,Search and exhaustive frontiers partially overlap; search still returns feasible representatives.
+redis:SET,438982.924000,0,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,0,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,0,random,Random-candidate,96,36,0.375000,3.000000,0.031250,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,1,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,1,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,1,random,Random-candidate,96,21,0.218750,16.000000,0.166667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,2,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,2,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,2,random,Random-candidate,96,21,0.218750,20.000000,0.208333,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,3,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,3,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,3,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,4,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,4,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,4,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,5,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,5,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,5,random,Random-candidate,96,20,0.208333,9.000000,0.093750,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,6,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,6,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,6,random,Random-candidate,96,18,0.187500,7.000000,0.072917,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,7,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,7,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,7,random,Random-candidate,96,16,0.166667,13.000000,0.135417,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,8,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,8,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,8,random,Random-candidate,96,23,0.239583,14.000000,0.145833,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,9,exhaustive,Exhaustive,96,96,1.000000,48.000000,0.500000,C02|C06,C02|C06,exact,Exhaustive reference baseline.
+redis:SET,438982.924000,9,balanced,Balanced (Ours),96,15,0.156250,4.000000,0.041667,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,438982.924000,9,random,Random-candidate,96,24,0.250000,22.000000,0.229167,C02|C06,C02|C06,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,0,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,0,random,Random-candidate,96,16,0.166667,15.000000,0.156250,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,1,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,1,random,Random-candidate,96,18,0.187500,14.000000,0.145833,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,2,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,2,random,Random-candidate,96,18,0.187500,18.000000,0.187500,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,3,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,3,random,Random-candidate,96,19,0.197917,18.000000,0.187500,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,4,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,4,random,Random-candidate,96,16,0.166667,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,5,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,5,random,Random-candidate,96,17,0.177083,14.000000,0.145833,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,6,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,6,random,Random-candidate,96,21,0.218750,15.000000,0.156250,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,7,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,7,random,Random-candidate,96,11,0.114583,8.000000,0.083333,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,8,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,8,random,Random-candidate,96,14,0.145833,12.000000,0.125000,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C02,C02,exact,Exhaustive reference baseline.
+redis:SET,594657.476000,9,balanced,Balanced (Ours),96,10,0.104167,4.000000,0.041667,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,594657.476000,9,random,Random-candidate,96,25,0.260417,23.000000,0.239583,C02,C02,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,0,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,0,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,0,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,1,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,1,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,1,random,Random-candidate,96,18,0.187500,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,2,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,2,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,2,random,Random-candidate,96,18,0.187500,11.000000,0.114583,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,3,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,3,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,3,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,4,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,4,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,4,random,Random-candidate,96,16,0.166667,9.000000,0.093750,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,5,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,5,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,5,random,Random-candidate,96,17,0.177083,16.000000,0.166667,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,6,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,6,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,6,random,Random-candidate,96,19,0.197917,7.000000,0.072917,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,7,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,7,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,7,random,Random-candidate,96,12,0.125000,11.000000,0.114583,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,8,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,8,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,8,random,Random-candidate,96,16,0.166667,15.000000,0.156250,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,9,exhaustive,Exhaustive,96,96,1.000000,96.000000,1.000000,C01,C01,exact,Exhaustive reference baseline.
+redis:SET,722701.712000,9,balanced,Balanced (Ours),96,9,0.093750,1.000000,0.010417,C01,C01,exact,Search frontier exactly matches exhaustive frontier.
+redis:SET,722701.712000,9,random,Random-candidate,96,25,0.260417,8.000000,0.083333,C01,C01,exact,Search frontier exactly matches exhaustive frontier.

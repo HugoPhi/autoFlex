@@ -1,0 +1,58 @@
+FlexOS migration + vulnerability detection summary
+timestamp: 2026-04-03T15:26:43+08:00
+unikraft_dir: /home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft
+target_file: /home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c
+callfile: /home/tibless/Desktop/auto_flex/autoGen/.flexos_pipeline/tmp/20260403_152642/callfile.csv
+rulefile: /home/tibless/Desktop/auto_flex/autoGen/.flexos_pipeline/tmp/20260403_152642/porthelper.cocci
+
+[gate coverage]
+checked_functions=0
+possible_ungated_calls=0
+
+[cppcheck.txt]
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:37:0: information: Include file: <stdlib.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <stdlib.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:38:0: information: Include file: <stdio.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <stdio.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:39:0: information: Include file: <string.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <string.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:40:0: information: Include file: <stdbool.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <stdbool.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:42:0: information: Include file: <uk/cpio.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <uk/cpio.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:43:0: information: Include file: <uk/essentials.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <uk/essentials.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:44:0: information: Include file: <flexos/isolation.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <flexos/isolation.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:45:0: information: Include file: <sys/mount.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <sys/mount.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:46:0: information: Include file: <sys/stat.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <sys/stat.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:47:0: information: Include file: <fcntl.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <fcntl.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:48:0: information: Include file: <unistd.h> not found. Please note: Cppcheck does not need standard library headers to get proper results. [missingIncludeSystem]
+#include <unistd.h>
+^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:81:45: style: Parameter 'header' can be declared as pointer to const [constParameterPointer]
+static bool valid_magic(struct cpio_header *header)
+                                            ^
+/home/tibless/Desktop/auto_flex/autoGen/third_party/unikraft/lib/cpio/cpio_pipeline_test.c:121:57: style: Parameter 'path' can be declared as pointer to const [constParameterPointer]
+static char *absolute_path(char *path_to_prepend, char *path)
+                                                        ^
+nofile:0:0: information: Active checkers: 113/592 (use --checkers-report=<filename> to see details) [checkersReport]
+
+
+Files:
+- migration diff: /home/tibless/Desktop/auto_flex/autoGen/.flexos_pipeline/reports/20260403_152642/migration.diff
+- gate coverage: /home/tibless/Desktop/auto_flex/autoGen/.flexos_pipeline/reports/20260403_152642/gate_coverage.txt
+- summary: /home/tibless/Desktop/auto_flex/autoGen/.flexos_pipeline/reports/20260403_152642/summary.txt

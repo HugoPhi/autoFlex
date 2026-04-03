@@ -1,0 +1,10 @@
+dataset,search_method,method_label,n_trials,mean_query_count,std_query_count,mean_query_ratio,std_query_ratio,mean_first_result_query,std_first_result_query,mean_first_result_query_ratio,std_first_result_query_ratio
+nginx:REQ,balanced,Balanced (Ours),960,34.604167,14.232796,0.360460,0.148258,20.843750,11.183440,0.217122,0.116494
+nginx:REQ,exhaustive,Exhaustive,960,96.000000,0.000000,1.000000,0.000000,21.311111,16.184398,0.221991,0.168587
+nginx:REQ,random,Random-candidate,960,25.591667,6.581218,0.266580,0.068554,8.907292,6.338108,0.092784,0.066022
+redis:GET,balanced,Balanced (Ours),960,32.625000,14.993922,0.339844,0.156187,18.583333,10.970288,0.193576,0.114274
+redis:GET,exhaustive,Exhaustive,960,96.000000,0.000000,1.000000,0.000000,22.487735,16.961020,0.234247,0.176677
+redis:GET,random,Random-candidate,960,26.742708,6.511964,0.278570,0.067833,9.523958,6.521874,0.099208,0.067936
+redis:SET,balanced,Balanced (Ours),960,31.552083,13.888597,0.328668,0.144673,18.302083,10.637120,0.190647,0.110803
+redis:SET,exhaustive,Exhaustive,960,96.000000,0.000000,1.000000,0.000000,24.149603,16.843086,0.251558,0.175449
+redis:SET,random,Random-candidate,960,26.155208,6.563303,0.272450,0.068368,9.164583,6.545354,0.095464,0.068181
