@@ -88,7 +88,6 @@ def render(summary_csv: Path, out_file: Path) -> None:
     ax.set_xticklabels(["Nginx-REQ", "Redis-GET", "Redis-SET"], fontsize=10)
     ax.set_ylim(0, 1.08)
     ax.set_ylabel("Query Ratio (queried / exhaustive)", fontsize=11)
-    ax.set_title("Search Method Comparison", fontsize=12, pad=6)
     ax.grid(axis="y", color="#d9d9d9", linewidth=0.6, alpha=0.8, zorder=0)
 
     leg = ax.legend(

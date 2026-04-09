@@ -92,7 +92,6 @@ def render(agg_csv: Path, out_file: Path, metric: str) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels(["Nginx-REQ", "Redis-GET", "Redis-SET"], fontsize=10)
     ax.set_ylabel(ylabel, fontsize=11)
-    ax.set_title(title, fontsize=12, pad=6)
     if ylim is not None:
         ax.set_ylim(*ylim)
     else:

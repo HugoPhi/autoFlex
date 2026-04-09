@@ -177,7 +177,6 @@ def _fmt_k(v: float) -> str:
 def _draw_scatter_panel(
     lines: List[str],
     *,
-    title: str,
     points: List[dict],
     x0: float,
     y0: float,
@@ -213,7 +212,6 @@ def _draw_scatter_panel(
         return py0 + ph - (v - lo) / (hi - lo) * ph
 
     lines.append(f'<rect x="{x0:.1f}" y="{y0:.1f}" width="{w:.1f}" height="{h:.1f}" fill="white" stroke="#111" stroke-width="1.4"/>')
-    lines.append(f'<text x="{x0 + 8:.1f}" y="{y0 + 18:.1f}" font-size="14" font-family="Times New Roman, serif">{title}</text>')
 
     # Axes
     lines.append(f'<line x1="{px0:.1f}" y1="{py0 + ph:.1f}" x2="{px0 + pw:.1f}" y2="{py0 + ph:.1f}" stroke="#111" stroke-width="1.2"/>')
@@ -276,14 +274,7 @@ def render_a2b_scatter_svg(path: str, *, app: str, method: str, points: List[dic
     lines: List[str] = []
     lines.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">')
     lines.append('<rect x="0" y="0" width="100%" height="100%" fill="white"/>')
-    lines.append(
-        f'<text x="{width / 2:.1f}" y="36" text-anchor="middle" '
-        'font-size="20" font-family="Times New Roman, serif">'
-        'A to B Scatter: Parent vs Child Performance</text>'
-    )
-
-    title = f"{app.upper()} / {method}   (each point is A to B, dashed line is y = x)"
-    _draw_scatter_panel(lines, title=title, points=points, x0=30.0, y0=58.0, w=float(panel_w), h=float(panel_h))
+    _draw_scatter_panel(lines, points=points, x0=30.0, y0=58.0, w=float(panel_w), h=float(panel_h))
 
     lines.append("</svg>")
     ensure_parent(path)
@@ -331,9 +322,6 @@ def render_a2b_scatter_png(path: str, *, app: str, method: str, points: List[dic
     ax.set_ylim(lo, hi)
     ax.set_xlabel('Parent node A performance', fontsize=12, family='serif')
     ax.set_ylabel('Child node B performance', fontsize=12, family='serif')
-    
-    title = f"{app.upper()} / {method}\n(each point is A to B, dashed line is y = x)"
-    ax.set_title(title, fontsize=14, family='serif', pad=10)
     
     # Grid
     ax.grid(True, alpha=0.3, zorder=1)

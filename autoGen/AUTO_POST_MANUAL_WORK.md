@@ -1,6 +1,6 @@
 # 自动迁移后仍需人工修改说明（v11）
 
-本文档说明：在自动迁移已经完成 gate 覆盖（`unresolved_calls=0`）后，哪些部分仍建议人工检查与修订。
+本文档说明：在自动迁移已经完成 gate 覆盖对齐（`unresolved_calls=0`）后，哪些部分仍建议人工检查与修订，以及如何结合运行时 gate 完整性校验解释结果。
 
 ## 1. 当前状态（基于 v11）
 
@@ -14,6 +14,8 @@
 - `unresolved_calls = 0`
 
 结论：从 gate 统计口径看，自动迁移已覆盖手工版本中的目标 gate 调用。
+
+补充：该结论仅反映“与 manual 对齐”。v12 起建议同时查看 instrumentation 运行时报告（`instrumentation.txt` 与 `runtime_gate_check.txt`）作为 gate 完整性的主证据。
 
 ### 1.2 仍需人工工作（语义感知 diff 口径）
 
@@ -29,7 +31,7 @@
 
 ## 2. 为什么 unresolved=0 仍需要人工修改
 
-`unresolved_calls=0` 只保证 gate 调用覆盖，不保证以下内容完全一致：
+`unresolved_calls=0` 只保证 gate 调用覆盖对齐，不保证以下内容完全一致，也不直接证明运行时不会出现缺 gate 边界绕过：
 
 1. 代码结构差异
 - 例如 manual 采用 wrapper/宏封装，auto 采用直接 gate 插桩。
@@ -73,6 +75,7 @@ diff -ruN \
 
 ## 5. 验收标准（建议）
 
-1. 功能验收：`summary.json` 中 `unresolved_calls=0`。
-2. 代码验收：关键 app（nginx/newlib/redis）完成人工 review 并记录特例。
-3. 维护验收：新增特例规则后，同步更新规则文档与统计结果。
+1. 对齐验收：`summary.json` 中 `unresolved_calls=0`。
+2. 运行时验收：pipeline 产物 `runtime_gate_check.txt` 状态为 `pass`（若 `inconclusive`，需补做 MPK 机器复验并留档）。
+3. 代码验收：关键 app（nginx/newlib/redis）完成人工 review 并记录特例。
+4. 维护验收：新增特例规则后，同步更新规则文档与统计结果。

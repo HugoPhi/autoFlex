@@ -384,7 +384,6 @@ def plot(permutations={}, output_file=None):
 
   # plt.legend(loc="upper left")
   plt.xticks([])
-  # plt.title('')
 
   print("Squeezing layout...")
   fig.tight_layout()

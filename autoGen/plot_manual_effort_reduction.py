@@ -282,7 +282,6 @@ def plot_rows(rows: list[dict[str, object]], out_file: Path) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels([a.upper() for a in apps], fontsize=10)
     ax.set_ylabel("Changed lines (diff-based effort)", fontsize=11)
-    ax.set_title("Manual Workload Reduction by Auto Migration (Semantic-Aware)", fontsize=12, pad=6)
     ax.grid(axis="y", color="#d9d9d9", linewidth=0.6, alpha=0.8, zorder=0)
 
     leg = ax.legend(

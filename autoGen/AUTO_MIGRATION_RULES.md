@@ -97,18 +97,36 @@
 - 规则级统计摘要表
 - 对比上一版本的 delta
 
-## 4. 关于“是否还需要漏洞检测程序”
+## 4. 漏洞检测主线与辅线（v12 起）
 
-结论: **仍然建议保留漏洞检测程序，但它不再是“和 manual 对齐”的主评测指标。**
+结论: gate 完整性检测主线升级为 **GCC instrumentation + 运行时校验**，`manual` 对齐指标与通用静态扫描器保留为并行辅线。
 
-原因:
-- 当前 `manual` 作为 oracle 时，`expected/matched/unresolved` 用于衡量“是否复现人工迁移答案”。
-- 这并不等价于“安全性已充分覆盖”。manual 也可能有遗漏、风格偏差或场景特定假设。
-- 漏洞检测程序的作用应转为:
-  - 发现 manual 与自动迁移都未覆盖的风险模式
-  - 发现新增规则引入的潜在副作用（误改、漏改、危险调用）
-  - 提供额外安全信号，而非替代 oracle 对齐指标
+### 4.1 主线: GCC instrumentation 运行时 gate 完整性校验
 
-建议实践:
-- 对齐评测主线: `expected/matched/unresolved`
-- 安全评估辅线: 静态检查/风险扫描报告（单独输出，不混入主指标）
+目标与 FlexOS README 一致: 若存在缺失 gate 的跨域调用，在 MPK 等 intra-AS 隔离后端下应触发运行时异常。
+
+主线流程:
+1. 自动定位目标库并修改 `Makefile.uk`，注入:
+  - `-finstrument-functions`
+  - `-finstrument-functions-exclude-function-list=__cyg_profile_func_enter,__cyg_profile_func_exit`
+2. 在目标库写入 `flexos_gate_guard.c`，定义:
+  - 库内 `volatile` guard 变量
+  - `__cyg_profile_func_enter/exit` 两个 hook
+3. 构建并运行镜像，记录运行时是否出现崩溃/异常关键字。
+
+产物（pipeline report）:
+- `instrumentation.txt`：记录注入库、Makefile 改动与 guard 文件。
+- `runtime_gate_check.txt`：记录运行校验 verdict（pass/fail/inconclusive）及命令/退出码。
+- `runtime_build.log` / `runtime_run.log`：构建与运行日志。
+
+### 4.2 辅线 A: manual 对齐指标（迁移一致性）
+
+`expected/matched/unresolved` 继续作为“自动迁移是否复现 manual gate 布局”的指标。
+
+注意: `unresolved_calls=0` 仅表示与 manual 对齐度高，不等价于运行时 gate 完整性已被证明。
+
+### 4.3 辅线 B: 通用静态扫描器
+
+cppcheck、semgrep、flawfinder 继续保留，定位迁移后的一般性风险信号。
+
+注意: 这些工具不是 gate 完整性的证明器，应与主线 runtime 校验结合解读。

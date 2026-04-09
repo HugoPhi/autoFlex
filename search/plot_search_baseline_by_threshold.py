@@ -116,7 +116,6 @@ def render(detail_csv: Path, metric: str, out_file: Path) -> None:
 
         ax.set_xticks(x)
         ax.set_xticklabels([f"{int(float(t))/1000:.0f}k" for t in thresholds], fontsize=9)
-        ax.set_title(dataset.replace(":", " - "), fontsize=11, pad=4)
         ax.grid(axis="y", color="#d9d9d9", linewidth=0.6, alpha=0.8, zorder=0)
         ax.set_xlabel("Threshold", fontsize=10)
 
@@ -126,7 +125,6 @@ def render(detail_csv: Path, metric: str, out_file: Path) -> None:
             ax.set_ylim(0, max(1.2, global_max * 1.22))
 
     axes[0].set_ylabel(ylabel, fontsize=11)
-    fig.suptitle(title, fontsize=12, y=0.98)
 
     handles, labels = axes[0].get_legend_handles_labels()
     leg = fig.legend(

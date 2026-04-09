@@ -36,6 +36,8 @@ class FileEval:
     unresolved_calls: int
     migration_changed: bool
     generated_rules: int
+    instrumentation_applied: bool
+    runtime_gate_check_status: str
 
 
 def parse_gate_pairs(text: str) -> List[Tuple[str, str]]:
@@ -77,7 +79,13 @@ def find_target_files(dataset_root: Path, apps: List[str]) -> Dict[str, List[Pat
     return targets
 
 
-def evaluate_one_app(dataset_root: Path, app: str, rel_files: List[Path], out_dir: Path) -> List[FileEval]:
+def evaluate_one_app(
+    dataset_root: Path,
+    app: str,
+    rel_files: List[Path],
+    out_dir: Path,
+    enable_instrumentation: bool,
+) -> List[FileEval]:
     app_raw = dataset_root / app / "raw"
     app_manual = dataset_root / app / "manual"
 
@@ -115,6 +123,7 @@ def evaluate_one_app(dataset_root: Path, app: str, rel_files: List[Path], out_di
             target_file=raw_file,
             out_dir=migration_out,
             rebuild_cscope=rebuild,
+            enable_instrumentation=enable_instrumentation,
         )
         rebuild = False
 
@@ -133,6 +142,8 @@ def evaluate_one_app(dataset_root: Path, app: str, rel_files: List[Path], out_di
                 unresolved_calls=max(0, expected_total - matched),
                 migration_changed=mig.changed,
                 generated_rules=mig.generated_rules,
+                instrumentation_applied=mig.instrumentation_applied,
+                runtime_gate_check_status=mig.runtime_gate_check_status,
             )
         )
 
@@ -154,6 +165,8 @@ def write_reports(out_dir: Path, rows: List[FileEval]) -> None:
             "unresolved_calls",
             "migration_changed",
             "generated_rules",
+            "instrumentation_applied",
+            "runtime_gate_check_status",
         ])
         for r in rows:
             w.writerow([
@@ -165,6 +178,8 @@ def write_reports(out_dir: Path, rows: List[FileEval]) -> None:
                 r.unresolved_calls,
                 int(r.migration_changed),
                 r.generated_rules,
+                int(r.instrumentation_applied),
+                r.runtime_gate_check_status,
             ])
 
     by_app: Dict[str, Dict[str, int]] = defaultdict(lambda: defaultdict(int))
@@ -175,6 +190,7 @@ def write_reports(out_dir: Path, rows: List[FileEval]) -> None:
         d["expected_calls"] += r.expected_calls
         d["matched_calls"] += r.matched_calls
         d["unresolved_calls"] += r.unresolved_calls
+        d["instrumentation_applied_files"] += int(r.instrumentation_applied)
 
     summary = {
         "total_files": len(rows),
@@ -182,6 +198,8 @@ def write_reports(out_dir: Path, rows: List[FileEval]) -> None:
         "expected_calls": sum(r.expected_calls for r in rows),
         "matched_calls": sum(r.matched_calls for r in rows),
         "unresolved_calls": sum(r.unresolved_calls for r in rows),
+        "instrumentation_applied_files": sum(int(r.instrumentation_applied) for r in rows),
+        "runtime_gate_check_status_counts": dict(Counter(r.runtime_gate_check_status for r in rows)),
         "by_app": by_app,
     }
 
@@ -197,15 +215,17 @@ def write_reports(out_dir: Path, rows: List[FileEval]) -> None:
     lines.append(f"- Expected gated calls (manual oracle): {summary['expected_calls']}")
     lines.append(f"- Automatically matched gated calls: {summary['matched_calls']}")
     lines.append(f"- Unresolved expected calls (cannot auto-complete): {summary['unresolved_calls']}")
+    lines.append(f"- Files with instrumentation applied: {summary['instrumentation_applied_files']}")
+    lines.append(f"- Runtime gate check status counts: {summary['runtime_gate_check_status_counts']}")
     lines.append("")
     lines.append("## Per App")
     lines.append("")
-    lines.append("| app | files | changed | expected | matched | unresolved |")
-    lines.append("|---|---:|---:|---:|---:|---:|")
+    lines.append("| app | files | changed | expected | matched | unresolved | instrumentation_applied_files |")
+    lines.append("|---|---:|---:|---:|---:|---:|---:|")
     for app, d in sorted(by_app.items()):
         lines.append(
             f"| {app} | {d['files']} | {d['files_changed']} | {d['expected_calls']} | "
-            f"{d['matched_calls']} | {d['unresolved_calls']} |"
+            f"{d['matched_calls']} | {d['unresolved_calls']} | {d['instrumentation_applied_files']} |"
         )
 
     md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -216,6 +236,7 @@ def main() -> int:
     parser.add_argument("--dataset-root", default="autoGen/dataset")
     parser.add_argument("--apps", nargs="*", default=["nginx", "redis", "lwip", "newlib", "iperf"])
     parser.add_argument("--out-dir", default="autoGen/eval_results/flexos_py")
+    parser.add_argument("--enable-instrumentation", action="store_true")
     args = parser.parse_args()
 
     dataset_root = Path(args.dataset_root).resolve()
@@ -227,7 +248,7 @@ def main() -> int:
         rel_files = targets.get(app, [])
         if not rel_files:
             continue
-        all_rows.extend(evaluate_one_app(dataset_root, app, rel_files, out_dir))
+        all_rows.extend(evaluate_one_app(dataset_root, app, rel_files, out_dir, args.enable_instrumentation))
 
     write_reports(out_dir, all_rows)
     print(f"evaluation_done files={len(all_rows)} out_dir={out_dir}")

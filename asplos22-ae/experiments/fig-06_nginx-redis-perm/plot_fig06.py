@@ -94,7 +94,6 @@ def plot_config(rows: list[dict[str, object]], libs: list[str], title: str, out_
             if sfi[i, j] > 0:
                 ax.scatter(j, i, s=18, marker="^", c="#111111", edgecolors="#111111", linewidths=0.2, zorder=3)
 
-    ax.set_title(title, fontsize=12, color="#262626", pad=6)
     ax.set_yticks(np.arange(len(libs)))
     ax.set_yticklabels([x.capitalize() for x in libs], fontsize=9, color="#262626")
     ax.set_xlabel("Config index (1..96)", fontsize=11, color="#262626")
@@ -138,7 +137,6 @@ def plot_data(vals: list[float], errs: list[float], title: str, ylabel: str, out
         edgecolor="#2f2f2f",
         linewidth=0.28,
     )
-    ax.set_title(title, fontsize=12, color="#262626", pad=6)
     ax.set_ylabel(ylabel, fontsize=11, color="#262626")
     ax.set_xlabel("Config index (1..96)", fontsize=11, color="#262626")
     ax.set_xticks(x)
