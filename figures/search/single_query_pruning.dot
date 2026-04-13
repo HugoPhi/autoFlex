@@ -1,0 +1,200 @@
+digraph g {
+    rankdir=TB;
+    ratio=0.75;
+    nodesep=0.38;
+    ranksep=0.44;
+    splines=polyline;
+    pack=1;
+    packmode="array_u2";
+    graph [labeljust=l, labelloc=t, fontsize=24, fontname="Times New Roman"];
+    node [style="filled,setlinewidth(2)", shape=circle, color=black, fillcolor=white, fontname="Times New Roman", width=0.52, height=0.52, fixedsize=true];
+    edge [arrowsize=1.05, len=.7, color="#B7B7B7", penwidth=0.95, fontname="Times New Roman"];
+    label=<<FONT POINT-SIZE="28">Single-query pruning on nginx poset (induced subgraph)</FONT><BR/><FONT POINT-SIZE="23">|C|=96, query=C81, |anc(c)|=16, |desc(c)|=12</FONT>>;
+
+    subgraph cluster_I {
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="320"><TR><TD ALIGN="CENTER"><FONT POINT-SIZE="21"><B>Case B (infeasible)</B></FONT></TD></TR><TR><TD ALIGN="CENTER"><FONT POINT-SIZE="19"><B><I>g(c)</I> &lt; 0:</B> <I>C</I> ← <I>C</I> ∖ <I>desc(c)</I></FONT></TD></TR></TABLE>>;
+        color="#888888";
+        style="rounded,dashed";
+        penwidth=1.2;
+        margin=8;
+        fontsize=18;
+        I_C03 [label="", tooltip="C03 | R1 N1 S1 L2 | hardening=0", fillcolor="#3a3a3a", color="#000000", penwidth=2.1, shape=circle];
+        I_C06 [label="", tooltip="C06 | R1 N1 S2 L1 | hardening=0", fillcolor="#3a3a3a", color="#000000", penwidth=2.1, shape=circle];
+        I_C21 [label="", tooltip="C21 | R1 N1 S1 L2 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        I_C30 [label="", tooltip="C30 | R1 N1 S2 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        I_C33 [label="", tooltip="C33 | R1 N1 S1 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        I_C37 [label="", tooltip="C37 | R1 N1 S2 L2 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        I_C48 [label="", tooltip="C48 | R1 N1 S2 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        I_C66 [label="", tooltip="C66 | R1 N1 S1 L1 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        I_C78 [label="", tooltip="C78 | R1 N1 S2 L1 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        I_C79 [label="", tooltip="C79 | R1 N1 S2 L3 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        I_C81 [label="", tooltip="C81 | R1 N1 S2 L2 | hardening=2", fillcolor="#ffe8cc", color="#ff7f0e", penwidth=3.2, shape=doublecircle];
+        I_C82 [label="", tooltip="C82 | R1 N1 S3 L2 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        I_C83 [label="", tooltip="C83 | R1 N1 S2 L2 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        I_C84 [label="", tooltip="C84 | R1 N1 S2 L3 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        I_C91 [label="", tooltip="C91 | R1 N1 S2 L3 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        I_C92 [label="", tooltip="C92 | R1 N1 S3 L2 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        I_C94 [label="", tooltip="C94 | R1 N1 S2 L2 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        I_C95 [label="", tooltip="C95 | R1 N1 S2 L3 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        I_C96 [label="", tooltip="C96 | R1 N1 S3 L2 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        I_axis_0 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_0 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_0 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_0 I_C03 I_axis_0 I_C33 I_pad_r_0; }
+        I_pad_l_0 -> I_axis_0 [style=invis, weight=120, constraint=true];
+        I_axis_0 -> I_pad_r_0 [style=invis, weight=120, constraint=true];
+        I_axis_1 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_1 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_1 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_1 I_C21 I_C48 I_axis_1 I_C30 I_C06 I_pad_r_1; }
+        I_pad_l_1 -> I_axis_1 [style=invis, weight=120, constraint=true];
+        I_axis_1 -> I_pad_r_1 [style=invis, weight=120, constraint=true];
+        I_axis_2 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_2 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_2 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_2 I_C37 I_axis_2 I_C78 I_C66 I_pad_r_2; }
+        I_pad_l_2 -> I_axis_2 [style=invis, weight=120, constraint=true];
+        I_axis_2 -> I_pad_r_2 [style=invis, weight=120, constraint=true];
+        I_pad_l_3 [shape=box, width=3.19, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_3 [shape=box, width=0.62, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_3 I_C81 I_pad_r_3; }
+        I_pad_l_3 -> I_C81 [style=invis, weight=120, constraint=true];
+        I_C81 -> I_pad_r_3 [style=invis, weight=120, constraint=true];
+        I_axis_4 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_4 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_4 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_4 I_C84 I_C83 I_axis_4 I_C82 I_pad_r_4; }
+        I_pad_l_4 -> I_axis_4 [style=invis, weight=120, constraint=true];
+        I_axis_4 -> I_pad_r_4 [style=invis, weight=120, constraint=true];
+        I_axis_5 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_5 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_5 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_5 I_C79 I_C91 I_axis_5 I_C94 I_C92 I_pad_r_5; }
+        I_pad_l_5 -> I_axis_5 [style=invis, weight=120, constraint=true];
+        I_axis_5 -> I_pad_r_5 [style=invis, weight=120, constraint=true];
+        I_axis_6 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        I_pad_l_6 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        I_pad_r_6 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; I_pad_l_6 I_C95 I_axis_6 I_C96 I_pad_r_6; }
+        I_pad_l_6 -> I_axis_6 [style=invis, weight=120, constraint=true];
+        I_axis_6 -> I_pad_r_6 [style=invis, weight=120, constraint=true];
+        I_axis_0 -> I_axis_1 [style=invis, weight=200, constraint=true];
+        I_axis_1 -> I_axis_2 [style=invis, weight=200, constraint=true];
+        I_axis_2 -> I_C81 [style=invis, weight=200, constraint=true];
+        I_C81 -> I_axis_4 [style=invis, weight=200, constraint=true];
+        I_axis_4 -> I_axis_5 [style=invis, weight=200, constraint=true];
+        I_axis_5 -> I_axis_6 [style=invis, weight=200, constraint=true];
+        I_C03 -> I_C21
+        I_C21 -> I_C37
+        I_C30 -> I_C37
+        I_C33 -> I_C48
+        I_C37 -> I_C81
+        I_C48 -> I_C78
+        I_C66 -> I_C81
+        I_C78 -> I_C81
+        I_C79 -> I_C95
+        I_C81 -> I_C82
+        I_C81 -> I_C83
+        I_C81 -> I_C84
+        I_C82 -> I_C92
+        I_C83 -> I_C94
+        I_C84 -> I_C79
+        I_C84 -> I_C91
+        I_C92 -> I_C96
+        I_C94 -> I_C95
+        I_C94 -> I_C96
+    }
+    subgraph cluster_F {
+        label=<<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="1" CELLSPACING="0" WIDTH="320"><TR><TD ALIGN="CENTER"><FONT POINT-SIZE="21"><B>Case A (feasible)</B></FONT></TD></TR><TR><TD ALIGN="CENTER"><FONT POINT-SIZE="19"><B><I>g(c)</I> ≥ 0:</B> <I>C</I> ← <I>C</I> ∖ <I>anc(c)</I></FONT></TD></TR></TABLE>>;
+        color="#888888";
+        style="rounded,dashed";
+        penwidth=1.2;
+        margin=8;
+        fontsize=18;
+        F_C03 [label="", tooltip="C03 | R1 N1 S1 L2 | hardening=0", fillcolor="#3a3a3a", color="#000000", penwidth=2.1, shape=circle];
+        F_C06 [label="", tooltip="C06 | R1 N1 S2 L1 | hardening=0", fillcolor="#3a3a3a", color="#000000", penwidth=2.1, shape=circle];
+        F_C21 [label="", tooltip="C21 | R1 N1 S1 L2 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        F_C30 [label="", tooltip="C30 | R1 N1 S2 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        F_C33 [label="", tooltip="C33 | R1 N1 S1 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        F_C37 [label="", tooltip="C37 | R1 N1 S2 L2 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        F_C48 [label="", tooltip="C48 | R1 N1 S2 L1 | hardening=1", fillcolor="#727272", color="#000000", penwidth=2.1, shape=circle];
+        F_C66 [label="", tooltip="C66 | R1 N1 S1 L1 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        F_C78 [label="", tooltip="C78 | R1 N1 S2 L1 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        F_C79 [label="", tooltip="C79 | R1 N1 S2 L3 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        F_C81 [label="", tooltip="C81 | R1 N1 S2 L2 | hardening=2", fillcolor="#ffe8cc", color="#ff7f0e", penwidth=3.2, shape=doublecircle];
+        F_C82 [label="", tooltip="C82 | R1 N1 S3 L2 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        F_C83 [label="", tooltip="C83 | R1 N1 S2 L2 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        F_C84 [label="", tooltip="C84 | R1 N1 S2 L3 | hardening=2", fillcolor="#a8a8a8", color="#000000", penwidth=2.1, shape=circle];
+        F_C91 [label="", tooltip="C91 | R1 N1 S2 L3 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        F_C92 [label="", tooltip="C92 | R1 N1 S3 L2 | hardening=3", fillcolor="#d8d8d8", color="#000000", penwidth=2.1, shape=circle];
+        F_C94 [label="", tooltip="C94 | R1 N1 S2 L2 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        F_C95 [label="", tooltip="C95 | R1 N1 S2 L3 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        F_C96 [label="", tooltip="C96 | R1 N1 S3 L2 | hardening=4", fillcolor="#f0f0f0", color="#000000", penwidth=2.1, shape=circle];
+        F_axis_0 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_0 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_0 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_0 F_C03 F_axis_0 F_C33 F_pad_r_0; }
+        F_pad_l_0 -> F_axis_0 [style=invis, weight=120, constraint=true];
+        F_axis_0 -> F_pad_r_0 [style=invis, weight=120, constraint=true];
+        F_axis_1 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_1 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_1 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_1 F_C21 F_C48 F_axis_1 F_C30 F_C06 F_pad_r_1; }
+        F_pad_l_1 -> F_axis_1 [style=invis, weight=120, constraint=true];
+        F_axis_1 -> F_pad_r_1 [style=invis, weight=120, constraint=true];
+        F_axis_2 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_2 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_2 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_2 F_C37 F_axis_2 F_C78 F_C66 F_pad_r_2; }
+        F_pad_l_2 -> F_axis_2 [style=invis, weight=120, constraint=true];
+        F_axis_2 -> F_pad_r_2 [style=invis, weight=120, constraint=true];
+        F_pad_l_3 [shape=box, width=3.19, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_3 [shape=box, width=0.62, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_3 F_C81 F_pad_r_3; }
+        F_pad_l_3 -> F_C81 [style=invis, weight=120, constraint=true];
+        F_C81 -> F_pad_r_3 [style=invis, weight=120, constraint=true];
+        F_axis_4 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_4 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_4 [shape=box, width=0.48, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_4 F_C84 F_C83 F_axis_4 F_C82 F_pad_r_4; }
+        F_pad_l_4 -> F_axis_4 [style=invis, weight=120, constraint=true];
+        F_axis_4 -> F_pad_r_4 [style=invis, weight=120, constraint=true];
+        F_axis_5 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_5 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_5 [shape=box, width=0.20, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_5 F_C79 F_C91 F_axis_5 F_C94 F_C92 F_pad_r_5; }
+        F_pad_l_5 -> F_axis_5 [style=invis, weight=120, constraint=true];
+        F_axis_5 -> F_pad_r_5 [style=invis, weight=120, constraint=true];
+        F_axis_6 [shape=point, width=0.02, height=0.02, label="", style=invis, group="axis"];
+        F_pad_l_6 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        F_pad_r_6 [shape=box, width=0.76, height=0.02, fixedsize=true, label="", style=invis];
+        { rank=same; F_pad_l_6 F_C95 F_axis_6 F_C96 F_pad_r_6; }
+        F_pad_l_6 -> F_axis_6 [style=invis, weight=120, constraint=true];
+        F_axis_6 -> F_pad_r_6 [style=invis, weight=120, constraint=true];
+        F_axis_0 -> F_axis_1 [style=invis, weight=200, constraint=true];
+        F_axis_1 -> F_axis_2 [style=invis, weight=200, constraint=true];
+        F_axis_2 -> F_C81 [style=invis, weight=200, constraint=true];
+        F_C81 -> F_axis_4 [style=invis, weight=200, constraint=true];
+        F_axis_4 -> F_axis_5 [style=invis, weight=200, constraint=true];
+        F_axis_5 -> F_axis_6 [style=invis, weight=200, constraint=true];
+        F_C03 -> F_C21
+        F_C21 -> F_C37
+        F_C30 -> F_C37
+        F_C33 -> F_C48
+        F_C37 -> F_C81
+        F_C48 -> F_C78
+        F_C66 -> F_C81
+        F_C78 -> F_C81
+        F_C79 -> F_C95
+        F_C81 -> F_C82
+        F_C81 -> F_C83
+        F_C81 -> F_C84
+        F_C82 -> F_C92
+        F_C83 -> F_C94
+        F_C84 -> F_C79
+        F_C84 -> F_C91
+        F_C92 -> F_C96
+        F_C94 -> F_C95
+        F_C94 -> F_C96
+    }
+}

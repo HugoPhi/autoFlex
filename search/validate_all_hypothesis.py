@@ -11,6 +11,9 @@ import hypothesis
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import FuncFormatter
+
+plt.rcParams["font.family"] = "Times New Roman"
 
 Edge = Tuple[str, str]
 
@@ -334,6 +337,82 @@ def render_a2b_scatter_png(path: str, *, app: str, method: str, points: List[dic
     plt.close(fig)
 
 
+def _series_label(app: str, method: str) -> str:
+    return f"{app}:{method}"
+
+
+def _draw_scatter_ax(ax, *, points: List[dict], title: str) -> None:
+    if points:
+        vals = [p["a_perf"] for p in points] + [p["b_perf"] for p in points]
+        vmin = min(vals)
+        vmax = max(vals)
+    else:
+        vmin, vmax = 0.0, 1.0
+
+    span = max(vmax - vmin, 1.0)
+    lo = max(0.0, vmin - span * 0.08)
+    hi = vmax + span * 0.08
+    if hi <= lo:
+        hi = lo + 1.0
+
+    below_x, below_y = [], []
+    above_x, above_y = [], []
+    for p in points:
+        if p["on_or_below"]:
+            below_x.append(p["a_perf"])
+            below_y.append(p["b_perf"])
+        else:
+            above_x.append(p["a_perf"])
+            above_y.append(p["b_perf"])
+
+    ax.scatter(below_x, below_y, c="#1f9d8a", edgecolors="#146a5c", s=24, label="On/Below y=x", zorder=3)
+    ax.scatter(above_x, above_y, c="#e67e22", edgecolors="#9a5216", s=24, label="Above y=x", zorder=3)
+    ax.plot([lo, hi], [lo, hi], "--", linewidth=1.0, color="#555555", alpha=0.75, zorder=2)
+
+    ax.set_xlim(lo, hi)
+    ax.set_ylim(lo, hi)
+    ax.set_title(title, fontsize=11, family="Times New Roman")
+    ax.grid(True, alpha=0.28, zorder=1)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: _fmt_k(v)))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: _fmt_k(v)))
+    ax.tick_params(axis="both", labelsize=9)
+    ax.legend(loc="upper left", fontsize=8.5, frameon=True, prop={"family": "Times New Roman"})
+
+
+def render_a2b_scatter_panel(svg_path: str, png_path: str, *, series_points: List[dict], dpi: int = 220) -> None:
+    n = len(series_points)
+    if n == 0:
+        return
+
+    # Keep a tighter canvas so text remains legible when included at \linewidth in LaTeX.
+    fig, axes = plt.subplots(1, n, figsize=(3.7 * n, 3.4), dpi=dpi, facecolor="white")
+    if n == 1:
+        axes = [axes]
+    else:
+        axes = list(axes)
+
+    for i, s in enumerate(series_points):
+        ax = axes[i]
+        _draw_scatter_ax(
+            ax,
+            points=s["points"],
+            title=_series_label(s["app"], s["method"]),
+        )
+        if i == 0:
+            ax.set_ylabel("Child node B performance", fontsize=10, family="Times New Roman")
+        else:
+            ax.set_ylabel("")
+        ax.set_xlabel("Parent node A performance", fontsize=10, family="Times New Roman")
+
+    fig.tight_layout()
+
+    ensure_parent(svg_path)
+    fig.savefig(svg_path, format="svg", bbox_inches="tight")
+    ensure_parent(png_path)
+    fig.savefig(png_path, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+
 def build_violation_rows(series_reports: List[dict]) -> List[List[object]]:
     rows: List[List[object]] = []
     for rep in series_reports:
@@ -539,6 +618,17 @@ def main() -> None:
         )
         
         scatter_paths.append(svg_path)
+
+    panel_base_name = "hypothesis_a2b_scatter_panel"
+    panel_svg_path = os.path.join(svg_dir, f"{panel_base_name}.svg")
+    panel_png_path = os.path.join(png_dir, f"{panel_base_name}.png")
+    render_a2b_scatter_panel(
+        panel_svg_path,
+        panel_png_path,
+        series_points=series_points,
+        dpi=args.png_dpi,
+    )
+    scatter_paths.append(panel_svg_path)
 
     print("Series summary:")
     for row in aggregate_index:

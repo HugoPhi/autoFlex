@@ -22,6 +22,7 @@ targets:
       hypothesis_a2b_scatter_nginx_req: "hypothesis_a2b_scatter_nginx_req"
       hypothesis_a2b_scatter_redis_get: "hypothesis_a2b_scatter_redis_get"
       hypothesis_a2b_scatter_redis_set: "hypothesis_a2b_scatter_redis_set"
+      hypothesis_a2b_scatter_panel: "hypothesis_a2b_scatter_panel"
       nginx_search_path: "nginx_search_path"
     collect:
       - src_glob: "result/svg/*.svg"
