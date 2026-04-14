@@ -1,0 +1,1659 @@
+% \documentclass[UTF8,a4paper,12pt]{ctexart}
+\documentclass[UTF8,a4paper,12pt,twoside]{ctexart}  % 启用twoside选项
+
+\usepackage{cquthesis}
+\usepackage{svg}
+\svgsetup{inkscapelatex=false}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[font=small,labelsep=none]{caption}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{dutchcal}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage{appendix}
+\usepackage{tocloft}
+\usepackage{titletoc}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{microtype}
+\setlength{\emergencystretch}{2em}
+
+
+
+% ----- 字体
+
+\newcommand{\timesnewroman}{\setmainfont[
+AutoFakeBold=2,
+Path=Font/
+]{times}}
+
+% ----------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 首页 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\thispagestyle{empty}
+
+
+
+
+\begin{center}
+\heiti  \zihao{-2} 重庆大学本科学生毕业论文（设计）
+\end{center}
+%该页为中文扉页。无需页眉页脚，纸质论文应装订在右侧
+~\\
+\begin{center}
+\heiti  \zihao{2} 面向可重构隔离内核的自动化移植与寻优算法的设计与实现
+\end{center}
+%中文论文标题，1行或2行，黑体，二号，居中。论文题目不得超过36个汉字
+
+~\\
+\renewcommand{\headrulewidth}{1pt}
+\begin{figure}[htb] 
+  \centering
+    \center{\includegraphics[width=5cm]  {fig1.png}} 
+     \end{figure}
+     
+~\\
+\begin{center}
+\heiti\zihao{4}
+\begin{tabular}{l}
+学\qquad 生：胡芸铭\\
+学\qquad 号：20220592\\
+指导教师：任骜\\
+专\qquad 业：计算机科学与技术\\
+\end{tabular}
+\end{center}
+
+%此模版适用于理工农医等专业；人文社科类专业按《重庆大学普通本科毕业论文（设计）撰写规范化要求》。  若没有助理指导教师，请删除“助理指导教师姓名”栏。若为校外完成毕业论文（设计），请改为“校外指导教师姓名”即可。  学院、专业填全称。
+
+~\\
+\begin{center}
+\heiti \zihao{-2} {重庆大学弘深学院}\\
+\end{center}
+
+\begin{center}
+\heiti \zihao{3} {2026年6月}
+\end{center}
+
+
+
+\newpage
+\thispagestyle{empty}
+\timesnewroman
+\begin{center}
+\zihao{3}
+\textbf{
+Undergraduate Thesis (Design) of Chongqing University}
+\end{center}
+~\\
+\begin{center}
+\zihao{2}
+\textbf{
+Design and Implementation of Automated Porting and Optimization Algorithms for Reconfigurable Isolation Kernels
+ }
+\end{center}
+
+~\\
+\renewcommand{\headrulewidth}{1pt}
+\begin{figure}[htb] 
+  \centering
+    \center{\includegraphics[width=5cm]  {fig1.png}} 
+     \end{figure}
+     
+
+\timesnewroman
+\begin{center}
+\zihao{3} 
+\textbf{By}  \\
+\textbf{Hu Yunming }
+\end{center}
+
+\begin{center}
+\zihao{3} 
+\textbf{Supervised by}\\
+\textbf{Prof. Ren Ao}\\
+\end{center}
+
+\begin{center}
+\zihao{-2} 
+\textbf{Computer Science and Technology}\\ %专业
+\textbf{HongShen Honor School}\\ %学院
+\textbf{Chongqing University}
+\end{center}
+
+\begin{center}
+\zihao{3} 
+\textbf{June，2026}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%这条线以下是可以改的%%%%%%%%%%%%%%%%%%%%%
+
+
+% --- 摘要部分 ---
+\newpage
+\pagestyle{fancy}
+\pagenumbering{Roman}
+
+\fancyhead[LH]{ \songti\zihao{-5} 重庆大学本科学生毕业论文（设计）}
+\fancyhead[RH]{\songti\zihao{-5} 摘要}
+
+\addcontentsline{toc}{section}{摘要}
+
+\section*{摘\quad 要}
+随着云计算、物联网与边缘计算的快速发展，系统软件在``高性能''与``高安全''之间的矛盾日益突出。一方面，细粒度隔离能够显著降低漏洞被利用后的影响范围；另一方面，传统隔离手段（如进程/虚拟机）往往带来不可忽视的上下文切换与数据拷贝开销，难以在高性能网络服务与单地址空间库操作系统等场景中落地。FlexOS
+提出可组合的隔离机制\textsuperscript{[1,2]}，允许开发者按组件粒度选择不同隔离后端，并通过统一的
+gate
+抽象屏蔽后端差异，从而为``安全---性能''联合优化打开空间。然而，在实际工程中，FlexOS
+的推广仍面临两类门槛：其一，遗留 C 代码向 gate
+调用范式迁移成本高、易遗漏且难以规模化；其二，隔离配置维度多、组合爆炸导致配置空间指数增长，开发者难以在性能阈值约束下快速找到隔离强度最优的可行配置。
+
+针对上述问题，本文围绕``自动化迁移''和``配置搜索''两个方向开展研究，提出并实现了面向
+FlexOS 的自动化工具链
+AutoFlex。第一，本文设计了规则驱动的迁移流水线：通过符号解析构建函数---库映射（基于
+cscope 的符号关系提取）\textsuperscript{[14]}，基于 Coccinelle
+进行模式替换\textsuperscript{[10]}，并以语句级后处理补齐复杂语法形态，从而将典型的
+POSIX/库函数调用自动改写为 flexos\_gate/flexos\_gate\_r
+调用；同时在迁移后引入``未 gate
+化外部调用（ungated-call）''覆盖检查，并可选集成通用静态扫描器（如
+Semgrep、Cppcheck、Flawfinder）以进行快速安全审阅\textsuperscript{[11--13]}。第二，本文将隔离配置空间建模为
+DAG
+偏序图，在单调性假设下利用祖先/后代闭包实现批量剪枝，并提出期望剪枝最大化的
+balanced
+搜索策略，通过在线估计可行概率自适应选择查询点，从而降低查询成本并提升触达最优前沿的效率。
+
+实验结果表明：在
+nginx\textsuperscript{[15]}、redis\textsuperscript{[16]}、lwip、newlib、iperf\textsuperscript{[17]}
+五个项目的迁移评估中，AutoFlex 的迁移对齐指标为``应改写外部调用 81
+个、成功对齐 81 个、未解析 0 个''，并将人工修改行数降低
+30.91\%--100\%；在安全配置搜索评估中，balanced
+策略在多个数据集上显著降低平均查询比例，相比穷举（$|V|$=96）可减少约
+63\%--84\% 的查询开销，并在部分数据集上更早触达最优前沿配置。\\
+~\\
+{\heiti \zihao{-4}关键词}：可组合隔离；gate机制；自动化迁移；偏序图\\
+
+
+% --- 英文摘要部分 ---
+\newpage
+\fancyhead[LH]{ \songti\zihao{-5} 重庆大学本科学生毕业论文（设计）}
+\fancyhead[RH]{\zihao{-5} ABSTRACT}
+
+\addcontentsline{toc}{section}{ABSTRACT}
+\titleformat{\section}[block]{\centering\bfseries\timesnewroman\fontsize{16pt}{20pt}\selectfont}{\thesection}{1em}{}[]
+
+\section*{ABSTRACT}
+Modern system software faces an increasingly sharp tension between
+performance and security. Fine-grained isolation can effectively confine
+the impact of vulnerabilities, yet traditional isolation mechanisms such
+as processes or virtual machines often introduce significant overheads
+(context switches, copies), making them less attractive for
+high-performance network services and single-address-space library OS
+scenarios. FlexOS advocates \emph{composable isolation}: developers can
+select isolation backends per component and rely on a uniform
+\emph{gate} abstraction to hide backend differences, enabling a
+principled security--performance trade-off. However, deploying FlexOS in
+practice still encounters two barriers: (1) porting legacy C code to the
+gate calling convention is costly, error-prone, and hard to scale; (2)
+the configuration space grows exponentially with multiple isolation
+dimensions, making it difficult to locate the strongest feasible
+isolation configuration under performance constraints.
+
+This thesis presents AutoFlex, an automated toolchain for
+FlexOS that addresses both barriers. First, AutoFlex provides a
+rule-driven migration pipeline: it infers function-to-library mappings
+via symbol analysis, applies pattern-based transformations using
+Coccinelle, and performs statement-level post-processing to cover
+complex syntactic forms, automatically rewriting typical POSIX/library
+calls into flexos\_gate/flexos\_gate\_r. It further introduces a
+post-migration \emph{ungated-call} coverage check and optionally
+integrates off-the-shelf static scanners for lightweight security
+review. Second, AutoFlex models the isolation configuration space as a
+DAG partially ordered set (poset). Under a monotonicity hypothesis, it
+leverages ancestor/descendant closures for bulk pruning and proposes a
+balanced strategy that maximizes expected pruning with an online
+estimate of feasibility probability, reducing query cost and improving
+time-to-frontier.
+
+Our evaluation shows that AutoFlex achieves an alignment of 81 expected
+calls, 81 matched calls, and 0 unresolved calls on five real-world
+projects (nginx, redis, lwip, newlib, iperf), while reducing manual
+changed lines by 30.91\%--100\%. For configuration search, the balanced
+strategy substantially lowers the average query ratio on multiple
+datasets; compared with exhaustive search ($|V|$=96), it
+reduces queries by roughly 63\%--84\% and, on some datasets, reaches the
+optimal frontier earlier.\\
+~\\
+\textbf{Key words}: composable isolation; gate; automated porting; poset
+
+
+% --- 目录部分 ---
+\newpage
+\fancyhead[LH]{ \songti\zihao{-5} 重庆大学本科学生毕业论文（设计）}
+\fancyhead[RH]{\songti\zihao{-5} 目录}
+
+\renewcommand\contentsname{{目\quad 录}}
+
+\begin{center}
+{\tableofcontents
+\thispagestyle{fancy}
+}
+\end{center}
+
+% --- 正文 ---
+\newpage
+\fancyhead[LH]{\zihao{-5}{\songti 重庆大学本科学生毕业论文（设计）}}
+\fancyhead[RH]{\zihao{-5}{\songti 正文}}
+\pagenumbering{arabic}
+
+\titleformat{\section}{\heiti\zihao{3}\centering}{\thesection}{0.5em}{}[]
+\zihao{-4}
+\section{绪论}
+
+\subsection{课题研究背景及意义}
+
+系统软件长期面临``安全''与``性能''的权衡。一方面，操作系统与运行时承担着资源管理、设备访问、网络协议栈等关键功能，一旦暴露漏洞，攻击者可能借此窃取敏感数据、提升权限或破坏服务可用性；另一方面，服务端应用（如
+Web 服务器、缓存系统）以及面向边缘/IoT
+的轻量化系统又强依赖低延迟与高吞吐。
+
+在实践中，开发者通常依赖以下两类思路应对风险：一类是粗粒度的强隔离：将不同功能放入独立进程、容器或虚拟机。这类方法能显著降低攻击面，但隔离边界较粗、开销较大，且在需要细粒度组件复用或频繁交互时往往不可接受。另一类是单地址空间的高性能方案：在库操作系统或
+unikernel
+架构中将组件编译为单一地址空间，以降低系统调用与上下文切换开销，但这会使内存破坏类漏洞的影响范围扩大，单点故障更难隔离。
+
+典型应用场景中，这种矛盾表现得尤为突出。例如在云服务场景中，以 Nginx
+为例\textsuperscript{[15]}，其既服务公开静态资源，也可能参与处理含隐私的业务数据；若采用过强隔离（例如为每个组件单独虚拟机），吞吐与时延将显著下降；若不隔离，一处漏洞即可导致跨组件的数据泄露。在嵌入式与
+IoT
+场景中，智能设备常将网络栈与控制逻辑放在同一地址空间中运行，一旦网络栈被攻破，攻击者可能直接控制关键执行逻辑；虽然
+TrustZone 等 TEE 提供隔离，但配置与开发流程复杂，难以在通用 C
+生态中广泛采用。在微服务与 Serverless
+场景中，函数或服务间共享底层内核或运行时，隔离策略与参数繁多且高度依赖经验，开发者往往在``默认配置''与``极端强隔离''之间摇摆，难以得到可解释的最优折中。
+
+为缓解上述问题，FlexOS
+提出可组合隔离思想\textsuperscript{[1,2]}：按组件粒度选择隔离后端，并通过统一
+gate
+抽象实现跨域调用，从而在同一系统中允许不同组件采用不同隔离强度。该思想为``按需隔离''提供了工程可行性，但其落地仍受到两大门槛制约：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  代码迁移成本高：存量 C 应用通常采用
+  POSIX/库函数直接调用范式，迁移到 gate
+  调用需要大量模式化改写与语义对齐，手工操作耗时且易漏改。
+\item
+  配置空间过大：隔离后端、组件划分、权限位、资源大小等多维参数组合导致指数级配置空间，开发者难以在性能约束下有效搜索最强隔离配置。
+\end{enumerate}
+
+因此，研究面向 FlexOS
+的自动化迁移与配置搜索方法，具有明确的现实意义：它不仅能降低研究者与工程团队验证
+FlexOS
+的成本，也可为其他强调可组合与细粒度隔离的系统提供可迁移的方法论。
+
+\subsection{FlexOS及相关系统分析}
+
+传统隔离机制长期面临一个结构性矛盾：一方面，应用希望在安全上更强（更小 TCB、更强故障隔离、更少跨组件影响面）；另一方面，又希望在性能与可用性上更好（低时延、高吞吐、低迁移成本、与既有生态兼容）。更现实的问题是，许多操作系统在\emph{设计时}就将“隔离与安全原语”的组合锁定为固定策略（例如某种硬件/软件机制的混合），而在\emph{部署后}再修改这些高层安全决策往往意味着大规模重构与长期工程投入\textsuperscript{[1,2]}。与此同时，现代应用的安全/性能需求差异极大，新硬件隔离机制不断出现、旧机制也可能被证明不可靠，这使得“固定策略”的做法越来越难以覆盖真实世界的多样化约束\textsuperscript{[1,2]}。
+
+因此，与其追求一套放之四海而皆准的隔离方案，更务实的方向是让系统支持\textbf{按应用、按组件、按部署环境}进行安全/性能策略特化：把“隔离后端、组件划分、共享策略与硬化选项”从设计时决策下放到构建/部署时决策，并为用户提供可解释、可审阅的配置与产物\textsuperscript{[1,2]}。FlexOS 正是在这一动机下提出“可组合隔离”的 LibOS 设计：将系统拆成细粒度组件，并允许不同组件选择不同隔离后端，同时用统一的 gate 抽象承载跨域调用语义\textsuperscript{[1,2]}。
+
+作为背景对照，进程级隔离具备成熟的权限模型与故障隔离能力，但在高频交互时受制于上下文切换、页表切换与拷贝成本；容器与命名空间在资源隔离上更轻量，但共享内核使隔离不彻底；硬件辅助隔离（如 VT-x/AMD-V、MPK 等）边界更强，但传统系统往往缺少面向多组件的可组合策略接口，导致开发者很难对组件的重要性与攻击面差异进行“按需隔离”，最终经常采取“一刀切”\textsuperscript{[7,8,19]}。
+
+与之对应的可定制化系统虽然推进了能力边界，但仍存在明显不足：学术与工业界提出了多种可定制系统以追求更高性能或更强安全，但它们往往在语言生态、隔离粒度或工程复杂度上存在限制。
+
+微内核通过 IPC 进行组件隔离，理论上可提供较强边界，但 IPC
+开销与驱动生态使其在通用场景落地面临挑战；例如 seL4
+的形式化验证工作展示了微内核强安全边界的可行性\textsuperscript{[20]}。库操作系统与
+unikernel
+强调``应用与内核融合''以获得极致性能，但其单地址空间特性使内存安全与故障隔离成为核心短板\textsuperscript{[4,6,21,22]}。语言安全型系统（如以Rust为核心的单地址空间设计）能够通过类型系统降低内存破坏风险，但对大量遗留C代码的迁移成本较高。
+
+\subsubsection{研究方向分析}
+
+从 FlexOS 引言提出的观察出发，操作系统架构往往与其依赖的保护机制高度耦合：系统在\emph{设计时}就会对一组“高层安全决策”做出固化选择（例如硬件隔离、软件验证、运行时检查等的组合），而在\emph{部署后}再去调整这些决策通常既罕见也代价高昂\textsuperscript{[1,2]}。这种“机制锁定”解释了为何操作系统设计空间长期呈现为若干相对稳定的阵营：微内核更偏向通过 IPC 与更强的硬件边界来换取可验证性与故障隔离，但往往牺牲性能与生态兼容；单体内核在特权分离与多地址空间上形成成熟工程体系，但默认将内核代码视为可信基座；而单地址空间 OS（SASOS）一端尝试在地址空间内部引入隔离与约束，另一端则几乎放弃保护以追求极致性能，典型代表之一就是库 OS/unikernel 生态\textsuperscript{[4,6,20,21,22]}。更关键的是，许多“事后改造”并不只是替换一两个组件：例如试图移除或弱化传统特权边界、或将一个进程再细分为多个隔离域，往往涉及 ABI、内存布局、调度与 I/O 路径的系统性重构，因此工程成本极高\textsuperscript{[1,2]}。
+
+为便于把上述“设计空间”直观化，图~\ref{fig:os-kernel-design-space-placeholder} 给出一个示意：不同内核架构在安全与性能轴上的相对位置不同，而 FlexOS 试图解锁的是一片可调的折中区域，使隔离/保护原语的组合能够在构建或部署阶段被重新选择\textsuperscript{[1,2]}。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\linewidth]{drawio/OS_search_area.pdf}
+  \caption{配OS kernels 的安全--性能设计空间示意}
+  \label{fig:os-kernel-design-space-placeholder}
+\end{figure}
+
+这种锁定在现代应用背景下会暴露出更尖锐的矛盾：一方面，按应用特化操作系统的需求持续上升，不同工作负载对性能与安全的约束差异很大；另一方面，同一应用内部也常由多个组件构成，不同组件的信任程度与关键性不同，理想的隔离强度也应当不同\textsuperscript{[1,2]}。如果过早把系统锁死在某一种安全原语组合上，往往会导致在许多场景中出现“安全过剩但性能不达标”或“性能足够但风险不可接受”的次优解\textsuperscript{[1,2]}。同时，硬件厂商与研究界持续提出新的隔离机制，旧机制也可能在实践中暴露缺陷或被迫调整威胁模型；当多种机制都可用于同一任务时，“哪一种最合适”会依赖具体硬件、应用结构、共享需求与预算约束，因而更适合被推迟到部署/构建阶段再决定\textsuperscript{[1,2]}。
+
+从机制抽象角度看，隔离后端又可按“\emph{特权驱动}”与“\emph{世界驱动}”两类范式理解：前者（如 MPK、TEE、硬件能力等）以“当前特权集合”约束可访问数据，并提供显式域切换；后者（如 TrustZone 的 world、EPT/VM 的 guest）更接近将不同 compartment 视为不同系统，跨域交互主要通过 RPC 与共享内存完成\textsuperscript{[1,2]}。这一视角之所以重要，是因为它给出 FlexOS 兼容多后端的最小条件：只要后端（1）实现 protection domain 与域切换，且（2）支持某种形式的共享内存以承载跨域通信，就可被纳入同一可组合框架\textsuperscript{[1,2]}。
+
+在上述脉络下，FlexOS 给出一种更“可延期决策”的折中路径：将系统拆分为细粒度组件（库），并把“组件如何划分到 compartment、每个 compartment 选择何种隔离后端、采用何种共享策略、叠加哪些软件硬化（CFI/ASan 等）”变为构建期可配置项\textsuperscript{[1,2]}。这使得隔离强度可以随组件差异而变化，而不是整机“一刀切”；也使得当硬件环境变化或隔离机制需要替换时，开发者可以通过改变配置与重新实例化来移动到新的安全/性能点位，而不必从头重构系统\textsuperscript{[1,2]}。
+
+\subsubsection{FlexOS的解决方案}
+
+FlexOS 的核心机制可以概括为两类可审阅的源码级原语：\textbf{call gates} 与\textbf{共享数据注解}\textsuperscript{[1,2]}。在 Unikraft 这类典型 LibOS/unikernel 中，默认情况是“同一保护域内的直接函数调用”；而在 FlexOS 源码中，跨库调用被显式写成抽象 call gate，并在构建时被工具链替换为具体后端实现\textsuperscript{[1,2]}。这种“先抽象、后实例化”的设计使 FlexOS 能同时覆盖“同域退化为普通调用”“跨域需要域切换（如 MPK）”“跨系统通过 RPC（如 VM/EPT）”等情形，并保持同一套上层代码在不同后端下可复用\textsuperscript{[1,2]}。
+
+为了把“抽象 gate + 共享数据注解”如何落到具体代码说清楚，可参考 FlexOS 论文给出的典型三阶段变换：开发者先在源码中标注需要跨库共享的数据，并将跨库调用替换为抽象 gate；随后工具链在构建期依据配置把抽象原语实例化为具体后端实现\textsuperscript{[1,2]}。其形式可概括为：
+如图~\ref{fig:flexos-porting-instantiation} 所示，FlexOS 将“跨组件交互”从隐式的直接函数调用，转化为\emph{显式、可配置、可实例化}的源码级原语\textsuperscript{[1,2]}。具体而言，移植前同一地址空间内的调用并不携带“隔离边界”的语义；移植后，开发者在调用点将跨库调用改写为抽象 gate（如 \texttt{flexos\_gate(...)}），并对可能跨库可达的数据对象施加共享注解（如 \texttt{\_\_shared}）以显式声明共享范围\textsuperscript{[1,2]}。随后工具链在构建期依据目标配置把这些抽象原语实例化为具体后端实现：当调用双方位于同一 compartment 时，gate 可退化为原始调用路径；当调用跨越 compartment 边界时，gate 则被替换为后端 gate（如 MPK/EPT/SFI 等）并插入域切换与必要的隔离维护逻辑，从而形成“移植前（直接调用）→移植后（抽象 gate + 显式共享注解）→构建期实例化（按后端/同域退化）”的三阶段变换\textsuperscript{[1,2]}。
+
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{drawio/flexos_porting_instantiation.pdf}{
+    \includegraphics[width=0.95\linewidth]{drawio/flexos_porting_instantiation.pdf}
+  }{
+    \fbox{\parbox{0.95\linewidth}{\centering
+    待补图：FlexOS 三阶段变换（Before/After/Instantiated）\\
+    （将你提供的示意图重绘后保存为 \texttt{drawio/flexos\_porting\_instantiation.pdf}：Before porting → After porting（\texttt{\_\_shared} + \texttt{flexos\_gate}）→ Instantiated（跨 compartment 走后端 gate，如 MPK；同 compartment 退化为直接调用））}}
+  }
+  \caption{FlexOS 的三阶段变换：从直接调用到抽象 gate，再到后端实例化（占位）}
+  \label{fig:flexos-porting-instantiation}
+\end{figure}
+
+这个例子同时揭示了 FlexOS 的一个关键工程前提：跨库共享并非默认允许，而是以“默认私有、按需共享”的方式显式列出共享对象与共享范围（可视为按库组/compartment 组织的共享白名单或 ACL），并由后端与工具链共同决定共享对象在不同隔离机制下应当如何落位与访问\textsuperscript{[1,2]}。在这一语义下，gate 的“调用语义”与共享数据的“可达性语义”被刻意绑定：当跨域调用发生时，调用双方必须对共享对象达成一致的可达性约束（哪些对象允许跨域、通过何种共享内存/缓冲区承载、访问路径与共享布局如何被实例化），否则即便调用点已被改写为 gate，程序也可能因指针不可达或共享布局/访问策略不一致等原因而无法正确运行\textsuperscript{[1,2]}。因此，FlexOS 将共享数据注解提升为一等公民，意在把跨域可达性从“隐式假设”变为“可审阅的显式契约”，并将其交由构建期实例化过程在不同后端下落到具体实现\textsuperscript{[1,2]}。
+
+从更宏观的流程看，FlexOS 将“灵活隔离”拆解为一条可审阅、可复现的构建期流水线，并把关键决策推迟到构建/部署阶段\textsuperscript{[1,2]}。在源码层面，开发者（或半自动工具）将跨库交互显式化：一方面把跨库调用统一改写为抽象 gate（从语义上标出潜在的隔离边界）；另一方面通过共享注解列出跨库可达的数据对象与共享范围，从而为后续的隔离后端实例化提供必要的“共享契约”信息\textsuperscript{[1,2]}。在配置层面，开发者指定库到 compartment 的映射关系、为每个 compartment 选择隔离后端，并为共享策略与可选的软件硬化（如控制流相关的约束、运行时检查等）选择组合方式\textsuperscript{[1,2]}。这些配置共同决定了系统将落在怎样的安全/性能点位，并决定哪些跨库交互会成为跨域交互，从而需要由后端 gate 进行隔离维护\textsuperscript{[1,2]}。
+
+在此基础上，构建系统在编译/链接阶段生成并注入后端相关的实例化产物\textsuperscript{[1,2]}。首先，工具链会依据“库—compartment—后端”的映射关系，判定每个抽象 gate 调用在该配置下是同域调用还是跨域调用：对同域调用，gate 退化为原始调用路径以尽量保留性能；对跨域调用，gate 被实例化为后端 gate，并在进入/退出边界处插入后端所需的域切换与隔离维护逻辑（例如 MPK 的权限切换与必要的状态保存/清理，或在更重的边界下采用与后端匹配的跨域调用实现）\textsuperscript{[1,2]}。其次，工具链会据共享注解与后端约束生成共享内存/缓冲区布局与访问路径，并生成必要的 glue 代码与链接期产物（如与实例化产物相匹配的符号组织与链接脚本），以保证跨域调用所需的数据可达性与运行时支撑在目标后端下成立\textsuperscript{[1,2]}。最终，FlexOS 得到的是“同一套上层源码、不同后端与划分配置”的可执行镜像：隔离边界、共享策略与硬化选项随着配置变化而变化，从而让系统能够在安全/性能折中点上随配置移动，而不必将决策固化为单一内核架构或单一隔离机制\textsuperscript{[1,2]}。
+
+如图~\ref{fig:flexos-instantiation-workflow-placeholder} 所示，上述流程可抽象为“源码标注—配置选择—构建期实例化—运行期执行”的闭环：源码侧提供跨域交互的\emph{显式切入点}（gate）与跨域可达性的\emph{显式契约}（共享注解），配置侧提供“哪些库被分到哪些 compartment、采用哪种后端与共享/硬化策略”的\emph{可变决策}，构建侧将抽象原语与配置决策结合生成后端相关的实例化产物（包括 gate 实现、共享内存布局与 glue 代码），运行期则在真实的跨域调用路径上兑现隔离语义\textsuperscript{[1,2]}。这一分层使得 FlexOS 既能在同域场景下尽量保持接近原生的调用路径，又能在跨域场景下以统一抽象承载不同后端的隔离维护逻辑，从而将“隔离强度的选择”从设计时前移到构建期可配置项\textsuperscript{[1,2]}。
+
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{drawio/flexos_instantiation_workflow.pdf}{
+    \includegraphics[width=0.95\linewidth]{drawio/flexos_instantiation_workflow.pdf}
+  }{
+    \fbox{\parbox{0.95\linewidth}{\centering
+    待补图：FlexOS 灵活隔离整体流程（配置→构建期实例化→产物）\\
+    （建议画法：上半部分是源码层 gate/\texttt{\_\_shared} 标注；中间是“配置文件：库→compartment、后端选择、共享策略/硬化”；下半部分是构建期 source-to-source 变换 + 生成链接脚本/后端 glue；右侧输出为按配置实例化后的镜像与运行期 gate 调用路径。重绘后保存为 \texttt{drawio/flexos\_instantiation\_workflow.pdf}。）}}
+  }
+  \caption{FlexOS 灵活隔离的构建期实例化流程（占位）}
+  \label{fig:flexos-instantiation-workflow-placeholder}
+\end{figure}
+
+% \begin{figure}[htbp]
+%   \centering
+%   \fbox{\parbox{0.92\linewidth}{\centering
+%   \textbf{配图建议：从“直接调用”到“抽象 gate”}\par
+%   画两列对比：\par
+%   左列（Unikraft）：libA 直接调用 libB 的函数（同一保护域、同一地址空间）。\par
+%   右列（FlexOS）：libA 通过 call gate 进入 libB（跨域边界显式化），并标注“共享数据需注解”。\par
+%   用粗箭头表示调用路径，用虚线框标出 compartment；在图角落标注“build-time instantiation”。}}
+%   \caption{机制示意：将跨库交互从隐式直接调用显式化为 gate（建议配图）}
+%   \label{fig:flexos-gate-motivation-placeholder}
+% \end{figure}
+
+从实现与语义层面看，FlexOS 强调 call gate 对 System V ABI 透明：caller/callee 仍按同一 ABI 传参与返回，但 gate 需要保证隔离语义，因此会更严格地处理寄存器集合（例如保存并清零不作为参数的寄存器），避免跨域泄漏或污染\textsuperscript{[1,2]}。此外，FlexOS 的 call gates 不采用 trampoline，而是\textbf{在调用点内联}替换原始函数调用：这既减少了间接跳转的额外开销，也带来一项额外的安全副收益——由于入口点在编译期被枚举与约束，库只能通过明确的 entry points 被进入，从而形成一种廉价但不完备的 CFI 约束\textsuperscript{[1,2]}。
+
+与 call gate 配套的是共享数据注解：FlexOS 以“默认私有、按需共享”的数据所有权思路组织共享，开发者通过 \texttt{\_\_shared} 等注解为变量建立共享白名单（可视为按库组的 ACL），并由工具链在构建期为不同后端实例化合适的数据共享策略\textsuperscript{[1,2]}。值得强调的是，后端技术本身会反向约束共享方案：例如 MPK 往往要求共享数据落在共享内存区域，而 VM/EPT/TrustZone 类“世界驱动”后端通常要求每个 compartment 具有相对自洽的运行时（甚至需要在 TCB 侧做重复部署）\textsuperscript{[1,2]}。这也解释了 FlexOS 将 backends 与核心库共同纳入 TCB 的原因：后端不仅实现域切换，还需要通过 hook API 扩展调度、内存分配等核心路径（例如线程创建时切换到正确 domain）\textsuperscript{[1,2]}。
+
+如图~\ref{fig:flexos-tcb-placeholder} 所示，FlexOS 的 TCB 边界通常不仅覆盖隔离后端本身（负责建立 protection domain 并执行域切换），还覆盖为 gate 调用与共享策略提供支撑的核心库/运行时扩展与相关 glue 代码\textsuperscript{[1,2]}。这是因为在 FlexOS 的模型中，后端并非仅在“切换那一刻”生效：它需要与运行时协同，确保线程/中断/内存等核心路径在跨域语义下仍保持一致（例如在进入正确域后再执行目标库代码、在共享区域中放置允许跨域访问的数据对象、以及在边界处维护必要的状态不泄漏）\textsuperscript{[1,2]}。因此，TCB 的大小与构成会随所选后端与共享策略而变化：越重的隔离边界往往需要越多的运行时支撑，而越激进的共享与优化也越依赖正确的 glue 代码把抽象契约落到具体实现；这正是 FlexOS 将“后端实现 + 核心库扩展”一并纳入可信基并强调构建期可审阅产物管理的重要原因\textsuperscript{[1,2]}。
+
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{drawio/flexos_tcb.pdf}{
+    \includegraphics[width=0.9\linewidth]{drawio/flexos_tcb.pdf}
+  }{
+    \fbox{\parbox{0.95\linewidth}{\centering
+    待补图：FlexOS 的 TCB 构成示意\\
+    （建议画法：虚线框标出 TCB，包含：隔离后端（MPK/EPT/SFI 等实现）、核心库/运行时 hook、gate 实现与共享内存支撑；TCB 外侧为各 compartment 内的应用/库组件。可在图中用箭头标注“域切换/共享数据路径”。重绘后保存为 \texttt{drawio/flexos\_tcb.pdf}。）}}
+  }
+  \caption{FlexOS 的 TCB 构成（占位）}
+  \label{fig:flexos-tcb-placeholder}
+\end{figure}
+
+\subsubsection{缺陷与挑战}
+
+上述抽象带来的是“可组合”，付出的代价则集中体现在\textbf{迁移工作量}与\textbf{配置空间爆炸}两方面。迁移上，FlexOS 论文指出共享数据识别往往占据 porting 的绝大部分工作量：手工注解更精确但费时，静态分析更自动但保守，混合分析在工程上更常见\textsuperscript{[1,2]}。对调用点改写而言，工具链可通过静态分析判断过程调用是否跨库边界并做语法替换，但一类典型角落案例是函数指针：callee 无法静态确定时需要开发者补充可能目标集合，随后工具链生成 wrapper 并将目标实现包裹在合适的 gate 中\textsuperscript{[1,2]}。此外，FlexOS 采用源码到源码变换（例如借助 Coccinelle）而非链接期/运行时重定向，使得变换结果可用常规 diff 直接审阅，并能继续享受编译器优化；但与此同时，构建期工具链会额外生成较多辅助代码与脚本（包括 gate 实例化、共享数据代码、链接脚本与核心库扩展等），其工程复杂度需要通过流水线化与可复现 artifact 管理来对冲\textsuperscript{[1,2]}。
+
+配置上，FlexOS 将“隔离策略”转化为构建期多维决策：compartment 划分与库映射、隔离后端、共享策略、硬化选项等维度相乘，自然形成组合爆炸\textsuperscript{[1,2]}。这使得“最安全配置”不再是单点选择，而是一个在性能预算约束下的探索/搜索问题；也正因如此，FlexOS 与后续工作强调需要探索技术在安全/性能前沿上导航，避免人工在指数级空间中试错\textsuperscript{[1,2]}。
+
+更进一步，从工具链角度看，这种“构建期实例化”并非仅做少量宏替换。FlexOS 的 build-time source transformations 会系统性地产生/修改多类产物：实例化抽象 gates、实例化共享数据代码、生成链接脚本、并按后端配方为核心库生成额外代码\textsuperscript{[1,2]}。论文报告在一个相对简单的 Redis 配置中，工具链修改量可达约 $\sim 1$ KLoC\textsuperscript{[1,2]}，这从侧面说明自动化与可复现流水线对于控制工程复杂度是必要条件。
+
+不同后端还会对配置可行域施加不同约束：例如 MPK 的“键数量/权限切换模型”、EPT/VM 的“跨系统 RPC 与更重的运行时边界”、以及 SFI 的“插桩粒度与额外检查开销”等\textsuperscript{[7--9]}。这些约束不仅影响单个 gate 的实现，还会影响共享数据的组织方式、跨域缓冲区的布局、以及最终可达到的安全/性能前沿形态，从而进一步放大了“人工穷举配置”的不可行性。
+
+与本文最直接相关的是``库 OS/unikernel + 组件化隔离 +
+自动化探索''这一交叉方向的最新研究：FlexOS 在 HotOS\textquotesingle21
+工作中已经给出``隔离可组合''的动机与初步设计\textsuperscript{[5]}，并在
+ASPLOS\textquotesingle22 工作中系统化提出 gate
+抽象与可组合后端，并配套提供可复现 artifact
+与配置探索方法\textsuperscript{[1,2]}；CubicleOS 则从库 OS
+角度探索了软件组件化与实用隔离路径\textsuperscript{[6]}；Wayfinder 进一步展示了在 OS
+配置空间中用结构化搜索逼近最优解的可行性\textsuperscript{[3]}。这些工作共同指向一个现实结论：当机制层面的可组合隔离已具备工程可用性之后，研究焦点将不可避免地转向``如何规模化迁移''与``如何在巨大配置空间中高效找到可解释的最优折中''，这正是
+AutoFlex 的研究出发点。
+
+在这一背景下，FlexOS 的设计与 gate 机制提供了新的折中路径。FlexOS 基于 Unikraft
+微库\textsuperscript{[1,4]}，将系统划分为多个组件（或安全域/保护域），并允许针对不同组件选择不同隔离后端（例如进程、UKL、SFI、MPK
+等）\textsuperscript{[7--9]}。为屏蔽后端差异，FlexOS
+提供统一的跨域调用抽象------gate\textsuperscript{[1]}。
+
+从已有系统经验看，SFI
+也常被用于构建``在同一地址空间内的受限执行''沙箱，例如 Native Client
+在浏览器/插件场景中展示了 SFI 沙箱的工程可行性\textsuperscript{[23]}。
+
+从开发者视角，gate 的关键价值在于：跨域调用在语义上被统一为显式的 gate
+调用形式（如 flexos\_gate(...) 与
+flexos\_gate\_r(...)），后端实现细节对上层透明，从而支持``同一应用内多种隔离策略共存''。
+
+然而，gate
+机制也使得存量代码迁移面临大量模式化改写工作：函数调用点需要替换为 gate
+调用，调用所在库（gate
+目标）需要正确解析与映射，且不同语法形态（条件表达式、返回语句、强制类型转换等）对自动化改写提出更高要求。
+
+\subsection{本文主要研究内容}
+
+围绕 FlexOS 工程落地的关键门槛，本文主要开展以下两方面工作：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  面向 FlexOS gate
+  的自动化代码迁移与轻量安全检查：设计并实现一套规则驱动迁移流水线，在保持改动可解释与可回溯的前提下，将常见
+  POSIX/库函数调用自动改写为 gate 调用；在迁移后提供 ungated-call
+  覆盖检查，并可选集成通用静态扫描器以辅助安全审阅。
+\item
+  基于偏序关系的安全配置搜索算法：将隔离配置空间建模为 DAG
+  偏序图，在单调性假设下利用祖先/后代闭包进行批量剪枝，并提出期望剪枝最大化的
+  balanced 搜索策略，降低查询比例并提升首次命中最优前沿的效率。
+\end{enumerate}
+
+此外，本文在工具链层面统一了实验评估与绘图入口，便于他人复现与扩展。
+
+\subsection{论文章节安排}
+
+本文共分为五章，组织结构为：第一章介绍课题背景与研究意义，分析 FlexOS
+及相关系统的特点与现存问题，并概述本文研究内容与结构安排。第二章面向
+FlexOS gate 机制，阐述遗留 C
+代码迁移的主要痛点，给出规则驱动迁移流水线的设计与实现，并介绍迁移后的轻量安全检查方法。第三章提出安全配置搜索的偏序建模方法，对问题进行形式化描述，在单调性假设下推导
+balanced
+策略及其实现细节，并讨论算法复杂度与适用边界。第四章给出实验设置与评估指标，分别评估自动化迁移与配置搜索的效果，并对单调性假设的违反情况进行统计分析；最后对系统化自动化平台展示进行说明。第五章总结本文主要贡献，分析当前局限，并展望未来工作方向。
+
+\newpage
+\section{代码自动化移植与漏洞检测}
+
+\subsection{FlexOS 的 gate
+机制与迁移痛点}
+
+在 FlexOS 中，跨安全域交互被统一约束为 gate
+调用，这意味着迁移工作本质上不是``机械替换函数名''，而是把原本隐式的跨域语义显式化。迁移后每个调用点都必须同时满足三件事：库域归属正确、参数与返回值通道一致、控制流与错误处理语义不漂移。以本文工具链的口径看，常见调用最终会归入
+flexos\_gate(lib, ret, func, ...) 或 flexos\_gate\_r(lib, retptr, func,
+...)
+两类形式；这两类形式虽然统一了接口外观，但也把很多原来在代码中被``默认假设''的细节暴露出来，例如返回值类型是否匹配、失败路径是否仍被正确传播、宏或条件表达式中的调用是否保持原求值顺序。
+
+因此，第二章聚焦的问题可以概括为：如何在大规模 C
+代码中完成可审阅、可回溯、可度量的 gate
+化迁移。最棘手的点并不单一，而是多个约束叠加：一方面，同名函数可能出现在不同库中，若库域解析错误就会把调用送到错误隔离边界；另一方面，调用形态并不总是``独立语句''，大量调用嵌在
+if、return、类型转换与宏展开中，简单模式匹配极易漏改或误改；再者，很多遗留代码依赖隐式错误处理约定，迁移后若只改了表层调用而没有补齐返回值接收与检查，就会引入新的语义缺陷；最后，仅通过``能编译''无法说明迁移正确，必须配套覆盖统计与可定位报告，把风险收敛到可人工复核的候选点集合。
+
+从形式化角度，设原始文件为 \(S\)，候选外部调用点集合为
+\(\mathcal{C}(S)=\{c_1,\dots,c_m\}\)，迁移器目标可写为重写算子 \(T\)：
+\begin{equation}
+T(S) = S' 
+\end{equation}
+
+要求是：若 \(c_i\) 的目标函数属于需隔离库域，则在 \(S'\) 中存在对应 gate
+调用 \(g_i\)，并满足：
+\begin{equation}
+\text{callee}(g_i)=\text{callee}(c_i),\quad \text{lib}(g_i)=\pi(\text{callee}(c_i)),\quad \text{args}(g_i)=\text{args}(c_i)
+\end{equation}
+
+式(2.1)强调迁移的核心不是``识别到调用''本身，而是对库域映射函数 \(\pi\)
+的可靠求解与参数约定保持。AutoFlex
+的设计因此优先保证四件事：每次改写都有来源证据、每次运行都能输出可审阅产物、覆盖效果可被量化、规则体系能持续扩展到新库与新模式。
+
+\subsection{自动化迁移流水线设计}
+
+本文提出并实现的迁移流水线遵循``先高覆盖、后高精度''的分层思路：先做函数到库域的稳定映射，再用
+Coccinelle
+完成第一轮大规模模式替换\textsuperscript{[10]}，最后用语句级后处理收敛复杂语法场景。这样做的目的不是把迁移包装成黑盒，而是让每一层都有可检查的中间产物，最终把人工工作从``全量通读源码''压缩为``围绕差异与报告做重点复核''。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.75\linewidth]{drawio/autoflex_auto_porting.pdf}
+  \caption{AutoFlex 迁移流水线总览}
+  \label{fig:autoflex-pipeline-placeholder}
+\end{figure}
+
+建议该图以``阶段盒图 +
+关键中间产物''为主：输入为源码树与目标文件；输出包括调用映射表、语义补丁集合、迁移差异补丁、覆盖扫描报告以及汇总统计结果，并明确标注``人工审阅/校正''发生在报告驱动的少量候选点上。按从左到右阅读时，上半部分对应数据流（输入源码与目标文件，经过符号解析与规则生成，产生批量替换与语句级后处理的改写结果），下半部分对应证据链产物（映射表、补丁、覆盖扫描报告与汇总统计）；该图强调 AutoFlex 的目标不是把迁移变成不可解释的黑盒，而是把迁移拆成可检查的阶段性结果，使人工工作从``全量通读源码''收敛为``围绕报告与差异产物做重点复核''，从而降低迁移成本并提高可复核性。
+
+从产物角度看，流水线每次运行会稳定产出调用映射表、语义补丁、迁移差异与覆盖扫描报告。调用映射表由
+cscope
+解析与规则回退共同生成\textsuperscript{[14]}，其职责是把``函数调用属于哪个库域''这一关键决策显式化；语义补丁承担第一轮批量改写；差异与覆盖报告用于把人工复核范围控制在少量候选点。该机制的重点是可追溯：当某个改写结果不符合预期时，可以回到映射来源、规则文本与具体差异逐层定位问题，而不是在最终代码上盲目排查。
+
+为了说明映射阶段的决策逻辑，下面给出函数到库域映射的伪代码。它体现了``唯一定义优先，显式回退兜底''的策略：
+\begin{algorithm}[htbp]
+\caption{Function-to-Library Mapping ($\pi$)}
+\label{alg:func-lib-mapping}
+\begin{algorithmic}[1]
+\Require Source tree $\mathcal{T}$, target file $S$
+\Ensure Mapping $\pi: \text{Func} \rightarrow \text{Lib}$
+\State $\pi \gets \emptyset$, $\mathcal{F} \gets \text{ExternalSymbols}(S)$
+\State Build cscope DB over $\mathcal{T}$
+\ForAll{$f \in \mathcal{F}$}
+  \State $D_f \gets \text{DefSites}(f)$
+  \If{$|D_f| = 1$}
+    \State $lib \gets \text{InferLibFromPath}(D_f[0])$
+    \State $\pi[f] \gets lib$
+  \Else
+    \If{$f \in \pi_{fallback}$}
+      \State $\pi[f] \gets \pi_{fallback}[f]$
+    \Else
+      \State mark $f$ as unresolved
+    \EndIf
+  \EndIf
+\EndFor
+\State \Return $\pi$
+\end{algorithmic}
+\end{algorithm}
+
+其中 InferLibFromPath 的工程化做法是从符号定义路径提取 lib/\{name\}/ 或
+libs/\{name\}/ 并归一化为 gate
+库名；若某函数定义不唯一，系统倾向保守处理，优先使用显式回退映射或交由人工补充，避免把调用误送到错误库域。与此同时，流水线还会做关键字过滤、接口别名归一化和返回值类型辅助推断，减少误报、假阴性与类型不匹配带来的二次人工修补。
+
+在映射确定后，AutoFlex 进入 Coccinelle 批量替换阶段。选择 Coccinelle
+的原因是它基于 SmPL
+做结构化匹配\textsuperscript{[10,26]}，相比纯文本替换更能约束作用域与语法位置，从而在大规模代码上实现``可控覆盖''。这一阶段优先覆盖最常见的独立语句调用形态，即赋值调用与纯调用，其目标是先稳定吃掉高占比、低风险改写点，为后续高难场景留出更小的处理面。
+
+仅仅说``结构化匹配''还不够解释其价值。Coccinelle 的实际工作方式是：先把
+C 源码解析为可匹配的语法结构，再由 SmPL 中的元变量（如 expression list
+EL、expression
+var）建立约束，最后在满足约束的位置生成变换。换言之，它不是对字符串做替换，而是在``调用表达式、赋值语句、参数列表''这些语法层对象上做匹配，因此能显著减少注释、字符串字面量、同名标识符等导致的误替换。与此同时，SmPL
+规则本身是文本可读的，天然具备审阅友好性：每次规则修改都能通过差异审查解释``为什么改、改了哪里、作用域是什么''。
+
+从工程实践看，Coccinelle
+在本文场景中有效，主要因为它解决了``高频、同构、跨文件''的第一波改写任务。遗留代码中大量调用具有稳定句型，若全部手工改写，成本高且易出现一致性错误；而
+Coccinelle
+可以把这类高重复度改写收敛为少量可复用规则。更重要的是，规则执行结果可直接形成差异输出，与后续覆盖检查和人工复核形成闭环，避免``自动改完但不可解释''的黑盒风险。
+
+替换目标为统一的 gate 调用形式。例如，以 func 属于库 libX
+为例，迁移后得到：
+\begin{equation}
+\begin{aligned}
+\text{原始：}\quad & \texttt{ret = func(a, b);} \\
+\text{改写：}\quad & \texttt{flexos\_gate(libX, ret, func, a, b);} 
+\end{aligned}
+\end{equation}
+
+在 AutoFlex 的语义补丁生成中，这两类模式分别对应一组 SmPL
+规则族（伪示例见下式）：
+\begin{equation}
+\begin{aligned}
+\text{有返回值模式：}\quad & \texttt{var = func(EL)} \Rightarrow \texttt{flexos\_gate(libX, var, func, EL)} \\
+\text{无返回值模式：}\quad & \texttt{func(EL)} \Rightarrow \texttt{flexos\_gate(libX, func, EL)}
+\end{aligned}
+\end{equation}
+
+这一层的价值在于，它以较低风险覆盖了最主要的模式化改写需求；但对于 if
+条件、return
+表达式、强制类型转换、宏嵌套与函数指针等复杂语法，系统不在这一层强行``全自动吃掉''，而是转入语句级后处理。后处理的核心思路是把内嵌调用提升为独立语句，再用临时变量承接返回值，尽量保持原控制流语义。例如：
+\begin{equation}
+\begin{aligned}
+\text{原始：}\quad & \texttt{if (func(a) == 0) \{ ... \}} \\
+\text{改写：}\quad & \texttt{ret = 0;\ flexos\_gate(libX, ret, func, a);\ if (ret == 0) \{ ... \}}
+\end{aligned}
+\end{equation}
+
+在实现上，这一阶段由 Python
+脚本执行行级匹配与重写，并与前两层共享同一映射语义。其可抽象为``受限语句提升（statement
+hoisting）''规则族：
+
+
+（1）if 比较
+\begin{equation}
+\texttt{if (f(args) \;op\; k) \{...\}}\ \Rightarrow\ \texttt{tmp = 0; gate(f,args, tmp); if (tmp \;op\; k) \{...\}}
+\end{equation}
+
+\indent\texttt{f(args)} 的返回值直接参与比较并决定分支。提升后先用 \texttt{tmp} 承接 gate 输出，再用同一比较符 \texttt{op} 与阈值 \texttt{k} 完成判定，从而尽量保持分支条件语义不变；同时将外部调用“拉平”为独立语句，便于统一插入 gate。
+
+（2）if 内联赋值
+\begin{equation}
+\texttt{if ((x = f(args)) \;op\; k) \{...\}}\ \Rightarrow\ \texttt{gate(f,args, x); if (x \;op\; k) \{...\}}
+\end{equation}
+
+\indent{判定式同时包含赋值副作用}（\texttt{x=...}）。改写关键在于保留该副作用：提升后直接 gate 写入 \texttt{x}，再用 \texttt{x} 参与比较，使得后续代码仍能读取到与原语句一致的 \texttt{x} 值。
+
+（3）return 表达式
+\begin{equation}
+\texttt{return f(args);}\ \Rightarrow\ \texttt{gate(f,args, tmp); return tmp;}
+\end{equation}
+\indent\texttt{f(args)} 的值被直接返回。拆分为“先取值、再返回”后，必须保证 \texttt{tmp} 的类型与函数返回类型一致；工程实现中通常通过函数签名/映射产物推断 \texttt{tmp} 类型，若无法可靠推断则采用保守策略（不自动提升，要求人工确认），以避免隐式类型转换引入语义偏差。
+
+（4）显式类型转换
+\begin{equation}
+\texttt{x = (T)f(args);}\ \Rightarrow\ \texttt{gate(f,args, tmp); x = (T)tmp;}
+\end{equation}
+\indent\texttt{f(args)} 的结果先被强转再赋值。提升后 \texttt{tmp} 仍承接原调用的返回语义，类型转换 \texttt{(T)} 保留在赋值位置，避免因为过早转换改变溢出/截断行为。
+
+上述“受限语句提升”规则族的共同目标是：当外部调用 \texttt{f(args)} 嵌在控制流关键位置（\texttt{if} 判定、\texttt{return} 返回值、类型转换等）时，将其提升为\emph{独立语句}，以便复用前一层的 gate 调用形态，同时最大限度保持原控制流与错误处理语义。之所以强调“受限”，是因为实现只覆盖一组可稳定识别、且能保证求值顺序不被破坏的单行句型；对于含短路逻辑（\texttt{\&\&}/\texttt{||}）、多次函数调用组合、宏多层嵌套或复合副作用的表达式，系统会保守跳过并输出待复核清单。为减少语义漂移，实现还会遵循两条工程约束：其一，提升语句插入在原语句之前，确保与原代码相同的求值先后关系；其二，临时变量尽量收敛到最小作用域（例如当前块内），并采用稳定命名/去冲突策略，避免与用户代码标识符冲突或改变调试可读性。
+
+
+这些变换看似直接，实际落地时仍需同时控制求值顺序、副作用传播与临时变量类型一致性。AutoFlex
+的处理原则是``能稳则改，复杂则保守''：对单行可稳定识别模式自动提升，对多行宏与复杂表达式保守跳过并留给人工复核。这样做牺牲了少量自动化覆盖，但显著降低了语义误改风险。
+
+\subsection{迁移引入漏洞的 gate 完整性校验}
+
+自动迁移完成后，最关键的问题不是``代码里看起来是否都替换了
+gate''，而是``运行时是否仍存在绕过 gate 的跨域调用''。为此，本文将 gate
+完整性检测主线设置为 GCC
+函数插桩与运行时校验：在目标库启用函数级插桩后，每次函数进入与退出都会触发库内
+hook 写入局部 guard 变量；若某条跨域路径缺失 gate，在 MPK
+等域内隔离后端下更容易在运行中暴露为异常行为或崩溃，从而把潜在漏改从静态可疑点提升为可观测故障信号。
+
+这里的关键机理在于 GCC 选项 -finstrument-functions
+的编译时插入行为。开启后，编译器会在每个函数入口自动插入对
+\_\_cyg\_profile\_func\_enter 的调用，在每个函数返回路径插入对
+\_\_cyg\_profile\_func\_exit
+的调用；因此即便业务代码本身没有显式写这两个函数，运行时也会在所有被插桩函数上触发它们。若再结合库内的
+volatile guard 写操作，hook
+的每次执行都会产生真实内存访问，不会被优化器轻易消去。为防止 hook
+自身再次被插桩导致递归，工程上必须同时使用 no\_instrument\_function
+属性或在排除列表中显式排除
+\_\_cyg\_profile\_func\_enter/\_\_cyg\_profile\_func\_exit。
+
+从隔离语义看，这套机制有效的原因是它把``漏
+gate''转化为``域内访问异常''的可观测事件。若调用通过正确 gate
+进入目标库，域切换或权限切换已发生，hook 对库内 guard
+的读写应当可达；若调用绕过 gate 直接进入目标库函数，在 MPK
+等机制下通常缺少对应权限上下文，hook 的 guard
+写入更容易触发保护异常。也就是说，插桩并不直接``证明正确''，而是把原本可能静默存在的缺
+gate 错误转化为 fail-stop 信号，显著提升了问题暴露概率与定位效率。
+
+可将编译器插入逻辑抽象为以下形式：
+\begin{equation}
+\begin{aligned}
+\texttt{f(\ldots)\ \{\ } & \texttt{\_\_cyg\_profile\_func\_enter(this\_fn, call\_site);}\ \\
+& \texttt{/* original body */}\ \\
+& \texttt{\_\_cyg\_profile\_func\_exit(this\_fn, call\_site);\ \}}
+\end{aligned}
+\end{equation}
+
+实现上，迁移流水线在 gate
+改写后追加三步：首先向目标库编译参数注入函数插桩开关并排除 hook
+本身；其次生成包含 guard 变量与两个 hook
+函数的辅助源文件并纳入构建；最后执行构建与运行，依据运行日志中的异常模式给出通过、失败或待复验结论。该结论与传统代码差异统计相互独立，专门用于回答``隔离边界是否在运行态保持完整''。
+
+建议该图突出两条路径：一条是 gate 完整时的正常执行路径，另一条是缺失
+gate 时在隔离后端下触发异常的路径，并标注判定产物为 instrumentation
+报告、构建日志与运行结论文件。阅读时可先看插桩如何绑定到目标库函数，再看运行阶段如何把``是否崩溃、是否出现保护异常''转化为可复核结论；相比仅凭文本扫描命中，运行时路径能更直接观测隔离语义是否被破坏，因此更适合作为 gate 完整性的主证据。也因此，该机制把检测目标从``可疑代码形态''前移到``运行态边界是否破裂''，即便静态替换统计看似充分，只要运行态出现与缺 gate 一致的异常模式，系统就会将其判定为高优先级风险并要求人工回查。
+
+在这一框架下，风险模型可以被简单地概括为：缺 gate
+会导致边界绕过与策略不一致，而这两类风险本质都发生在执行路径中，因此必须以运行态证据为主，而不是仅靠文本级命中。设迁移后程序为
+\(S'\)，目标库集合为
+\(\mathcal{L}\)，流程由插桩注入和运行判定两步构成：前者在编译选项中开启函数级插桩并排除
+hook 自身，同时在库内写入
+guard；后者在隔离后端执行镜像并用退出状态与日志模式给出结论。其判定集合记为：
+\begin{equation}
+\text{verdict}(S') \in \{\text{pass},\ \text{fail},\ \text{inconclusive}\}
+\end{equation}
+
+其中 pass 表示未观测到与缺 gate 一致的运行态异常，fail
+表示出现崩溃或保护异常信号，inconclusive
+表示因超时、环境条件不足或依赖缺失而无法完成有效判定。这个三值结论用于工程分流：fail
+直接进入高优先级回查，inconclusive 进入待复验队列。
+
+需要特别区分的是，expected、matched、unresolved
+这组迁移一致性指标仍然有价值，但它们回答的是``自动结果与人工参考答案是否对齐''，并不直接回答``运行态边界是否完整''。因此本文把这组指标视为迁移质量信号，把插桩运行判定视为安全主信号；同时保留
+cppcheck、semgrep、flawfinder
+等静态扫描器\textsuperscript{[11--13]}作为辅助提醒，用于捕捉一般性缺陷线索，但不把它们当作边界完备性证明。
+
+\newpage
+\section{安全配置搜索算法}
+
+\subsection{配置空间的偏序建模}
+
+FlexOS的可组合隔离机制允许开发者在``组件/库''的粒度上选择不同隔离强度（例如是否启用SFI、组件是否被放入独立隔离域等）\textsuperscript{[1]}。这使得系统整体呈现为一个高维配置向量空间。类似的``巨大配置空 + 成本高昂的性能测量''问题也出现在 Wayfinder等自动化配置探索工作中\textsuperscript{[3]}。为了在搜索中系统地利用``隔离强弱''的结构信息，本文将配置空间建模为偏序集合（poset），并以其
+cover 图（有向无环图，DAG）表达覆盖关系。
+
+先给出配置向量的离散化表示。在本文使用的离线配置---参数映射数据中，每个配置可表示为两个向量：
+\begin{equation}
+v = (\mathbf{c}_v,\ \mathbf{s}_v)
+\end{equation}
+
+其中\(\mathbf{c}_v: \mathcal{L}\to \mathbb{N}\)
+为``组件隔离域布局''向量，\(\mathcal{L}\) 为库集合（例如
+nginx/newlib/lwip/uksched 等）；\(\mathbf{c}_v[\ell]\)
+的数值越大，表示该库在布局上被划分到更细粒度的隔离结构（在数据集中体现为离散等级）。同时，\(\mathbf{s}_v: \mathcal{L}\to \{0,1\}\)
+为 SFI 开关向量，\(\mathbf{s}_v[\ell]=1\) 表示该库启用额外的 SFI 硬化。该表示的优点是：它将``隔离强弱''直接落到每个维度的离散等级上，从而可用简单的分量比较构造偏序。
+
+在向量表示基础上，可进一步定义偏序关系与 cover 关系（cover 图/DAG）。
+
+设配置集合为 \(V\)，定义偏序关系 \(\preceq\) 为分量不减的产品序：
+\begin{equation}
+u \preceq v \iff \forall \ell\in\mathcal{L},\ \mathbf{c}_u[\ell] \le \mathbf{c}_v[\ell]\ \wedge\ \mathbf{s}_u[\ell] \le \mathbf{s}_v[\ell]
+\end{equation}
+
+直观上，\(u\preceq v\) 表示 \(v\) 在所有库维度上都``不弱于'' \(u\)，因此
+\(v\) 的隔离强度至少与 \(u\) 一样强。进一步定义严格偏序 \(u\prec v\) 为
+\(u\preceq v\) 且 \(u\ne v\)。
+
+在该偏序下，cover 关系（cover relation）定义为：\(u\) 被 \(v\)
+覆盖，当且仅当 \(u\prec v\) 且不存在中间点 \(w\) 满足
+\(u\prec w\prec v\)。因此 cover 图的边集为：
+\begin{equation}
+E = \{(u, v) \mid u \prec v \ \wedge\ \nexists\ w,\ u \prec w \prec v\}
+\end{equation}
+
+为直观展示``配置节点 + cover 边''所构成的偏序结构，图\ref{fig:fig08_plot}
+给出一个配置空间偏序结构的可视化示例（cover 图/DAG）。
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/search/svg/fig08_plot}
+  \caption{配置空间偏序图示例（DAG/poset）}
+  \label{fig:fig08_plot}
+\end{figure}
+
+图\ref{fig:fig08_plot}的展示了：
+
+第一，每个节点对应一个离散隔离配置。图中从上到下可理解为隔离强度逐步增强的层级分布；节点采用灰度深浅编码隔离强弱，灰度越深表示约束越强。
+
+第二，每条有向边表示 cover 关系：若存在边 u→v，则 v 在偏序意义下严格强于
+u，且二者之间不存在中间配置点。因而，沿边从上到下移动，可理解为``在不跨越中间等级的前提下，把隔离强度增加一步''。
+
+第三，这张图的核心用途并不是展示某个具体节点的性能数值，而是为后续算法提供结构直觉：在该
+DAG
+上预处理祖先闭包与后代闭包后，一次查询即可在候选集中批量删除一组节点，从而显著减少需要实际测量的配置点数。
+
+由于 \(\preceq\) 为偏序，cover 图必为 DAG。该 DAG
+的祖先/后代闭包为剪枝提供基础；在实现中，对每个节点预处理祖先闭包与后代闭包的位集表示，以支撑
+\(|anc(\cdot)\cap C|\)、\(|desc(\cdot)\cap C|\) 的高效计数。
+
+在本文实验数据中，每个数据集的配置空间规模为 \(|V|=96\)，其 cover
+图边数为 288（见第四章单调性统计）。
+
+\subsection{问题形式化与单调性假设}
+
+对任一配置 \(v\)，定义其性能度量为 \(g(v)\)（例如 nginx 的吞吐量 REQ，或
+redis 的 GET/SET 指标）。在真实系统中，\(g(v)\) 需要通过``构建镜像 +
+运行基准 + 统计''获得，因而一次查询代价高；在本文实验中，\(g(v)\)
+来自离线测得的配置---性能数据，并按配置对重复测量取聚合统计量（例如均值），搜索算法把读取某配置的统计量视作一次``昂贵查询''的代理。
+
+给定性能阈值 \(\theta\)，定义可行集合：
+\begin{equation}
+F = \{ v \in V \mid g(v) \ge \theta \}
+\end{equation}
+
+本文关注的目标是：在尽可能少的查询次数下，找到``隔离强度尽可能强''的可行配置集合，即可行集合在偏序下的极大元（maximal
+elements）所构成的前沿 \(F^*\)：
+\begin{equation}
+F^* = \{v\in F\mid \nexists\ u\in F,\ v\prec u\}
+\end{equation}
+
+该定义对应常见的 Pareto
+最优前沿：前沿上的任一点都不可被另一``更强隔离且仍可行''的点支配。
+
+为了实现批量剪枝，搜索过程引入以下单调性假设：
+\begin{quote}
+单调性假设（Hypothesis）：若 \(u \preceq v\)（\(v\) 隔离不弱于
+\(u\)），则 \(g(v) \le g(u)\)。
+\end{quote}
+
+该假设表达了直觉：隔离越强，性能开销越大，因此性能不应上升。若假设成立，则：当某点 \(c\)
+不可行（\(g(c)<\theta\)）时，其所有后代（更强隔离）也不可行，因此可一次性剪去
+\(desc(c)\)；当某点 \(c\)
+可行（\(g(c)\ge\theta\)）时，其祖先（更弱隔离）都可行，但它们不可能成为``最强可行前沿''的成员，因此可一次性从候选集中移除
+\(anc(c)\)。
+
+需要注意的是，实际系统中缓存效应、资源争用、测量噪声等因素可能导致单调性被违反。本文在第四章中对违反情况进行统计并讨论其影响。
+
+在单调性假设成立时，阈值可行集合具有``向下闭包''性质，这是剪枝可行的根本原因。
+
+\textbf{引理 3-1}（可行集向下闭包）：若单调性成立，则 \(F\) 对
+\(\preceq\) 向下闭合，即 \(v\in F\) 且 \(u\preceq v\) 时必有
+\(u\in F\)。
+
+\emph{证明}：由 \(u\preceq v\) 与单调性得 \(g(u)\ge g(v)\)。又
+\(v\in F\) 意味着 \(g(v)\ge \theta\)，于是 \(g(u)\ge \theta\)，从而
+\(u\in F\)。证毕。
+
+引理 3-1 的直接推论是：不可行集合 \(V\setminus F\) 为向上闭合（upper
+set）。因此对任一点 \(c\)：若 \(c\) 不可行，则其所有后代都不可行，可安全移除 \(desc(c)\)；若 \(c\)
+可行，则其所有祖先都可行，但其中任何点都被
+\(c\)（或其他更强可行点）支配，不可能属于 \(F^*\)，因此也可安全移除
+\(anc(c)\)。
+
+进一步地，还可证明``终止时一定查询到全部前沿点''。
+
+\textbf{定理3-1}（前沿完备性）：在单调性成立时，采用统一剪枝规则并持续迭代直至候选集为空，最终返回的
+\(\text{Maximal}(R)\) 等于真实前沿 \(F^*\)。
+
+\emph{证明（要点）}：设 \(f\in F^*\) 为任一前沿点。考虑搜索过程中 \(f\)
+被移出候选集 \(C\) 的可能方式：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  若某次因查询不可行点 \(c\) 而移除 \(desc(c)\)，要使 \(f\) 被移除则需
+  \(c\preceq f\)。但单调性下 \(c\) 不可行推出其所有后代不可行，与
+  \(f\in F\) 矛盾。
+\item
+  若某次因查询可行点 \(c\) 而移除 \(anc(c)\)，要使 \(f\) 被移除则需
+  \(f\preceq c\)。这意味着存在比 \(f\) 更强或相等的可行点 \(c\)，且当
+  \(f\ne c\) 时有 \(f\prec c\)，与 \(f\) 的极大性矛盾。
+\end{enumerate}
+
+因此，\(f\)
+不会在未被查询的情况下被剪枝移除，必将作为候选点在某一轮被查询并加入
+\(R\)。所以
+\(F^*\subseteq R\)。另一方面，\(R\subseteq F\)（只记录可行点），且
+\(\text{Maximal}(R)\) 恰好去除被支配的非前沿点，故
+\(\text{Maximal}(R)=F^*\)。证毕。
+
+该定理说明：在假设成立时，选点策略只影响查询次数与``首次命中速度''，并不影响输出前沿的正确性。
+
+对应的评估指标主要围绕查询成本与首次命中效率。基于上述目标，本文采用两类指标刻画搜索效率：第一类是查询次数：一次搜索过程中实际查询的配置点数量记为
+\(Q\)，并归一化为查询比例
+\(q=Q/|V|\)。第二类是首次命中步数：搜索轨迹中第一次查询到属于 \(F^*\)
+的步序号记为 \(H\)，并归一化为首次命中比例 \(h=H/|V|\)。
+
+在对比中，对于穷举法（exhaustive）的首次命中步数，采用期望位置
+\(|V|/|F^*|\)，用于把``完全扫描''的首次命中映射到与随机/策略搜索可比较的尺度。
+
+\subsection{期望剪枝搜索策略}
+
+此处先给出基本剪枝框架。对 DAG 中任一节点 \(v\)，记其祖先闭包与后代闭包分别为：
+\begin{equation}
+anc(v) = \{u \in V \mid u \preceq v\}, \quad desc(v) = \{u \in V \mid v \preceq u\}
+\end{equation}
+
+搜索过程中维护候选集 \(C \subseteq V\)。每轮从 \(C\) 中选取一个点 \(c\)
+进行查询并应用剪枝：若 \(g(c)\ge\theta\)（可行），则从 \(C\) 中移除
+\(anc(c)\)；否则（不可行），从 \(C\) 中移除 \(desc(c)\)。
+
+该规则与具体``选点策略''解耦：不同策略只决定每轮选取哪个
+\(c\)，而剪枝逻辑保持一致。
+
+\begin{figure}[htbp]
+  \centering
+  \fbox{\parbox{0.9\linewidth}{\centering
+  待补图：一次查询触发剪枝的示意\\
+  （可行→删除祖先，不可行→删除后代）}}
+  \caption{一次查询触发剪枝的示意（占位）}
+  \label{fig:single-query-pruning-placeholder}
+\end{figure}
+
+建议该图给出一个小型 poset/DAG：用颜色区分当前候选集 \(C\)、被查询点
+\(c\)、被删除的 \(anc(c)\) 与 \(desc(c)\)，并在两条分支上标注阈值判定
+\(g(c)\ge\theta\) / \(g(c)<\theta\)，对应候选集按位清零更新式(3.5)。阅读时可先看候选集 \(C\) 中被选中的查询点 \(c\)，再沿阈值判定分支观察删点区域：当 \(g(c)\ge\theta\) 时剪去其祖先闭包，当 \(g(c)<\theta\) 时剪去其后代闭包。该图用最小示例说明了偏序结构为何能显著减少查询次数：一次昂贵测量不仅给出当前点可行性，还能在单调性假设下推导一批点可行性，从而把全量扫描成本压缩为远少于 \(|V|\) 次的查询。
+
+从实现角度看，候选集 \(C\) 以位掩码表示；每次剪枝相当于执行一次位清零：
+\begin{equation}
+C \leftarrow C\ \&\ \neg anc(c)\ \ \text{或}\ \ C \leftarrow C\ \&\ \neg desc(c)
+\end{equation}
+
+这种表示使得``删除一批祖先/后代''可以近似视为 \(O(|V|/w)\)
+的位运算（\(w\) 为机器字长），远小于真实系统中一次基准运行的代价。
+
+在框架之上，引入期望剪枝量进行选点。我们提出的balanced策略的核心是：将``每次查询能剪掉多少候选''显式作为优化目标，并引入可行概率估计。设当前候选集为
+\(C\)，对候选点 \(i\) 定义：
+\begin{equation}
+a_i = |anc(i) \cap C|,\quad d_i = |desc(i) \cap C|
+\end{equation}
+
+其中 \(a_i\) 与 \(d_i\) 分别代表若查询 \(i\)
+且结果为可行/不可行时，理论上可被批量剪枝的规模。
+
+设当前对``可行''的在线估计概率为 \(p\)，则期望剪枝量定义为：
+\begin{equation}
+E_i = p\cdot a_i + (1-p)\cdot d_i
+\end{equation}
+
+balanced 策略每轮选择 \(E_i\)
+最大的候选点进行查询。在实现中，为避免早期样本不足导致 \(p\)
+取值极端，引入平滑估计：
+\begin{equation}
+p = \frac{n_{feasible}+1}{n_{observed}+2}
+\end{equation}
+
+这对应 Beta(1,1) 先验下的后验均值，使得搜索在早期更稳定。
+
+需要指出的是，式(3.4) 直接对应``候选集规模的期望下降''：查询点 \(i\)
+后，候选集将以概率 \(p\) 删除 \(anc(i)\)，以概率 \(1-p\) 删除
+\(desc(i)\)，而 \(a_i,d_i\) 正是这两种情况下的删除规模。因此，balanced
+本质上是在做一种贪心的期望信息增益/期望剪枝最大化。
+
+此外，本文实现对并列情况引入了稳定的
+tie-break：当多个点具有相同期望剪枝量时，优先选择 \(|a_i-d_i|\)
+更小的点（更``均衡''的二分），再按配置 ID
+稳定打破并列。该设计的直觉是避免总是选取``极端偏向祖先或后代''的点，从而在不同阈值分布下提升鲁棒性。
+
+完整算法见算法\ref{alg:balanced-search}。在实现中，为加速闭包交集计数，祖先/后代集合以位集（bitset）形式预处理与存储。
+
+
+\begin{algorithm}[htbp]
+\caption{Balanced Search on Poset}
+\label{alg:balanced-search}
+\begin{algorithmic}[1]
+\Require $(V,E)$, $g(\cdot)$, $\theta$
+\Ensure $F^*$
+\State Precompute $anc(\cdot)$ and $desc(\cdot)$
+\State $C \gets V$, $R \gets \emptyset$, $n \gets 0$, $m \gets 0$
+\While{$C \neq \emptyset$}
+  \State $p \gets \dfrac{m+1}{n+2}$
+  \State $c \gets \arg\max_{i\in C}\big(p\cdot |anc(i)\cap C| + (1-p)\cdot |desc(i)\cap C|\big)$
+  \State $n \gets n+1$
+  \If{$g(c) \ge \theta$}
+    \State $R \gets R \cup \{c\}$, $m \gets m+1$
+    \State $C \gets C \setminus anc(c)$
+  \Else
+    \State $C \gets C \setminus desc(c)$
+  \EndIf
+\EndWhile
+\State $F^* \gets \text{Maximal}(R)$
+\State \Return $F^*$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{复杂度分析}
+
+balanced 搜索的复杂度由``预处理 + 搜索''两部分构成。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  cover 图构造：若从配置集合直接构造 cover
+  边（需要判断是否存在中间点），朴素实现为
+  \(O(|V|^3)\)。在本文实验设置下
+  \(|V|=96\)，该成本可接受；当配置规模增大时，应考虑更高效的传递约简算法或基于增量维护的构造方式。
+\item
+  闭包预处理：对每个节点计算 \(anc(\cdot)\)、\(desc(\cdot)\)
+  的位集。以位集表示时，空间复杂度约为 \(O(|V|^2/w)\) 个机器字（\(w\)
+  为字长）；在 \(|V|=96\) 下远小于一次实验产物的体量。
+\item
+  搜索阶段：每轮需要计算候选集中各点的
+  \(a_i,d_i\)（式(3.3)），核心操作是位集与运算 + popcount
+  计数。设位集长度为 \(B=\lceil |V|/w \rceil\)，则一次候选点评估代价约为
+  \(O(B)\)，一次选点扫描代价约为 \(O(|C|\cdot B)\)。若最坏情况下需要查询
+  \(Q=|V|\) 轮，则总时间约为 \(O(|V|^2\cdot B)\)。
+\end{enumerate}
+
+需要强调的是：在真实系统中，主要成本来自``运行基准得到
+\(g(c)\)''的实验代价，而不是上述位运算。因此搜索算法的设计目标并非减少
+CPU 指令数，而是尽可能减少昂贵查询次数。
+
+查询次数方面：在最坏情况下，单调性假设完全失效或剪枝无效时，算法可能退化为查询全部点，即
+\(O(|V|)\)。在理想情况下，当 DAG 结构``可分裂''且估计的 \(p\)
+能引导有效剪枝时，查询次数将显著小于 \(|V|\)；第四章将以查询比例
+\(\text{query\_ratio}=\text{query\_count}/|V|\) 对该收益进行度量。
+
+此外，在单调性严格成立时，剪枝规则保证``不会因策略不同而改变结果前沿''（定理
+3-1），因此查询次数的下降可以直接解释为``用更少的测量成本得到相同的最优前沿''。当单调性被违反时，该解释不再无条件成立，需要结合第四章对违反比例与
+gap 分布的统计来讨论其风险边界。
+
+\subsection{讨论：与 Wayfinder
+的关系及鲁棒性边界}
+
+本节给出若干讨论性结论，用于把第三章的``结构化搜索''与第四章的``实证验证''连接起来：一方面说明
+poset
+剪枝与已有配置优化工作的互补性，另一方面明确单调性仅近似成立时，搜索策略在工程上应如何理解其风险与适用范围。
+
+首先讨论结构化偏序剪枝与通用配置优化的互补关系。Wayfinder 等工作展示了在 OS
+配置空间中进行自动化探索与优化的可行性\textsuperscript{[3]}。从问题形态上看，二者都面对两个核心困难：配置空间维度高、评测代价高昂；因此都需要``用更少的代价逼近最优折中''。不同之处在于，本文把
+FlexOS 的隔离配置显式建模为偏序集合，并将其 cover
+图作为剪枝依据：在单调性成立时，任何一次可行/不可行判断都可以成批删除祖先或后代，从而把一次测量的收益放大到一组候选点。与常见的黑盒配置优化（如
+SMBO/贝叶斯优化）相比\textsuperscript{[24,25]}，本文更强调利用机制语义导出的结构化剪枝来减少查询。
+
+这种``把机制语义（隔离强弱）转化为搜索结构（偏序）''的做法，与很多通用的黑盒优化方法是正交的：黑盒方法通常依赖代理模型或启发式来决定下一个查询点，而本文的剪枝规则则直接来自偏序与阈值可行性的推理结果。换言之，本文的贡献更多体现在利用结构把``搜索''从线性扫描变成可剪枝的集合推理；而在该推理框架之上，仍可以引入更丰富的选点准则（例如在不同阈值分布、不同噪声强度下动态调节探索与利用的比例），以进一步改善``首次命中速度''或稳定性。
+
+其次，单调性仅``近似成立''时如何从硬剪枝转向软假设。第三章的正确性定理依赖``严格单调''。但在真实测量中，单调性更合理的理解是``统计意义上的近似单调''：隔离更强通常更慢，但受噪声与系统二阶效应影响，局部边上可能出现性能反转。第四章的违反统计提供了一个重要事实基础：违反并非零概率事件，因此不能把剪枝的正确性理解为无条件保证。
+
+从工程角度，可以把单调性从``硬约束''放宽为``允许容忍度 ε
+的软约束''，即允许 \(g(v)\) 在小幅度上高于 \(g(u)\)
+而不视为违反。假设验证可同时报告 required\_epsilon\_absolute 与
+required\_epsilon\_relative：前者对应绝对差值尺度，后者把差值归一化到源配置的性能尺度上，更便于在不同基准间比较。该视角的意义在于：它把``违反''从二元事件（违/不违）转化为可度量的幅度，从而为后续的保守剪枝、重复测量或阈值邻域加密采样提供了参数依据。
+
+需要强调的是，放宽 ε 并不自动等价于``更安全''：ε
+越大，越容易把真实的反转当作噪声吞掉；ε
+越小，则更接近严格单调但更容易受噪声影响。因此 ε
+的选取应与实验协议（重复次数、置信区间）和目标风险偏好共同决定，并在论文中明确报告，以保证结论可复核。
+
+最后是可解释性与可复现性，即如何从``结果''回溯到``路径''。在系统论文语境下，搜索算法的价值不仅在于``给出推荐配置''，还在于它能否提供可审阅的证据链。本文将搜索过程显式记录为路径与统计产物：一方面在聚合层输出跨阈值、跨随机种子的汇总统计，便于对不同方法进行均值/方差层面的比较；另一方面提供搜索路径可视化（如
+nginx:REQ
+的路径图），使得研究者可以把一次推荐追溯到``每一步查询了什么点、剪掉了哪些祖先/后代、为何最终前沿成立''。这种``路径可解释性''在单调性近似成立的场景尤为重要：当结果与直觉不一致时，路径与违反边列表可以帮助定位问题来自噪声、来自个别边的反转，还是来自阈值选择导致的边界效应。
+
+\newpage
+\section{实验与系统展示}
+
+\subsection{自动化迁移效果与产物正确性验证}
+
+
+\subsubsection{自动迁移效果量化评估}
+本节给出自动化迁移的量化效果评估。评测以人工迁移结果作为对照答案（oracle），从两个维度回答两个问题：第一，自动化是否覆盖了人工版本中的关键
+gate 调用；第二，自动化在多大程度上减少了仍需人工介入的修改量。
+
+（1）覆盖率与对齐率
+
+本文使用以下三个统计量评估 gate 迁移覆盖：三项统计量分别为：目标 gate 调用数（人工迁移版本中出现的 gate
+调用总数，作为期望覆盖的目标数量）、命中 gate
+调用数（自动迁移结果中与人工版本对齐命中的 gate 调用总数）以及未对齐
+gate 调用数（目标中未被命中的 gate 调用总数）。
+
+在本次评测的总体汇总中：目标 gate 调用数为 81，命中 gate 调用数为
+81，未对齐 gate 调用数为 0。
+
+进一步按应用统计见表\ref{tab:gate-coverage-by-app}。
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}lrrrr@{}}
+\caption{按应用统计的 gate 覆盖结果}\label{tab:gate-coverage-by-app}\\
+\toprule
+应用 & 文件数（含改动） & 目标 gate 调用数 & 命中 gate 调用数 & 未对齐
+gate 调用数 \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+nginx & 16 & 23 & 23 & 0 \\
+redis & 8 & 43 & 43 & 0 \\
+lwip & 2 & 2 & 2 & 0 \\
+newlib & 3 & 3 & 3 & 0 \\
+iperf & 1 & 10 & 10 & 0 \\
+合计 & 30 & 81 & 81 & 0 \\
+\end{longtable}
+}
+
+关于指标提取与匹配口径，说明见式(4.1)与式(4.2)。
+
+上述三项统计并非``逐行 diff 对齐''，而是以 manual 迁移版本为
+oracle，比较两份代码中 gate
+调用的多重集合是否一致。具体而言，评测脚本会在 manual/auto
+文件中用正则提取两类调用：
+\begin{equation}
+\begin{aligned}
+&\texttt{flexos\_gate(\ldots)} \\
+&\texttt{flexos\_gate\_r(\ldots)}
+\end{aligned}
+\end{equation}
+
+并将每次 gate 调用归约为（库域，目标函数）二元组并按出现次数计数。记
+oracle 中二元组计数为 \(E_k\)，自动迁移结果中计数为 \(P_k\)，则
+
+
+\begin{equation}
+\begin{aligned}
+&\text{matched\_calls}=\sum_k \min(E_k, P_k),\quad
+\text{expected\_calls}=\sum_k E_k \\
+&\text{unresolved\_calls}=\text{expected\_calls}-\text{matched\_calls}
+\end{aligned}
+\end{equation}
+
+
+该口径本质上更接近``召回率''指标：它关注 auto 是否覆盖了 oracle 期望的
+gate 调用对，而对 auto 产生的额外 gate 调用不做惩罚（因为
+\(\min(E_k,P_k)\) 只截取到 oracle 上限）。从``迁移是否漏改（漏
+gate）''这一核心风险出发，这一评价方式具有直接意义：漏掉 gate
+往往意味着跨域调用绕过隔离边界（见第2章）。
+
+需要强调的是，上述匹配口径有其局限性：第一，它以（库域，目标函数）为粒度而非精确位置，因此无法区分同一函数在不同位置的调用语义差异；第二，oracle
+本身也可能不完备（人工迁移并不保证覆盖所有潜在跨域调用），因此该评测回答的是``是否复现人工迁移答案''，而非``是否达到理论最优安全覆盖''。
+
+因此，本文将其定位为一个工程上可执行、能快速反馈自动改写覆盖情况的覆盖指标，并与第2章的
+ungated-call 检查形成互补。
+
+（2）人工工作量下降
+
+为了量化``自动化迁移减少的人工改动''，本文以人工迁移版本的改动行数为基准，统计自动迁移后仍需人工处理的剩余改动行数，并计算下降比例。
+
+可视化结果见图\ref{fig:auto-manual-effort-reduction}。
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/autogen/fig-auto-manual-effort-reduction/fig-auto-manual-effort-reduction}
+  \caption{五个项目的人工工作量下降比例}
+  \label{fig:auto-manual-effort-reduction}
+\end{figure}
+
+图\ref{fig:auto-manual-effort-reduction}的横轴为项目名称，纵轴为下降比例（越高表示自动化替代的人工改动越多），每个柱体直接对应表\ref{tab:manual-effort-reduction-by-app}中的下降比例。结果显示自动化在 iperf 与 redis 上带来显著节省，而在 lwip 上节省较小，提示宏封装、非标准调用形态与类型约束会显著增加``仍需人工检查与修订''的比例。
+
+
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}lrrrr@{}}
+\caption{各应用人工工作量下降统计}\label{tab:manual-effort-reduction-by-app}\\
+\toprule
+应用 & 人工迁移改动行数 & 剩余改动行数 & 减少行数 & 下降比例 \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+iperf & 43 & 0 & 43 & 100.00\% \\
+lwip & 55 & 38 & 17 & 30.91\% \\
+newlib & 304 & 115 & 189 & 62.17\% \\
+nginx & 635 & 287 & 348 & 54.80\% \\
+redis & 362 & 91 & 271 & 74.86\% \\
+\end{longtable}
+}
+
+从结果可见：当接口调用模式相对集中、可规则化程度较高时（如
+iperf、redis），自动化迁移能够显著减少人工修改；而当项目中存在更多非标准调用形态、宏与结构体封装较多时（如
+lwip），仍会保留一定比例的``剩余改动''，需要结合规则补充与人工审阅共同完成。
+
+值得注意的是，这里的``剩余改动行数''并非简单的文本 diff
+行数。工具链在统计``仍需人工修改的行数''时，引入了迁移语义等价判定：若某个文件虽然在文本上与人工版本不同，但其
+gate 调用在 oracle
+维度上已完全对齐，则该文件可被视为``迁移语义上等价''，并不计入剩余工作量。这样做的原因在于：自动迁移常引入局部重排、临时变量、宏展开差异等结构性变化，若仅用文本
+diff 会显著高估人工需要介入的工作量。
+
+同时也必须强调：gate 覆盖对齐并不意味着代码完全一致。即使未对齐 gate
+调用数为 0，仍可能存在需要人工检查的差异来源，例如：wrapper
+与宏的组织方式不同、临时变量生命周期与类型转换写法不同、头文件与宏风格约束不同，以及与
+gate 无关但影响工程可维护性的约束（注释、include
+顺序、局部编码规范、编译警告规避写法等）。因此本文采用语义化口径来刻画``人需要继续做多少''，更贴近真实工程工作量。
+
+对五个项目加权汇总（以人工迁移改动行数为权重），人工迁移改动总量为 1399
+行，语义口径下的剩余改动为 531 行，整体减少 868 行，对应总体下降比例约为
+62.04\%。这一结果表明：在``跨域 gate
+改写''这一最主要的重复性工作上，规则驱动自动化能稳定带来显著收益。
+
+\subsubsection{自动化迁移产物的正确性验证}
+
+除上述统计对齐外，工程落地还需要对迁移后的构建与运行做验证。本文将验证分为三类：构建验证（迁移后代码能否在目标构建系统下通过编译与链接）、功能验证（基准或回归测试是否通过，例如 nginx 请求路径、redis GET/SET 基本行为），以及性能验证（迁移是否引入额外开销，这与隔离后端、跨域边界以及共享策略相关）。为使“可运行/可验证”这一点落到可视化证据上，本节给出 nginx 与 redis 在 96 个配置（Config index 1..96，对应配置枚举 C01..C96）的隔离布局与吞吐测量结果，并用归一化散点图进行跨应用对照。需要强调的是：配置索引的顺序用于对齐“配置图”与“性能图”的同一配置编号，本身并不保证与隔离强度单调对应。
+
+（1）Nginx：配置与请求路径性能
+
+图~\ref{fig:fig06-nginx-config} 展示了 nginx 在 96 种配置组合下的隔离布局。该图按组件（nginx/newlib/uksched/lwip）给出两类信息：其一，色块表示该组件所在的 compartment（白/蓝/红分别对应 compartment 1/2/3）；其二，黑色三角形表示该组件在该配置下启用了 SFI。可以看到，在该工作负载中 nginx 与 newlib 始终位于 compartment 1，而 uksched 与 lwip 会在不同配置中被划分到 compartment 2 或 3，同时 SFI 也会按组件在不同配置中开启/关闭。换言之，这 96 个配置覆盖了“仅调整 SFI”“仅调整跨域边界”“二者同时变化”等多种组合，而非简单的“固定开启 SFI”或“按 1/2/3 compartment 分段递增”。
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure06/fig-06_nginx-config/fig-06_nginx-config}
+\caption{nginx 配置与隔离组合}
+\label{fig:fig06-nginx-config}
+\end{figure}
+
+对应地，图~\ref{fig:fig06-nginx-req} 给出了 nginx 请求路径的吞吐（单位：REQ/s）在 96 个配置上的测量结果。整体量级在约 16.0k--64.7k REQ/s 之间变化：即使在更激进的隔离组合下仍能保持稳定的正吞吐，没有出现“异常归零”或明显违背直觉的跳变。结合配置图可以更准确地理解开销来源：例如配置 C01 与 C02 的 compartment 布局完全一致，仅在 uksched 的 SFI 开关上不同，吞吐从约 64.7k 下降到约 62.8k REQ/s，体现了单一组件启用 SFI 带来的可观测但不至于灾难性的损失。更一般地，当 uksched/lwip 被划入不同 compartment 且同时启用 SFI 时，吞吐会进一步下降，这与跨域调用/地址隔离带来的额外边界成本相吻合。
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure06/fig-06_nginx-req/fig-06_nginx-req}
+\caption{nginx 请求路径性能}
+\label{fig:fig06-nginx-req}
+\end{figure}
+
+（2）Redis：配置与存储操作性能
+
+对于内存型服务 redis，图~\ref{fig:fig06-redis-config} 同样以“组件所在 compartment + 组件级 SFI 开关”的方式给出了 96 个配置的隔离布局。与 nginx 类似，redis 与 newlib 始终处于 compartment 1，而 uksched 与 lwip 会被放入 compartment 2 或 3；同时，SFI 会在 redis/newlib/uksched/lwip 等组件上按配置开启/关闭。该图的含义是“隔离边界与 SFI 的组合枚举”，而不是若干连续可加的数值参数曲线。
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure06/fig-06_redis-config/fig-06_redis-config}
+\caption{redis 配置与隔离组合}
+\label{fig:fig06-redis-config}
+\end{figure}
+
+图~\ref{fig:fig06-redis-get} 与图~\ref{fig:fig06-redis-set} 分别展示了 redis 的 GET 与 SET 吞吐（单位：GET/s 与 SET/s）在 96 个配置上的测量结果。两者均处在 $10^5$--$10^6$ 量级：GET 约为 116.5k--886.7k GET/s，SET 约为 102.3k--772.7k SET/s。该结果有两点工程含义：第一，迁移后的运行结果保持在合理数量级且始终为正，说明测量流程与迁移产物在功能层面没有出现“明显跑偏”的异常信号；第二，吞吐的变化幅度显著大于 nginx，这与 redis 对内存访问路径、调度与网络栈交互更敏感的特性一致。进一步结合配置图可见，当 uksched/lwip 被划入不同 compartment 或当关键组件启用 SFI 时，GET/SET 吞吐往往会下降，这与隔离边界引入的额外跨域成本相符合。
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure06/fig-06_redis-get/fig-06_redis-get}
+\caption{redis GET 性能}
+\label{fig:fig06-redis-get}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure06/fig-06_redis-set/fig-06_redis-set}
+\caption{redis SET 性能}
+\label{fig:fig06-redis-set}
+\end{figure}
+
+（3）跨应用归一化比较
+
+为了消除不同工作负载之间的绝对量纲差异，便于直接比较同一隔离配置对两类应用的影响，图~\ref{fig:nginx-redis-normalized} 给出了归一化散点对照：横轴为 redis 的归一化性能（GET），纵轴为 nginx 的归一化性能（REQ）。该图不是“随配置索引变化的两条曲线”，而是把两个应用在同一配置下的性能配对后绘制为散点；此外，这里的归一化口径是“除以各自数据集中观测到的最大吞吐”（即最大值归一化），因此坐标 1 表示“达到该应用在该实验中的最好配置”，而非“相对于某个预设基准配置”。图中虚线 $y=x$ 表示两者在同一配置下的相对保留率相同。
+
+\begin{figure}[htbp]
+\centering
+\includesvg[width=1.0\linewidth]{figures/figure07/fig-07_nginx-redis-normalized/fig-07_nginx-redis-normalized}
+\caption{示例性能归一化结果图}
+\label{fig:nginx-redis-normalized}
+\end{figure}
+
+从散点分布可以观察到两点现象。首先，多数点位于虚线 $y=x$ 上方，意味着在同一隔离配置下 nginx 往往能保留更高的归一化性能（相对最大值的下降更小），而 redis 的相对退化更明显。其次，点的形状标识了该配置使用的 compartment 数量（1/2/3）：总体上，使用更多 compartment 的点更倾向于分布在左下区域，反映出更强的边界划分通常会同时压低两类应用的相对吞吐。需要强调的是，这一图的作用是提供“迁移后性能行为是否符合隔离直觉”的回归信号：当更强隔离与更激进的 SFI 组合带来更明显的吞吐损失时，这与系统开销模型一致，也与前述功能验证共同构成对迁移产物正确性的工程化佐证。
+
+\subsection{安全配置搜索效果评估}
+
+本节基于搜索实验的汇总统计产物，对三种搜索策略进行对比：穷举（exhaustive）、随机（random）与均衡剪枝（balanced，本文方法）。
+
+实验设置与对比方法见下文，聚合结果见表\ref{tab:search-agg-results}。
+
+实验数据集包括 nginx 请求路径（nginx:REQ）、redis 读操作（redis:GET）与
+redis 写操作（redis:SET）；每个数据集的配置节点数为
+\(|V|=96\)。阈值与随机性设置为：每个数据集选取 5
+个性能阈值，并对随机策略与 tie-break 引入 10
+个随机种子，因此每个方法每个数据集共有 \(5\times 10=50\)
+次试验。对比方法包含两条基线与一条本文方法：穷举（exhaustive）扫描全部节点以获得真值前沿；随机（random）每轮在候选集中均匀随机选点；均衡剪枝（balanced）每轮选择期望剪枝量最大的点。评估指标使用查询比例与首次命中比例：前者为查询次数与配置规模之比（查询比例
+\(=\text{query\_count}/|V|\)），后者为首次命中最优前沿所需查询次数与配置规模之比（首次命中比例
+\(=\text{first\_result\_query}/|V|\)）。
+
+在该设置下，查询比例与首次命中效率见表\ref{tab:search-agg-results}。
+
+从聚合结果（每个数据集 50
+次试验统计）可得到各方法的平均查询比例与首次命中比例（括号内为标准差）：
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccc}
+\toprule
+数据集 & 方法 & 查询次数 & 查询比例 & 首次命中查询次数 & 首次命中查询比例 \\
+\midrule
+nginx:REQ & balanced & 15.40±6.12 & 0.160±0.064 & 13.60±6.15 & 0.142±0.064 \\
+nginx:REQ & random & 19.12±4.24 & 0.199±0.044 & 11.22±5.96 & 0.117±0.062 \\
+nginx:REQ & exhaustive & 96.00±0.00 & 1.000±0.000 & 64.00±26.77 & 0.667±0.279 \\
+redis:GET & balanced & 26.20±10.26 & 0.273±0.107 & 9.60±3.83 & 0.100±0.040 \\
+redis:GET & random & 27.54±6.94 & 0.287±0.072 & 12.18±7.48 & 0.127±0.078 \\
+redis:GET & exhaustive & 96.00±0.00 & 1.000±0.000 & 32.00±13.39 & 0.333±0.139 \\
+redis:SET & balanced & 35.00±13.45 & 0.365±0.140 & 21.00±10.79 & 0.219±0.112 \\
+redis:SET & random & 28.12±5.91 & 0.293±0.062 & 9.12±7.01 & 0.095±0.073 \\
+redis:SET & exhaustive & 96.00±0.00 & 1.000±0.000 & 17.97±3.89 & 0.187±0.041 \\
+\bottomrule
+\end{tabular}
+\caption{三种搜索方法在三个数据集上的聚合结果（均值±标准差）}
+\label{tab:search-agg-results}
+\end{table}
+
+基于表\ref{tab:search-agg-results}可得以下观察：首先，相比穷举，balanced 在三个数据集上均显著降低查询比例（相对减少约
+63\%--84\%
+的查询量），体现了偏序剪枝的有效性。其次，相比随机候选，均衡剪枝在
+nginx:REQ 与 redis:GET 上降低了平均查询比例，但在 redis:SET
+上的平均查询比例更高，说明``期望剪枝最大化''并不保证在所有分布下优于随机策略。最后，在首次命中效率方面，均衡剪枝在
+redis:GET 上优于随机候选，但在 nginx:REQ 与 redis:SET
+上并非最优，这提示该策略更偏向总体剪枝收益，而非直接优化``最早触达前沿''。
+
+从标准差可以进一步观察到：不同阈值下前沿规模与可行概率分布差异较大，导致随机策略与均衡剪枝的波动均不可忽略。例如
+redis:SET 上均衡剪枝的查询比例标准差达
+0.140，表明该数据集对阈值更敏感，或者偏序结构与可行集边界更复杂。若进一步报告置信区间，可用
+
+\begin{equation}
+\text{CI}_{95\%} \approx \bar{x} \pm 1.96\cdot \frac{s}{\sqrt{n}}
+\end{equation}
+
+其中 \(\bar{x}\) 为均值，\(s\)
+为样本标准差，\(n=50\)。该统计视角有助于区分``均值优势''与``稳定性优势''。
+
+为直观展示阈值维度上的对比结果，图\ref{fig:query-ratio-top5}与图\ref{fig:first-hit-top5}给出三组数据集在多阈值下的趋势汇总。
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/search/svg/search_baseline_query_ratio_top5_all}
+  \caption{不同方法的查询比例对比（top5 阈值汇总）}
+  \label{fig:query-ratio-top5}
+\end{figure}
+
+图\ref{fig:query-ratio-top5}由三个子图组成，分别对应 nginx:REQ、redis:GET、redis:SET；横轴为阈值，纵轴为跨随机种子取均值后的查询比例，曲线越低表示用更少的查询覆盖同一阈值下的可行前沿。与穷举相比，均衡剪枝与随机候选均能显著降低查询比例，其中均衡剪枝在部分数据集与阈值区间内进一步优于随机候选，但并非在所有数据集上都占优，这印证了剪枝收益与偏序结构、可行集分布相关。
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/search/svg/search_baseline_first_result_top5_all}
+  \caption{不同方法的首次命中查询次数对比（top5 阈值汇总）}
+  \label{fig:first-hit-top5}
+\end{figure}
+
+图\ref{fig:first-hit-top5}同样以阈值为横轴，但纵轴刻画首次命中最优前沿所需的查询次数（跨随机种子取均值），数值越低表示越早触达最优前沿。结果表明，不同策略在``尽早命中''上的优势并不稳定：均衡剪枝倾向于在总体剪枝效率上获益，而首次命中往往受阈值位置与前沿形态影响更大，因此在不同数据集上可能出现随机候选更早命中的情况。
+
+同时，图\ref{fig:nginx-search-path}给出一次具体阈值下的搜索路径可视化示例，有助于理解剪枝机制在偏序结构上的展开方式。
+
+偏序结构示例见图\ref{fig:fig08_plot}。
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/search/svg/nginx_search_path}
+  \caption{nginx:REQ 数据集的搜索路径可视化示例}
+  \label{fig:nginx-search-path}
+\end{figure}
+
+图\ref{fig:nginx-search-path}在配置偏序图上叠加了一次搜索过程的路径信息：节点表示配置点，节点提示信息包含配置标识与测得的平均性能值，图标题给出了该次试验的阈值、总查询次数以及首次命中可行解的轮次；图中高亮边刻画实际搜索推进路径，红色强调节点标出该次示例中返回的前沿配置之一。该图直观展示了偏序剪枝的工作方式，即每次查询不仅为当前点定性（可行或不可行），还会同时裁剪其祖先或后代中的大批候选，从而将需要实际测量的节点数量压缩到远小于全量扫描。
+
+最后给出单调性假设验证。
+
+单调性假设为剪枝提供理论依据，但实际测量中可能被违反。表\ref{tab:monotonic-violation-summary}统计了三组序列在偏序边上的违反情况。
+
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}lrrrrr@{}}
+\caption{单调性违反统计汇总}\label{tab:monotonic-violation-summary}\\
+\toprule
+序列 & 偏序边数 & 违反数 & 违反比例 & 最大差值 & 平均差值 \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+nginx:REQ & 288 & 33 & 11.46\% & 1243.140 & 310.039 \\
+redis:GET & 288 & 29 & 10.07\% & 13728.686 & 3993.014 \\
+redis:SET & 288 & 25 & 8.68\% & 8960.742 & 2771.363 \\
+\end{longtable}
+}
+
+先说明违反判定条件与 gap 定义。
+
+对偏序边 \(u\to v\)，本文采用的单调性要求为：
+\begin{equation}
+g(u) + \varepsilon \ge g(v)
+\end{equation}
+
+其中默认采用绝对容忍度（\(\varepsilon=0\)）。当
+\(g(v) > g(u)+\varepsilon\) 时即记为违反，并将 \(\text{gap}=g(v)-g(u)\)
+作为违反幅度。表中``最大差值''与``平均差值''正对应该 gap
+的最大值与均值，反映``强隔离配置性能反而更高''的程度。
+
+可以看到，在本实验数据中单调性并非严格成立，但违反比例在 8.68\%--11.46\%
+的量级。结合测量过程与系统行为，违反产生的原因主要可归结为三类：其一是运行测量噪声与系统抖动带来的统计误差；其二是缓存、预取等硬件机制引入的非线性性能变化；其三是不同隔离组合对调度与内存布局产生的二阶影响。
+
+图\ref{fig:hypothesis-a2b-panel}给出``父节点 A 与子节点 B 的性能散点图''三联图，用于直观观察违反分布，分别对应 nginx:REQ、redis:GET 与 redis:SET。
+
+\begin{figure}[h]
+  \centering
+  \includesvg[width=1.0\linewidth]{figures/search/svg/hypothesis_a2b_scatter_panel}
+  \caption{单调性散点图三联图：nginx:REQ、redis:GET 与 redis:SET}
+  \label{fig:hypothesis-a2b-panel}
+\end{figure}
+
+每个散点表示偏序边上一组父子配置（A 到
+B）的性能对比：横轴为父节点 A 的性能，纵轴为子节点 B 的性能，虚线为
+\(y=x\)。若点落在虚线之上，表示子节点性能高于父节点，对应单调性被违反；反之则满足单调性。三组序列均存在一定比例的点落在虚线之上，说明单调性并非严格成立，但违反比例整体在约一成左右，且可以用差值幅度进一步刻画其严重程度，这提示剪枝策略在工程上需考虑噪声与局部反转带来的误剪枝风险，并在需要时引入保守化或重复测量机制。
+
+在单调性被违反时，剪枝策略可能出现``误剪枝风险''。不过，在本文实现中，balanced
+仍会对候选集进行逐步查询与更新，且实验中并未观察到搜索完全失效；对于更鲁棒的需求，可在未来工作中引入显式探索噪声或对偏序关系进行动态修正。
+
+随后讨论其与阈值剪枝的关系（风险是阈值相关的）。
+
+需要指出的是，式(4.3)
+的违反是对``实值性能函数的全局反单调性''进行检验，而剪枝的实际触发仅依赖于
+\(g(c)\) 与阈值 \(\theta\) 的比较。即便存在 \(g(v)>g(u)\)
+的局部违反，只要 \(g(u)\) 与 \(g(v)\)
+同处于阈值同侧（都可行或都不可行），就不会造成阈值意义下的误剪枝。因此，违反比例可以被视为一种``潜在风险信号''，但并不等价于``必然错误''。
+
+从工程角度出发，若希望进一步降低误剪枝概率，可考虑两类改进：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  引入容忍度或重复测量：当 \(g(c)\)
+  接近阈值边界时，进行多次测量取均值/置信区间，并以区间与阈值关系决定是否剪枝；
+\item
+  保守剪枝：在发现可能违反的局部区域时，限制剪枝到 cover
+  邻居或延迟剪枝，代价是增加一定查询次数。
+\end{enumerate}
+
+这些改进会把``单调性假设''从硬约束转化为``带噪声的统计假设''，更接近真实测量场景。
+
+再看违反幅度分布：均值并不足以刻画``典型风险''。
+
+表\ref{tab:monotonic-violation-summary}已报告各序列的平均差值与最大差值，但 gap 分布存在长尾时，均值容易被极端值主导。为刻画``典型违反''与尾部风险，表\ref{tab:gap-quantile-tail} 进一步给出 gap 的中位数、p90、p95 及相对容忍度 p95。
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+序列 & gap 中位数 & gap p90 & gap p95 & 相对容忍度 p95 \\
+\midrule
+nginx:REQ & 167.414 & 857.842 & 947.787 & 0.027399 \\
+redis:GET & 2298.480 & 9204.625 & 10147.310 & 0.074154 \\
+redis:SET & 2563.028 & 4705.699 & 6609.200 & 0.044432 \\
+\bottomrule
+\end{tabular}
+\caption{违反边 gap 的分位数统计与相对容忍度}
+\label{tab:gap-quantile-tail}
+\end{table}
+
+从表\ref{tab:gap-quantile-tail} 可见，nginx:REQ 的典型违反幅度显著小于 redis 两个序列；同时 redis:GET 的尾部更重（p95 与相对容忍度 p95 均最高）。由于不同基准的绝对吞吐量尺度不同，跨序列比较时更应参考相对容忍度而非绝对 gap。
+
+此外需要说明：本实验的假设验证以 cover 边为单位进行（每个数据集边数为
+288）。在偏序中，若对所有 cover
+边都满足单调性，则可由链式传递推出任意可比较对也满足单调性；因此以 cover
+边为验证对象既能保持规模可控，也与剪枝所依赖的结构边界一致。
+
+进一步给出相对容忍度 ε 的效果示例，从``违反比例''过渡到``可控参数''。
+
+为进一步说明``把违反幅度量化''的工程价值，可将每条违反边的相对容忍度解释为：若采用相对模式容忍度
+ε，则当 ε 不小于该值时，该边在容忍度意义下不再被判为违反。以若干候选 ε
+值为例（统计对象仍为上述 33/29/25 条违反边），nginx:REQ 在 ε=0.02 时仍有
+6 条边超过容忍度，ε=0.03 时仅剩 1 条，ε=0.05 时为 0；redis:GET 在 ε=0.03
+时仍有 10 条，ε=0.05 时剩 4 条，ε=0.08 时为 0；redis:SET 在 ε=0.03
+时仍有 8 条，ε=0.05 时剩 1 条，ε=0.08 时为 0。
+
+上述统计并不意味着``应当直接取较大的
+ε''，而是展示了一个更可操作的分析框架：与其只报告``违反了多少''，不如进一步报告``需要多大的
+ε
+才能把大部分违反解释为噪声''。在面向剪枝搜索的场景中，该框架可用于两类决策：其一，用于设计更保守的剪枝触发条件（例如在阈值附近引入重复测量，或仅在置信区间与阈值显著分离时才剪枝）；其二，用于区分``可忽略的轻微反转''与``可能影响阈值可行性的显著反转''，从而把鲁棒性讨论落到可复核的参数与数据产物上。
+
+最后说明``误剪枝''的必要条件：违反必须跨越阈值。
+
+需要进一步区分``存在违反''与``违反会导致结果错误''。从本文的阈值剪枝规则来看，真正可能影响前沿完备性的风险主要来自对不可行点的向上剪枝：当某点
+\(c\) 被判为不可行（\(g(c)\) 低于阈值）后，算法会一次性删除其后代集合
+\(desc(c)\)。若在真实测量中存在某个后代点 \(v\)（更强隔离）满足 \(g(v)\)
+反而高于阈值，则该 \(v\)
+会在尚未被查询的情况下被删除，从而可能导致前沿缺失。
+
+因此，误剪枝需要同时满足两个条件：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  阈值跨越：存在可比较对 \(u\preceq v\)
+  的局部反转，而且反转幅度足以让 \(u\) 与 \(v\) 落在阈值的两侧（\(g(u)\)
+  不可行而 \(g(v)\) 可行）；
+\item
+  时序触发：搜索轨迹在查询到 \(v\) 之前先查询到 \(u\)
+  并触发向上剪枝。
+\end{enumerate}
+
+这也解释了为什么单调性违反统计应与阈值设置共同解读：相同的违反边集合，在不同阈值下对应的``跨阈值''概率不同，最终风险也不同。实践中更可行的做法是对阈值邻域进行保护：当
+\(g(c)\)
+距阈值很近时，不立即执行全量向上剪枝，而改为延迟决策、重复测量或仅剪枝
+cover 邻居；当 \(g(c)\)
+明显低于阈值时，再执行全量剪枝以换取查询次数的显著下降。
+
+最后，该分析也提示评价指标应兼顾``成本''与``波动''：保守化剪枝会提高查询比例的均值，但可能降低方差并提升可复现性；激进剪枝则可能在少量阈值上出现更强波动。因而在工程落地中，建议同时报告均值与离散度（标准差或置信区间），并把违反幅度（gap
+与所需容忍度）作为解释差异的重要证据。
+
+\subsection{系统展示（Web
+自动化平台：设计与现状说明）}
+
+为进一步降低复现与使用门槛，本文规划将 AutoFlex
+的``迁移---评测---搜索---绘图''流程封装为 Web
+自动化平台。其目标是让用户以最少的本地环境配置完成以下任务：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  上传或选择目标源码（本地路径或远程地址）；
+\item
+  选择目标应用与评测配置；
+\item
+  一键触发：自动迁移（含覆盖检查）→ 构建/运行 → 配置搜索 →
+  图表与报告生成；
+\item
+  下载迁移 diff、搜索推荐配置与可运行镜像/日志。
+\end{enumerate}
+
+当前实现状态：截至本文撰写，工具链已具备脚本化流水线与统一绘图入口，能够完成迁移、覆盖检查、评测运行、搜索与图表生成；但尚未集成可交互的
+Web
+前端与后端任务编排。后续可在保持脚本接口稳定的前提下进行封装，实现任务队列、状态展示与结果归档。
+
+为使该``平台化''描述更具工程可行性，本文给出一个最小架构设计（仍属于规划，不构成当前实现）：
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  任务描述层：Web
+  端将一次运行抽象为一个作业（包含目标项目、迁移规则配置、阈值集合、随机种子集合、输出位置等参数）。
+\item
+  执行编排层：后端以作业为单位调用已有流水线阶段：自动迁移（含覆盖检查）、构建与运行、配置搜索、图表与报告生成。
+\item
+  产物归档层：将每个作业的输出产物打包归档（含统计表、图表与日志），并提供下载与可视化入口；对大体量数据可采用内容寻址缓存避免重复计算。
+\item
+  可审阅界面：至少提供三类视图：迁移差异视图（文件树与改动行）、搜索统计视图（查询比例与首次命中图）、风险提示视图（ungated-call
+  列表与静态扫描摘要）。
+\end{enumerate}
+
+该设计尽量保持``薄封装''：把已有脚本当作稳定
+API，而不是重写其内部逻辑，从而降低平台化改造的风险。
+
+\newpage
+\section{结论与展望}
+
+\subsection{主要贡献总结}
+
+本文围绕 FlexOS 的工程落地门槛，提出并实现 AutoFlex 工具链，目标是在不牺牲可审阅性的前提下，同时降低两类核心成本：一类是遗留 C 代码向 gate 调用范式迁移的人工成本，另一类是在多维隔离配置空间中寻找满足性能阈值约束的最强隔离方案的查询成本。相较于仅给出机制层面的隔离抽象，本文更强调把``机制可用''推进到``工程可用''：既要能规模化迁移，也要能在可复现的实验协议下解释搜索过程和结果。
+
+在自动化迁移方面，本文给出一条规则驱动、分层可回溯的流水线：首先用符号关系与工程约束构建函数到库域的映射（例如借助 cscope\textsuperscript{[14]} 的定义定位），再用 Coccinelle 的结构化语义补丁\textsuperscript{[10,26]}覆盖高频、同构的调用改写场景，并通过语句级后处理收敛 if/return/类型转换等复杂形态。该设计刻意避免``一次性黑盒改写''，而是将迁移拆成可检查的阶段性产物（映射表、补丁、差异与统计），使人工审阅从``全量通读''收敛为``围绕少量候选点复核''。
+
+在迁移后审阅方面，本文将风险焦点放在``跨域调用是否被 gate 完整覆盖''这一工程上最关键的问题上，并配套给出覆盖检查与可选的通用静态扫描器集成，用于将潜在问题尽早转化为可定位的提示信号。这里的设计取舍是务实的：通用扫描器（如 Semgrep、Cppcheck、Flawfinder\textsuperscript{[11--13]}）并不直接证明隔离边界完备，但它们能以较低成本补齐一般性缺陷线索；而覆盖检查与运行态证据更贴近``边界是否被绕过''这一核心安全语义。
+
+在配置搜索方面，本文将 FlexOS 的隔离配置空间建模为 DAG 偏序集合，并在单调性假设下用祖先/后代闭包实现批量剪枝，从而把一次昂贵查询的收益放大为对候选集的一次集合推理。进一步地，本文提出以期望剪枝量最大化为目标的 balanced 策略，并通过跨阈值、跨随机种子的实验汇总展示了相对穷举显著降低查询比例的效果。该思路与 Wayfinder 等自动化配置探索工作\textsuperscript{[3]}在问题形态上相近（都面对``高维配置 + 高代价评测''），但本文更强调利用隔离强弱的语义结构把搜索转化为可剪枝的偏序推理，同时也将单调性违反的统计分析纳入评估框架，使结论可被更细粒度地解释与复核。
+
+\subsection{局限性分析}
+
+尽管 AutoFlex 在本文的数据集与实验协议下取得了较好的量化结果，但仍存在若干不可回避的边界条件。首先，规则驱动迁移天然依赖于可维护的``函数---库域''映射与规则体系：当目标工程采用更复杂的构建组织、符号定义不唯一、或存在大量宏封装与函数指针等非常规形态时，映射不确定性会显著上升，后处理规则也更容易面临``覆盖不足''与``误改风险''之间的张力。本文的策略偏向保守：复杂场景宁可留给人工复核，也不强行全自动吞掉，这意味着迁移收益的上限会受到工程风格与代码形态的影响。
+
+其次，本文的安全审阅机制更接近``工程化的风险收敛''而非``形式化的正确性证明''。通用静态扫描器\textsuperscript{[11--13]}与覆盖检查能够提升可观测性与可审阅性，但它们并不等价于对跨域语义的完备验证：例如 gate 调用协议是否在所有错误路径上保持一致、资源生命周期是否在跨域边界处被正确管理、并发下是否引入新的竞态与死锁等问题，仍需要更强的分析与更贴近真实部署的回归测试支撑。换言之，本文更关注把风险从``不可见''变为``可定位''，但尚未覆盖所有语义维度。
+
+最后，搜索算法的效率收益依赖于偏序结构与单调性近似成立这一事实基础。本文已通过违反比例与 gap 分布对假设偏离进行量化，但当实际系统的噪声更大、缓存/调度等二阶效应更强，或阈值设置使大量配置处于边界附近时，剪枝收益可能退化，且存在阈值意义下的误剪枝风险。与黑盒的配置优化方法（例如 SMBO/贝叶斯优化\textsuperscript{[24,25]}）相比，偏序剪枝的优势来自结构推理；一旦结构假设不稳，其鲁棒性就需要额外机制补强。
+
+\subsection{未来工作}
+
+未来工作可以沿着``降低规则维护成本''、``增强安全语义验证''与``提升搜索鲁棒性''三条主线推进。
+
+在迁移自动化方面，一个直接方向是把现有规则体系从``静态维护''演进为``可持续生长''：一方面继续利用语义补丁的可读性与可审阅性优势\textsuperscript{[10,26]}，将规则变更与差异产物纳入代码审查流程；另一方面引入更丰富的程序分析信号，把函数---库域映射从纯符号定位扩展到``构建系统与依赖关系驱动的归属推断''，并在不确定时生成更精细的候选解释与复核清单。这样可以把规则补全从一次性体力劳动变成可迭代、可追踪的工程流程。
+
+在安全验证方面，更值得投入的是对``跨域语义''的系统化检查：除通用扫描器\textsuperscript{[11--13]}提供的低成本线索外，可以进一步把 gate 调用协议、错误传播、资源释放与并发同步等关键语义点显式化为可验证属性，并结合运行态证据把静态可疑点转化为可复现的失败信号。与追求强形式化保证的工作（例如微内核 seL4 的形式化验证\textsuperscript{[20]}）相比，这条路线更偏向工程可落地的``中等强度保证''：它未必能给出数学意义上的完备性证明，但能在现实开发流程中持续降低漏改与语义漂移带来的风险。
+
+在搜索算法方面，非单调与噪声环境下的鲁棒性仍是关键挑战。本文已给出 gap 与相对容忍度的量化框架，未来可进一步把其变成算法策略：例如在阈值邻域引入重复测量与置信区间判定，将硬剪枝改为带保护的保守剪枝；或在偏序结构上学习``更可靠''的局部单调区间，使剪枝触发更贴近真实测量行为。与此同时，也可以将偏序剪枝与黑盒优化方法\textsuperscript{[24,25]}结合：让结构推理负责大规模删减候选空间，让模型化/启发式方法在剩余空间内更快定位前沿，从而在``结构可用''与``噪声可控''之间取得更稳定的折中。
+
+最后，在可复现与可用性方面，AutoFlex 的脚本化流水线已经具备阶段化产物与统一入口，未来可以进一步对齐现有系统工作中成熟的 artifact 交付方式\textsuperscript{[2]}：将一次运行的输入、参数、日志与产物打包为可追溯对象，形成可缓存、可复验、可比较的实验单元。在此基础上再做 Web 平台化封装，会更容易把``任务编排''与``证据链产物''一致地呈现给使用者，从而把工具链从研究原型推进到可长期维护的工程系统。
+
+
+% --- 参考文献 ---
+\newpage
+\fancyhead[LH]{\zihao{-5}{\songti 重庆大学本科学生毕业论文（设计）}}
+\fancyhead[RH]{\zihao{-5}{\songti 参考文献}}
+
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
+\renewcommand\refname{参考文献}
+
+\zihao{5}
+\begin{thebibliography}{99}
+\setlength{\itemsep}{0pt}
+\bibitem{1} Hugo Lefeuvre, Vlad-Andrei Bădoiu, Alexander Jung, Stefan Lucian
+Teodorescu, Sebastian Rauch, Felipe Huici, Costin Raiciu, Pierre
+Olivier. \emph{FlexOS: towards flexible OS isolation}. ASPLOS 2022. DOI:
+10.1145/3503222.3507759. URL:
+\url{https://dblp.org/rec/conf/asplos/LefeuvreBJTRHRO22}
+
+\bibitem{2} Hugo Lefeuvre, Vlad-Andrei Bădoiu, Alexander Jung, Stefan Lucian
+Teodorescu, Sebastian Rauch, Felipe Huici, Costin Raiciu, Pierre
+Olivier. \emph{FlexOS: Towards Flexible OS Isolation (Artifact)}.
+Zenodo, 2021. DOI: 10.5281/zenodo.5902507. URL:
+\url{https://doi.org/10.5281/zenodo.5902507}
+
+\bibitem{3} Alexander Jung, Hugo Lefeuvre, Charalampos Rotsos, Pierre
+Olivier, Daniel Oñoro-Rubio, Mathias Niepert, Felipe Huici.
+\emph{Wayfinder: Towards Automatically Deriving Optimal OS
+Configurations}. ACM APSys\textquotesingle21. DOI:
+10.1145/3476886.3477506. URL:
+\url{https://dl.acm.org/doi/10.1145/3476886.3477506}
+
+\bibitem{4} Simon Kuenzer, Vlad-Andrei Bădoiu, Hugo Lefeuvre, Sharan
+Santhanam, Alexander Jung, Gaulthier Gain, Cyril Soldani, Costin Lupu,
+Stefan Teodorescu, Cristina Răducanu, Costin Banu, Laurent Mathy, Razvan
+Deaconescu, Costin Raiciu, Felipe Huici. \emph{Unikraft: Fast,
+Specialized Unikernels the Easy Way}. EuroSys\textquotesingle21
+(arXiv:2104.12721). DOI: 10.48550/arXiv.2104.12721. Related DOI:
+10.1145/3447786.3456248. URL: \url{https://arxiv.org/abs/2104.12721}
+
+\bibitem{5} Hugo Lefeuvre, Vlad-Andrei Bădoiu, Stefan Teodorescu, Pierre
+Olivier, Tiberiu Mosnoi, Razvan Deaconescu, Felipe Huici, Costin Raiciu.
+\emph{FlexOS: making OS isolation flexible}. HotOS 2021. DOI:
+10.1145/3458336.3465292. URL:
+\url{https://dblp.org/rec/conf/hotos/LefeuvreBTOMDHR21}
+
+\bibitem{6} Vasily A. Sartakov, Lluís Vilanova, Peter R. Pietzuch.
+\emph{CubicleOS: a library OS with software componentisation for
+practical isolation}. ASPLOS 2021. DOI: 10.1145/3445814.3446731. URL:
+\url{https://dblp.org/rec/conf/asplos/SartakovVP21}
+
+\bibitem{7} Anjo Vahldiek-Oberwagner, Eslam Elnikety, Nuno O. Duarte,
+Michael Sammler, Peter Druschel, Deepak Garg. \emph{ERIM: Secure,
+Efficient In-process Isolation with Protection Keys (MPK)}. USENIX
+Security Symposium, 2019. URL:
+\url{https://www.usenix.org/conference/usenixsecurity19/presentation/vahldiek-oberwagner}
+
+\bibitem{8} Intel. \emph{Intel 64 and IA-32 Architectures Software
+Developer's Manual} (Memory Protection Keys). URL:
+\url{https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html}
+
+\bibitem{9} Robert Wahbe, Steven Lucco, Thomas E. Anderson, Susan L. Graham.
+\emph{Efficient Software-Based Fault Isolation}. SOSP\textquotesingle93.
+URL:
+\url{https://courses.cs.washington.edu/courses/cse551/15sp/papers/sfi-sosp93.pdf}
+
+\bibitem{10} Coccinelle project. \emph{Coccinelle: Program Matching and
+Transformation Engine (SmPL)}. URL:
+\url{https://coccinelle.gitlabpages.inria.fr/website/}
+
+\bibitem{11} Semgrep. \emph{Semgrep Documentation}. URL:
+\url{https://semgrep.dev/}
+
+\bibitem{12} Cppcheck. \emph{Cppcheck: A tool for static C/C++ code
+analysis}. URL: \url{https://cppcheck.sourceforge.io/}
+
+\bibitem{13} David A. Wheeler. \emph{Flawfinder}. URL:
+\url{https://dwheeler.com/flawfinder/}
+
+\bibitem{14} cscope. \emph{cscope: a source code searching tool}. URL:
+\url{https://cscope.sourceforge.net/}
+
+\bibitem{15} Nginx. \emph{nginx.org}. URL: \url{https://nginx.org/}
+
+\bibitem{16} Redis. \emph{redis.io}. URL: \url{https://redis.io/}
+
+\bibitem{17} ESnet. \emph{iperf3 (network throughput measurement tool)}.
+URL: \url{https://github.com/esnet/iperf}
+
+\bibitem{18} SQLite. \emph{sqlite.org}. URL: \url{https://www.sqlite.org/}
+
+\bibitem{19} Paul Barham, Boris Dragovic, Keir Fraser, Steven Hand, Tim
+Harris, Alex Ho, Rolf Neugebauer, Ian Pratt, Andrew Warfield. \emph{Xen
+and the art of virtualization}. SOSP 2003. DOI: 10.1145/945445.945462.
+URL: \url{https://dblp.org/rec/conf/sosp/BarhamDFHHHN03}
+
+\bibitem{20} Gerwin Klein, Kevin Elphinstone, Gernot Heiser, June Andronick,
+David Cock, Philip Derrin, Dhammika Elkaduwe, Kai Engelhardt, Rafal
+Kolanski, Michael Norrish, Thomas Sewell, Harvey Tuch, Simon Winwood.
+\emph{seL4: formal verification of an OS kernel}. SOSP 2009. DOI:
+10.1145/1629575.1629596. URL:
+\url{https://dblp.org/rec/conf/sosp/KleinEHACDEEKNSTW09}
+
+\bibitem{21} Anil Madhavapeddy, Richard Mortier, Charalampos Rotsos, David
+Scott, Balraj Singh, Thomas Gazagnaire, Steven Smith, Steven Hand, Jon
+Crowcroft. \emph{Unikernels: library operating systems for the cloud}.
+ASPLOS 2013. DOI: 10.1145/2451116.2451167. URL:
+\url{https://dblp.org/rec/conf/asplos/MadhavapeddyMRSSGSHC13}
+
+\bibitem{22} Chia-Che Tsai, Donald E. Porter, Mona Vij. \emph{Graphene-SGX:
+a practical library OS for unmodified applications on SGX}. USENIX ATC
+2017. URL: \url{https://dblp.org/rec/conf/usenix/TsaiPV17}
+
+\bibitem{23} Bennet Yee, David Sehr, Gregory Dardyk, J. Bradley Chen, Robert
+Muth, Tavis Ormandy, Shiki Okasaka, Neha Narula, Nicholas Fullagar.
+\emph{Native Client: a sandbox for portable, untrusted x86 native code}.
+IEEE Symposium on Security and Privacy (SP) 2009. DOI:
+10.1109/SP.2009.25. URL:
+\url{https://dblp.org/rec/conf/sp/YeeSDCMOONF09}
+
+\bibitem{24} Frank Hutter, Holger H. Hoos, Kevin Leyton-Brown.
+\emph{Sequential Model-Based Optimization for General Algorithm
+Configuration}. LION 2011. DOI: 10.1007/978-3-642-25566-3\_40. URL:
+\url{https://dblp.org/rec/conf/lion/HutterHL11}
+
+\bibitem{25} Jasper Snoek, Hugo Larochelle, Ryan P. Adams. \emph{Practical
+Bayesian Optimization of Machine Learning Algorithms}. NeurIPS (NIPS)
+2012. URL: \url{https://dblp.org/rec/conf/nips/SnoekLA12}
+
+\bibitem{26} Neil D. Jones, René Rydhof Hansen. \emph{The Semantics of
+``Semantic Patches'' in Coccinelle: Program Transformation for the
+Working Programmer}. APLAS 2007. DOI: 10.1007/978-3-540-76637-7\_21.
+URL: \url{https://dblp.org/rec/conf/aplas/JonesH07}
+\end{thebibliography}
+
+\end{document}

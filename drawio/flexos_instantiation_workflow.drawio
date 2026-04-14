@@ -1,0 +1,91 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="第 1 页" id="j9TzhEWWlqXO2poWLEHr">
+    <mxGraphModel dx="929" dy="603" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-1" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;font face=&quot;宋体-简&quot;&gt;源码层 &lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(Source Code Layer)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="400" x="160" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-2" parent="V8mQcGDjoQQLf_coeW4z-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 10px;&quot;&gt;libvfs&lt;br&gt;[[flexos::gate]]&lt;br&gt;void open(...)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="110" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-3" parent="V8mQcGDjoQQLf_coeW4z-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 10px;&quot;&gt;liblwip&lt;br&gt;[[flexos::shared]]&lt;br&gt;struct pbuf&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="110" x="145" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-4" parent="V8mQcGDjoQQLf_coeW4z-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;align=center;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 10px;&quot;&gt;libfs&lt;br&gt;Standard C&lt;br&gt;Implementation&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="110" x="270" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-5" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;font face=&quot;宋体-简&quot;&gt;配置文件&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (flexos.config)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="400" x="160" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-6" parent="V8mQcGDjoQQLf_coeW4z-5" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font face=&quot;宋体-简&quot;&gt;库映射:&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Times New Roman&quot;&gt;libvfs → component1&lt;br&gt;liblwip → component2&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="120" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-7" parent="V8mQcGDjoQQLf_coeW4z-5" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font face=&quot;宋体-简&quot;&gt;后端选择:&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Intel MPK / EPT / None&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="130" x="139" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-8" parent="V8mQcGDjoQQLf_coeW4z-5" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" value="&lt;font face=&quot;宋体-简&quot;&gt;共享策略:&lt;/font&gt;&lt;br&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Shared Memory&lt;br&gt;Data Hardening&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="110" x="280" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rV5-tfq5GxV4nfWy1MHs-5" edge="1" parent="1" source="V8mQcGDjoQQLf_coeW4z-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="V8mQcGDjoQQLf_coeW4z-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-9" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;font face=&quot;宋体-简&quot;&gt;构建期实例化 (&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Build-time Instantiation&lt;/font&gt;&lt;font face=&quot;宋体-简&quot;&gt;)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="160" width="400" x="160" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-10" parent="V8mQcGDjoQQLf_coeW4z-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="&lt;font face=&quot;宋体-简&quot;&gt;Source-to-Source&lt;br&gt;变换 (Coccinelle)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="110" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-11" parent="V8mQcGDjoQQLf_coeW4z-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="&lt;font face=&quot;宋体-简&quot;&gt;生成链接脚本&lt;br&gt;(Linker Script)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="110" x="145" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-12" parent="V8mQcGDjoQQLf_coeW4z-9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;" value="&lt;font face=&quot;宋体-简&quot;&gt;后端 Glue 代码&lt;br&gt;(Gate Trampolines)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="110" x="270" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-13" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;font face=&quot;宋体-简&quot;&gt;产物与运行期 &lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(Output &amp;amp; Runtime)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="420" width="260" x="610" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-14" parent="V8mQcGDjoQQLf_coeW4z-13" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" value="&lt;font face=&quot;宋体-简&quot;&gt;实例化镜像 &lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(Unikernel Image)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="200" x="30" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-15" parent="V8mQcGDjoQQLf_coeW4z-13" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;" value="&lt;font face=&quot;Times New Roman&quot;&gt;Compartment 1&lt;br&gt;(VFS / FS)&lt;br&gt;PKRU Key 1&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-16" parent="V8mQcGDjoQQLf_coeW4z-13" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" value="&lt;font face=&quot;Times New Roman&quot;&gt;Compartment 2&lt;br&gt;&lt;/font&gt;(&lt;font face=&quot;宋体-简&quot;&gt;网络栈&lt;/font&gt;)&lt;br&gt;&lt;font face=&quot;Times New Roman&quot;&gt;PKRU Key 2&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="180" x="40" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-17" parent="V8mQcGDjoQQLf_coeW4z-13" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fff2cc;" value="&lt;font face=&quot;宋体-简&quot;&gt;共享数据区域&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="40" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-18" edge="1" parent="V8mQcGDjoQQLf_coeW4z-13" source="V8mQcGDjoQQLf_coeW4z-15" style="curved=1;endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;strokeColor=#FF0000;rounded=0;" target="V8mQcGDjoQQLf_coeW4z-16" value="">
+          <mxGeometry height="50" relative="1" width="50" x="-0.4841" y="14" as="geometry">
+            <mxPoint x="2" y="-2" as="offset" />
+            <Array as="points">
+              <mxPoint x="150" y="180" />
+              <mxPoint x="130" y="190" />
+              <mxPoint x="110" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-19" connectable="0" parent="V8mQcGDjoQQLf_coeW4z-18" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;font face=&quot;宋体-简&quot;&gt;切换&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; PKRU / Stack&lt;/font&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint x="62" y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rV5-tfq5GxV4nfWy1MHs-2" parent="V8mQcGDjoQQLf_coeW4z-13" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;span style=&quot;font-family: 宋体-简; font-size: 11px; text-wrap-mode: nowrap; background-color: rgb(255, 255, 255);&quot;&gt;Gate 调用路径&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="70" x="152" y="167" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-20" edge="1" parent="1" source="V8mQcGDjoQQLf_coeW4z-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="V8mQcGDjoQQLf_coeW4z-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V8mQcGDjoQQLf_coeW4z-21" edge="1" parent="1" source="V8mQcGDjoQQLf_coeW4z-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="V8mQcGDjoQQLf_coeW4z-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rV5-tfq5GxV4nfWy1MHs-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;rotation=90;" value="&lt;font face=&quot;宋体-简&quot;&gt;连接与生成&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="90" x="550" y="410" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
