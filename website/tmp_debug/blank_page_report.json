@@ -1,8 +1,8 @@
 {
   "url": "http://127.0.0.1:8080/",
   "screenshot": "/home/tibless/Desktop/auto_flex/website/tmp_debug/blank_page_debug.png",
-  "body_text_len": 1073,
-  "body_html_len": 166301,
+  "body_text_len": 1066,
+  "body_html_len": 190013,
   "console": [
     {
       "type": "warning",

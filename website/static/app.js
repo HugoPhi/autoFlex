@@ -38,7 +38,7 @@ const theme = createTheme({
   },
   shape: { borderRadius: 10 },
   typography: {
-    fontFamily: '"Noto Sans SC", "Segoe UI", sans-serif',
+    fontFamily: '"Google Sans Flex", Arial, Helvetica, sans-serif',
     h5: { fontWeight: 700 },
     h6: { fontWeight: 700 },
   },
@@ -158,6 +158,58 @@ function parseAnsiLogToSpans(text) {
     out.push({ text: text.slice(cursor), style: { ...style } });
   }
 
+  return out;
+}
+
+function highlightShellCommand(commandText) {
+  const text = commandText || "";
+  const tokens = text.match(/"[^"]*"|'[^']*'|\S+/g) || [];
+  return tokens.map((token, idx) => {
+    let color = "#d7e3ff";
+    if (idx === 0) {
+      color = "#93c5fd";
+    } else if (token.startsWith("--")) {
+      color = "#f59e0b";
+    } else if (token.startsWith("-")) {
+      color = "#fbbf24";
+    } else if (token.includes("=")) {
+      color = "#67e8f9";
+    } else if (token.startsWith("/") || token.startsWith(".")) {
+      color = "#86efac";
+    }
+    const suffix = idx < tokens.length - 1 ? " " : "";
+    return { text: token + suffix, style: { color } };
+  });
+}
+
+function highlightJson(jsonText) {
+  const text = jsonText || "";
+  const regex = /("(?:\\u[\da-fA-F]{4}|\\[^u]|[^\\"])*"\s*:?)|(\btrue\b|\bfalse\b|\bnull\b)|(-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)/g;
+  const out = [];
+  let last = 0;
+  let m;
+
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index > last) {
+      out.push({ text: text.slice(last, m.index), style: { color: "#d7e3ff" } });
+    }
+
+    const token = m[0];
+    let color = "#d7e3ff";
+    if (m[1]) {
+      color = token.endsWith(":") ? "#93c5fd" : "#86efac";
+    } else if (m[2]) {
+      color = "#fca5a5";
+    } else if (m[3]) {
+      color = "#fbbf24";
+    }
+    out.push({ text: token, style: { color } });
+    last = regex.lastIndex;
+  }
+
+  if (last < text.length) {
+    out.push({ text: text.slice(last), style: { color: "#d7e3ff" } });
+  }
   return out;
 }
 
@@ -339,6 +391,19 @@ function App() {
 
   const currentBench = testBenches.find((x) => x.id === stageB.test_bench) || null;
   const ansiLogParts = React.useMemo(() => parseAnsiLogToSpans(logText || ""), [logText]);
+  const commandText = selectedJob?.command || "-";
+  const paramText = React.useMemo(() => JSON.stringify(selectedJob?.params || {}, null, 2), [selectedJob]);
+  const commandParts = React.useMemo(() => highlightShellCommand(commandText), [commandText]);
+  const paramParts = React.useMemo(() => highlightJson(paramText), [paramText]);
+
+  const copyText = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text || "");
+      setNotice(`${label} 已复制`);
+    } catch (e) {
+      setNotice(`复制失败: ${String(e)}`);
+    }
+  };
 
   const applyBench = (benchId) => {
     const bench = testBenches.find((x) => x.id === benchId);
@@ -600,16 +665,67 @@ function App() {
                   <Typography variant="h6" gutterBottom>作业详情（含参数）</Typography>
                   {selectedJob ? (
                     <Paper variant="outlined" sx={{ p: 1.2, bgcolor: "#f8fafc" }}>
-                      <Typography variant="body2"><b>job_id:</b> <span style={{ fontFamily: "JetBrains Mono" }}>{selectedJob.id}</span></Typography>
-                      <Typography variant="body2"><b>kind:</b> {selectedJob.kind}</Typography>
-                      <Typography variant="body2"><b>status:</b> {selectedJob.status}</Typography>
-                      <Typography variant="body2"><b>return_code:</b> {String(selectedJob.return_code)}</Typography>
-                      <Typography variant="body2" sx={{ wordBreak: "break-all" }}><b>command:</b> {selectedJob.command || "-"}</Typography>
-                      <Typography variant="body2" color="error.main"><b>error:</b> {selectedJob.error || "-"}</Typography>
-                      <Typography variant="subtitle2" sx={{ mt: 1 }}>params:</Typography>
-                      <Paper variant="outlined" sx={{ p: 1, mt: 0.5, bgcolor: "#0b1220", color: "#d7e3ff" }}>
-                        <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: "JetBrains Mono" }}>{JSON.stringify(selectedJob.params || {}, null, 2)}</pre>
-                      </Paper>
+                      <Stack spacing={1.2}>
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems={{ sm: "center" }}>
+                          <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 700 }}>Job Snapshot</Typography>
+                          <Chip size="small" color={statusColor(selectedJob.status)} label={selectedJob.status} />
+                        </Stack>
+
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} sm={6}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">job_id</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{selectedJob.id}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">kind</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{selectedJob.kind}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">return_code</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{String(selectedJob.return_code)}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">error</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem", color: selectedJob.error ? "error.main" : "text.primary" }}>
+                                {selectedJob.error || "-"}
+                              </Typography>
+                            </Paper>
+                          </Grid>
+                        </Grid>
+
+                        <Paper variant="outlined" sx={{ p: 1, bgcolor: "#0b1220", color: "#d7e3ff" }}>
+                          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 0.6 }}>
+                            <Typography variant="caption" sx={{ color: "#9fb8ff", fontWeight: 700 }}>command</Typography>
+                            <Box sx={{ flex: 1 }} />
+                            <Button size="small" variant="outlined" onClick={() => copyText(commandText, "command")}>复制</Button>
+                          </Stack>
+                          <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: "JetBrains Mono" }}>
+                            {commandParts.map((part, idx) => (
+                              <span key={idx} style={part.style}>{part.text}</span>
+                            ))}
+                          </pre>
+                        </Paper>
+
+                        <Paper variant="outlined" sx={{ p: 1, bgcolor: "#0b1220", color: "#d7e3ff" }}>
+                          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 0.6 }}>
+                            <Typography variant="caption" sx={{ color: "#9fb8ff", fontWeight: 700 }}>params</Typography>
+                            <Box sx={{ flex: 1 }} />
+                            <Button size="small" variant="outlined" onClick={() => copyText(paramText, "params")}>复制</Button>
+                          </Stack>
+                          <pre style={{ margin: 0, whiteSpace: "pre-wrap", fontFamily: "JetBrains Mono" }}>
+                            {paramParts.map((part, idx) => (
+                              <span key={idx} style={part.style}>{part.text}</span>
+                            ))}
+                          </pre>
+                        </Paper>
+                      </Stack>
                     </Paper>
                   ) : (
                     <Typography color="text.secondary">请选择作业</Typography>
@@ -619,7 +735,10 @@ function App() {
 
               <Card variant="outlined">
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>实时日志（可滚动 / 长驻）</Typography>
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+                    <Typography variant="h6" sx={{ flex: 1 }}>实时日志</Typography>
+                    <Button size="small" variant="outlined" onClick={() => copyText(logText || "", "log")}>复制</Button>
+                  </Stack>
                   <Paper
                     ref={logRef}
                     variant="outlined"
