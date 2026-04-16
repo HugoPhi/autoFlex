@@ -61,6 +61,160 @@ $$
 - [figures](figures): 统一归档的图表输出（svg/png）。
 - [PLOTTING_GUIDE.md](PLOTTING_GUIDE.md): 统一绘图流程与图表说明。
 
+## Web 自动化平台（启动、使用、日志与产物）
+
+本仓库提供本地 Web 平台入口：
+- 目录： [website](website)
+- 作用：将 Stage A（自动迁移）与 Stage B（配置搜索）变为可视化作业流程
+
+### 1. 启动方式
+
+在仓库根目录执行：
+
+```bash
+fuser -k 8080/tcp
+cd website
+/home/tibless/Desktop/auto_flex/.venv/bin/python app.py
+```
+
+浏览器访问：
+
+```text
+http://127.0.0.1:8080/
+```
+
+### 2. 页面功能概览
+
+1. 左侧
+- Stage A 提交区：上传原始源码 zip，执行自动迁移。
+- Stage B 提交区：上传迁移后源码 zip，选择 test bench 与搜索参数。
+- 产物下载区：下载当前选中作业的产物文件。
+
+2. 右侧
+- Job Console：查看作业状态，支持查看、单删、批量删除。
+- 作业详情：查看 status、return_code、command、params。
+- 实时日志：增量日志流（支持 ANSI 颜色显示）。
+
+3. 顶栏
+- 刷新按钮。
+- 帮助按钮（?）：内置详细使用文档（Markdown 渲染）。
+
+### 3. Stage A 使用流程
+
+1. 上传原始源码压缩包（source_zip）。
+2. 点击“开始迁移”。
+3. 在 Job Console 选择该作业，查看详情与日志。
+4. 成功后从产物区下载 migrated_source.zip（用于 Stage B 输入）。
+
+### 4. Stage B 使用流程
+
+1. 上传 Stage A 产物 migrated_source.zip。
+2. 选择 test bench（如 fig06-nginx / fig06-redis）。
+3. 根据需要调整参数：baseline_threshold / num_compartments / host_cores / wayfinder_cores / test_iterations / top_k。
+4. 点击“开始搜索”。
+5. 在日志中观察 build/test/search 过程；完成后下载产物。
+
+### 5. 日志与字段解释
+
+1. 状态
+- queued：已入队
+- running：执行中
+- succeeded：成功
+- failed：失败
+
+2. 作业详情核心字段
+- command：真实执行命令
+- params：本次参数快照
+- return_code：脚本返回码（0 通常为成功）
+- error：后端捕获异常摘要
+
+3. 日志阅读建议
+- 优先看第一条硬错误，不要先看末尾级联错误。
+- 结合 command + params + log 一起定位问题。
+
+### 6. 产物说明（重点）
+
+以下是 Stage B（nginx）常见产物：
+
+1. benchmark_nginx.csv
+- 基准数据，供后续统计/绘图。
+
+2. build_and_test.log
+- 构建与测试详细日志。
+
+3. performance_report.json
+- 机器可读结果摘要。
+
+4. performance_report.md
+- 人类可读报告文本。
+
+5. search_progress.csv
+- 搜索过程轨迹数据。
+
+6. top_images.tar.gz
+- 镜像与相关文件打包归档。
+
+7. top_images/task-single/build.log
+- 单配置构建日志。
+
+8. top_images/task-single/config
+- 运行配置快照。
+
+9. top_images/task-single/kraft.yaml
+- Kraftrun/构建关键配置文件。
+
+10. top_images/task-single/nginx_kvm-x86_64(.dbg)
+- 产出的二进制与调试版本。
+
+### 7. 网站重启与维护
+
+1. 重启服务
+
+```bash
+fuser -k 8080/tcp
+cd /home/tibless/Desktop/auto_flex/website
+/home/tibless/Desktop/auto_flex/.venv/bin/python app.py
+```
+
+2. 重启后行为
+- 已完成作业会恢复显示。
+- 中断中的 running 作业会被标记为 failed（防止僵尸状态）。
+
+3. 清理作业
+- 支持单个清除。
+- 支持全选与批量删除。
+
+### 8. 论文 nginx demo 详细流程（推荐）
+
+以下流程用于论文系统展示，且与你当前仓库流程对齐。
+
+1. 启动 Web 服务。
+2. Stage A 上传 nginx 源码 zip，提交作业。
+3. 观察 Stage A 日志与详情，等待 succeeded。
+4. 下载 Stage A 产物 migrated_source.zip。
+5. Stage B 上传 migrated_source.zip，选择 test_bench=fig06-nginx。
+6. 保持默认参数或按实验设定调整阈值、轮次和 cores。
+7. 提交 Stage B 作业，观察实时日志中的 build/test/search。
+8. 等待 succeeded 后下载关键产物：
+- benchmark_nginx.csv
+- performance_report.json
+- performance_report.md
+- search_progress.csv
+- top_images.tar.gz
+9. 将 CSV/报告用于图表生成与论文结果说明。
+10. 将 command + params + log + artifacts 一并归档，确保后续可复验。
+
+### 9. 常见问题（Web 相关）
+
+1. 页面打开但作业不更新
+- 点刷新；确认服务是否运行在 8080。
+
+2. Stage B 失败
+- 先看 build_and_test.log 第一硬错误；再核对 command 与 params。
+
+3. 产物为空
+- 先确认选中的 job_id；failed 作业可能无完整产物。
+
 ## 实验设计
 
 ### A. 自动迁移实验设计

@@ -1482,44 +1482,171 @@ cover 邻居；当 \(g(c)\)
 该分析也提示评价指标应兼顾``成本''与``波动''：保守化剪枝会提高查询比例的均值，但可能降低方差并提升可复现性；激进剪枝则可能在少量阈值上出现更强波动。因此在工程落地中，建议同时报告均值与离散度（标准差或置信区间），并把违反幅度（gap
 与所需容忍度）作为解释差异的重要证据。
 
-\subsection{系统展示（Web自动化平台：设计与现状说明）}
+\subsection{Web自动化平台展示}
 
-为进一步降低复现与使用门槛，本文在仓库最外层实现了
-website
-目录下的本地 Web 自动化平台，将 AutoFlex
-现有脚本化流水线封装为可交互任务系统。平台目标是让用户在不改动既有研究代码的前提下，以最少配置完成``迁移—评测—搜索—绘图''全流程执行与结果查看。当前版本重点支持本地部署、单机复现实验与产物归档。平台提供以下能力：
-\begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-  \item
-        任务提交与编排：支持 auto\_migration\_eval、search\_eval 与 unified\_plot
-        三类作业；其中前两类分别复用 autoGen 与 search 子系统脚本，unified\_plot
-        复用根目录统一绘图入口。
-  \item
-        软连接复用机制：平台通过初始化脚本将 autoGen、search、figures、generate\_figure.py
-        等目录或文件软连接到 website/linked 下，避免重复维护与代码分叉。
-  \item
-        本地可视化控制台：提供作业状态轮询、日志尾部查看、产物列表与单文件下载能力，便于快速审阅迁移报告与搜索图表。
-  \item
-        结果落盘与可追溯：每个作业在 website/jobs 下保存元数据与运行日志，并把图表或评测结果写入既有产物目录（如 figures/search、autoGen/eval\_results），与论文实验数据组织方式保持一致。
-\end{enumerate}
+\subsubsection{系统设计}
+与前文强调算法与工具链不同，本节更关注一个``面向使用者''的问题：如何把 AutoFlex
+从脚本集合组织成可展示、可复验、可追溯的完整系统。本文在仓库最外层实现
+\texttt{website/}
+目录下的 Web 自动化平台，其设计原则并不是重写一套迁移与搜索内核，而是尽可能保持研究脚本原貌，仅在其外层构建轻量编排与证据归档机制。换言之，平台要解决的不是``算法能力不足''，而是``工程使用链条过长''：命令行模式下，用户通常需要手工准备输入、记忆参数、盯守终端输出、再到多个目录中查找结果；而平台把这些环节收束到同一工作流视图中，使输入、执行、日志、产物与失败信息形成可浏览、可下载、可回放的闭环。
 
-平台后端采用轻量 Web 服务实现任务编排，不重写算法本体，而是直接以子进程方式调用原有命令行脚本。该``薄封装''策略使平台具备两项工程优势：第一，可直接复用已验证的研究脚本与参数体系，降低二次实现误差；第二，算法迭代无需同步改写 Web 逻辑，只需保持脚本接口兼容。
+这种实现方式背后有明确取舍。第一，执行语义必须与原始脚本一致，因此后端只负责参数校验、状态机流转与子进程托管，迁移、构建、测试、搜索全部复用既有脚本；第二，系统必须把``失败''纳入标准路径，任何失败都要以返回码、错误字段与原生日志的形式呈现，而不是在前端被抽象成泛化的``任务异常''；第三，系统必须保证可追溯性，每个作业都要有独立标识、命令快照、参数快照、时间戳与产物索引，从而让一次运行不仅``能看见结果''，还可以在日后被第三方按证据链复核。也正因为遵循这一约束，平台虽然是 Web 形态，但其本质更接近一个面向论文实验场景的``作业编排器 + 证据管理器''。
 
-当前实现采用三层结构：
-\begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-  \item
-        表现层（Web UI）：用于提交作业参数、查看作业状态、检索日志与下载产物。
-  \item
-        编排层（Job Orchestrator）：负责参数校验、命令拼装、后台执行、状态流转（queued/running/succeeded/failed）与异常记录。
-  \item
-        执行与存储层：直接调用 autoGen/search/generate\_figure 相关脚本并写入统一产物目录，同时为每个作业保存 metadata 与日志。
-\end{enumerate}
+在界面实现上，平台采用 React + Material UI
+组件化方案组织页面骨架：提交区、作业控制台、详情区、日志区与产物区均由独立卡片组件拼装，再通过统一主题与字体策略保持视觉一致性。该实现并不追求``炫技式前端''，而是服务于工程可读性：一方面，Material UI
+提供了成熟的栅格与表单控件，使 Stage A / Stage B 参数录入在移动与桌面分辨率下都能保持稳定布局；另一方面，代码框、状态
+Chip、按钮分组与滚动容器的样式均被标准化，便于把``运行语义''映射为一致的视觉语义（例如 status 的颜色映射、日志的终端色彩还原、command/params 的代码化展示）。这种``前端结构化''对系统展示章节非常重要，因为它把复杂实验流程压缩成可逐段解释的人机交互路径。
 
-本地部署流程较为直接：在 website
-目录执行软连接初始化脚本、安装依赖并启动服务后，即可通过浏览器访问本地控制台。该流程已满足本文``系统展示''章节的演示与复现需求。
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_design_stage_a_panel_full.png}\\[-2pt]
+    {\scriptsize(a) Stage A 提交区}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_design_stage_b_panel_sq.png}\\[-2pt]
+    {\scriptsize(b) Stage B 参数区}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_design_job_console_panel_sq.png}\\[-2pt]
+    {\scriptsize(c) Job Console 作业列表}
+  \end{minipage}
+  \caption{Web 平台关键交互区（第一组，局部方形截图）}
+  \label{fig:web-ui-panels-a}
+\end{figure}
 
-对于云端部署，本文不要求在实验中依赖云环境，但平台可按相同方式部署到云主机：在云端安装依赖后运行 Web 服务进程（如 gunicorn），再通过反向代理提供统一入口与访问控制。由于平台核心仍是对本地脚本的编排封装，云端部署与本地部署在功能语义上保持一致，差异主要体现在进程管理、存储配额与网络安全策略。
+
+如图~\ref{fig:web-ui-panels-a} 所示，平台首屏不再使用整页截图叙事，而是把最关键的交互区域拆成局部视图来观察。第一行三个局部图对应``入口与调度''：左侧是 Stage A 提交区，中间是 Stage B
+参数区，右侧是 Job Console
+作业列表。这样拆解后可以更清楚地看到设计意图：Stage A 与 Stage B
+并排放在同一列，强调它们在业务上前后衔接；作业列表独立在另一列，强调``提交''与``观察''是两条并行操作轴。相比整页截图，这种局部图更适合论文读者快速抓住操作主线。
+
+
+第二组局部图进一步对应``证据与结果''链路。由图~\ref{fig:web-ui-panels-b} 可见，作业详情区直接给出状态快照与关键元数据，产物下载区列出可追溯文件清单，而实时日志区持续输出构建与搜索过程。三者组合后，用户无需切换目录就能回答三个核心问题：这次作业当前是否可靠（详情区）、已经产生了哪些可交付文件（产物区）、系统此刻正在做什么或为何失败（日志区）。这正是平台强调的证据链闭环：同一界面中既有``过程''也有``结果''，既有``摘要''也有``原始文本''。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_crop_job_detail.png}\\[-2pt]
+    {\scriptsize(d) 作业详情与快照}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_crop_artifacts.png}\\[-2pt]
+    {\scriptsize(e) 产物下载列表}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_crop_log_panel.png}\\[-2pt]
+    {\scriptsize(f) 实时日志窗口}
+  \end{minipage}
+  \caption{Web 平台关键交互区（第二组，局部方形截图）}
+  \label{fig:web-ui-panels-b}
+\end{figure}
+
+为了进一步说明内部执行链路，图~\ref{fig:web-workflow-placeholder}
+给出了流程图占位。该流程的关键不是``前端提交后马上得到结果''，而是``每一步都可被记录''：用户上传输入后，后端先创建作业并写入 metadata，再进入 queued/running/succeeded(or failed)
+状态机；执行期间日志按偏移量持续拉取，前端轮询更新；执行结束后，后端汇总产物目录并暴露下载接口。这个过程中，任何阶段失败都不会打断证据链，用户仍可在同一作业条目中拿到错误上下文与相关文件。对于论文实验来说，这一点非常关键，因为我们不仅需要报告最终图表，更需要在出现偏差时说明``偏差发生在何处''以及``依据什么判断''。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/website/web_workflow_placeholder}
+  \caption{Web 平台运行流程示意（占位图，后续可替换为正式图）}
+  \label{fig:web-workflow-placeholder}
+\end{figure}
+
+\subsubsection{完整运行实例展示}
+
+从用户视角出发，一次完整运行通常从 Stage A 开始。用户进入页面后，首先在 Stage A 卡片中上传原始源码压缩包并提交作业；提交成功后，Job Console
+会立即出现对应 job 条目，状态先进入 queued，随后转为 running。此时用户不需要猜测系统是否真正开始执行，因为详情区会同步给出 command 与参数快照，日志区会出现迁移脚本输出。若 Stage A
+成功，产物区会出现迁移后源码包与报告文件；若失败，错误信息会和日志同时保留，用户可直接以该条目为单位进行排障和重跑，而不必手工回忆上一次命令行参数。为避免``演示态截图''与``真实运行结果''混淆，本文这一小节中的 Stage A / Stage B 结果图均来自一次真实端到端运行：Stage A 作业
+ID 为 \texttt{b1787c18468f}，其输出直接作为 Stage B（nginx）输入，Stage B 作业 ID 为
+\texttt{8167ca4386e5}。
+
+如图~\ref{fig:web-stagea-real} 所示，Stage A 成功后，详情区已经给出状态、返回码与执行命令，日志区记录了迁移脚本执行轨迹，产物区则出现迁移后源码包与报告文件。这个组合能够让用户在``一步视图''下完成三个判断：作业是否成功、执行路径是否符合预期、结果是否已可交付。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageA_real_detail_sq.png}\\[-2pt]
+    {\scriptsize(a) Stage A 作业详情（真实运行）}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageA_real_log_sq.png}\\[-2pt]
+    {\scriptsize(b) Stage A 实时日志（真实运行）}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageA_real_artifacts_sq.png}\\[-2pt]
+    {\scriptsize(c) Stage A 产物列表（真实运行）}
+  \end{minipage}
+  \caption{Stage A 完整运行结果（nginx 示例，局部方形截图）}
+  \label{fig:web-stagea-real}
+\end{figure}
+
+完成 Stage A
+后，用户将迁移结果作为 Stage B 输入。在 Stage B 卡片中，用户选择 test bench（如 nginx 或 redis），并按需要调整阈值、隔离域数量、测试轮次与 CPU
+绑定参数，然后提交搜索任务。这个阶段最容易被误解成``页面估计性能''，但实际上它调用的是同一套真实构建与真实测试脚本：日志中会连续出现构建、测试、解析、搜索决策等阶段信息，返回码与产物目录也与命令行直接运行一致。换言之，网页只是控制入口，执行语义仍以实验脚本为准。
+
+在 Stage B 的运行过程中，用户通常按``先看状态、再看日志、最后看产物''的顺序操作：先在 Job Console
+确认作业是否仍在 running；再在日志窗口判断当前卡在构建、测试还是搜索；最后在产物区下载
+CSV、报告与镜像相关文件做复核。若任务失败，系统仍会保留中间日志和上下文参数，这使得``失败样本''也可用于论文分析，而不仅是被忽略。对于答辩展示场景，这种可回放能力尤其关键，因为评审常会追问``结果是如何得到的''与``失败时你如何定位''，而平台恰好把这两类证据统一在作业级别上。
+
+对应的 Stage B 实际运行结果如图~\ref{fig:web-stageb-real} 所示：详情区展示了搜索任务命令与参数快照，日志区呈现真实构建与搜索过程，产物区给出
+\texttt{benchmark\_nginx.csv}、\texttt{performance\_report.json}、\texttt{search\_progress.csv}
+等关键文件以及镜像打包结果。由于这些文件都来自同一 job
+目录，读者可以按作业编号回溯到完整执行上下文，从而把``图表结果''和``过程证据''对应起来。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageB_real_detail_sq.png}\\[-2pt]
+    {\scriptsize(a) Stage B 作业详情（真实运行）}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageB_real_log_sq.png}\\[-2pt]
+    {\scriptsize(b) Stage B 实时日志（真实运行）}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/website/web_stageB_real_artifacts_sq.png}\\[-2pt]
+    {\scriptsize(c) Stage B 产物列表（真实运行）}
+  \end{minipage}
+  \caption{Stage B 完整运行结果（nginx 示例，局部方形截图）}
+  \label{fig:web-stageb-real}
+\end{figure}
+
+围绕实际使用流程，平台把工作链明确分成 Stage A 与 Stage B 两段：Stage A 负责源码迁移，输入是原始代码压缩包，输出是迁移后代码与迁移报告；Stage B
+负责配置搜索，输入是迁移后代码包与 test bench 参数，输出是真实构建与真实测试基础上的搜索结果。这里特别需要强调，Stage B 并不是在网页上做``模拟评估''，而是复用实验脚本走完整构建-测试-解析链路，因此界面中看到的状态变化与日志内容都对应真实执行过程。为了让这条链路长期可维护，平台把
+test bench
+从硬编码下拉改为配置文件驱动：新增 benchmark 时只需增量添加配置文件，不必改动前端逻辑。对于论文复现实验而言，这种``参数模板化''可以显著降低多人协作时的口径偏差，避免出现``看似同一实验、实则参数不同''的隐性问题。
+
+从使用视角看，一次完整运行并不复杂，但每一步都被显式记录。用户启动服务后先提交 Stage A，等待作业状态从 queued 进入 running，再根据 succeeded 或 failed
+决定下一步：成功则下载迁移产物进入 Stage B，失败则先依据日志定位问题。随后在 Stage B
+选择目标 test bench 并提交搜索，系统会持续回传增量日志，最终产物可在同一作业下直接下载。这个过程的关键价值并不只是``减少手工命令''，而是把原先分散在终端、文件夹与脚本参数中的信息聚合为一条可追踪链路：输入文件是什么、执行命令是什么、何时开始结束、在哪一步失败、产物有哪些，都可在一个作业实体上定位。实践中，平台还提供作业清理与批量删除能力，用于整理长时间实验后的界面噪声，但这不会影响外部已归档结果。
+
+在证据体系上，平台把每次运行沉淀为``输入 + 参数 + 日志 + 输出''四元组。输入镜像回答``本次到底跑了什么''，参数与命令快照回答``为何这样跑''，日志回答``运行中发生了什么''，输出文件回答``最终得到了什么''。特别是日志部分，系统保留原始终端语义并支持 ANSI
+颜色渲染，因此在网页中看到的 DEBUG/INFO/WARN/ERROR 与命令行一致，不会因 UI
+美化而丢失诊断信息。结合状态机字段（queued/running/succeeded/failed）与返回码，用户通常可以较快区分可重试问题（如临时环境波动）与需修复问题（如参数缺失、脚本错误、构建失败）。这种``失败可见化''机制对论文展示尤为重要，因为它让系统不仅展示成功样例，也能在失败场景下给出可复核、可解释的技术证据。
+
+从工程现状看，平台已经具备作为``系统展示''章节核心案例的完整条件：其一，两阶段流程可独立运行且可串联复现；其二，nginx 与 redis 的搜索入口已通过配置化方式稳定支持；其三，作业详情、参数、命令、日志与产物在同一界面联动呈现；其四，任何一次运行都可导出证据链并用于后续图表生成与结果复查。当然，现阶段仍有可继续完善之处，例如前端仍采用浏览器端 JSX 转换、流程图可进一步替换为正式制图版本、云端部署可继续收敛权限白名单。但这些边界不影响其作为论文系统演示平台的核心功能：它在不改变 AutoFlex
+算法语义的前提下，把原本``能跑''的脚本化流程提升为``可操作、可诊断、可复验、可交付''的工程系统。
 
 \cleardoublepage
 \section{结论与展望}

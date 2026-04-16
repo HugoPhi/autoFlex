@@ -10,6 +10,10 @@ const {
   CircularProgress,
   Container,
   CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   FormControl,
   Grid,
@@ -25,9 +29,309 @@ const {
   TextField,
   ThemeProvider,
   Toolbar,
+  IconButton,
+  Tooltip,
   Typography,
   createTheme,
 } = MaterialUI;
+
+const HELP_MARKDOWN = `# AutoFlex Workflow Platform 使用手册
+
+## 目录
+1. 平台目标与适用场景
+2. 页面结构总览
+3. 快速开始（3 分钟）
+4. Stage A：Code Porting 详细说明
+5. Stage B：Config Search 详细说明
+6. test bench 机制与扩展方式
+7. Job 状态机与字段解释
+8. 实时日志阅读指南
+9. 产物说明（按文件逐项解释）
+10. 重启网站与运行维护
+11. 常见故障与排查
+12. Nginx 论文 demo 推荐流程
+13. 结果归档与复现实践
+
+## 1. 平台目标与适用场景
+本平台用于把 AutoFlex 的两阶段流程（Stage A 迁移、Stage B 配置搜索）转成可视化作业系统。
+它特别适合以下场景：
+- 首次上手：不熟悉脚本参数时可避免命令行记忆成本。
+- 论文展示：可直接展示作业、日志和产物证据链。
+- 故障定位：失败作业会保留 command / params / log 便于复盘。
+- 协作复验：可将产物和日志下载给他人复核。
+
+## 2. 页面结构总览
+- 左侧：Stage A 提交、Stage B 提交、产物下载
+- 右侧：Job Console、作业详情（含参数和命令）、实时日志
+- 顶栏：刷新按钮、帮助按钮（当前文档）
+
+## 3. 快速开始（3 分钟）
+1. Stage A 上传原始源码 zip，点击“开始迁移”。
+2. 在 Job Console 点 view，确认 status 从 queued -> running -> succeeded。
+3. 在“产物下载”获取 Stage A 输出的 migrated_source.zip。
+4. Stage B 上传 migrated_source.zip，选择 test bench，点击“开始搜索”。
+5. 搜索完成后下载 report / csv / top_images 相关产物。
+
+## 4. Stage A：Code Porting 详细说明
+### 输入
+- source_zip：原始源码压缩包（必须是 .zip）
+
+### 执行行为
+- 后端创建 job（kind=workflow_code_porting）
+- 调用 run_code_porting_from_zip.py
+- 产生迁移输出与迁移日志
+
+### 你应该关注
+- status：是否 succeeded
+- return_code：是否 0
+- command：调用了哪个脚本、用的是什么输入
+- 产物：是否出现 migrated_source.zip 和报告
+
+## 5. Stage B：Config Search 详细说明
+### 输入
+- source_zip：Stage A 输出的 migrated_source.zip
+- test_bench：例如 fig06-nginx / fig06-redis
+- 可调参数：baseline_threshold、num_compartments、host_cores、wayfinder_cores、test_iterations、top_k
+
+### 执行行为
+- 后端创建 job（kind=workflow_config_search）
+- 调用 run_config_search_nginx_from_zip.py（当前脚本名历史遗留，但已支持 app 参数）
+- 执行真实构建 + 真实测试 + 搜索，不是模拟结果
+
+### 你应该关注
+- 日志中的 build/test/search 阶段边界
+- 是否出现 fallback 提示（若主链路失败）
+- 产物是否包含 benchmark/performance/search_progress/top_images
+
+## 6. test bench 机制与扩展方式
+test bench 来源于配置文件目录：
+- website/config/test_benches/nginx.json
+- website/config/test_benches/redis.json
+- website/config/test_benches/template.json（模板）
+
+新增 benchmark 的推荐步骤：
+1. 复制 template.json 为新文件。
+2. 填写 id/name/app/defaults。
+3. 刷新页面后自动出现在 test bench 下拉中。
+
+## 7. Job 状态机与字段解释
+### 状态
+- queued：已入队，尚未启动
+- running：正在执行
+- succeeded：执行成功
+- failed：执行失败
+
+### 详情字段
+- job_id：本次运行唯一编号
+- kind：作业类型
+- return_code：脚本返回码（0=成功）
+- error：后端捕获异常（若有）
+- command：真实执行命令（建议重点审查）
+- params：本次参数快照（复现时关键）
+
+## 8. 实时日志阅读指南
+日志是增量流，且支持 ANSI 颜色。
+
+建议顺序：
+1. 先看第一条硬错误。
+2. 再看该错误前 20~50 行上下文。
+3. 最后回看 command 和 params 是否合理。
+
+经验规则：
+- 若提示 path / file not found，多半是输入包结构或路径参数问题。
+- 若提示权限不足，多半是 sudo / 环境配置问题。
+- 若 build 失败，先看 build_and_test.log 对应阶段首个报错。
+
+## 9. 产物说明（按文件逐项解释）
+以下以 Stage B nginx 常见输出为例。
+
+### 核心数据
+- benchmark_nginx.csv
+  - 基准数据表，通常用于后续统计和画图。
+- search_progress.csv
+  - 搜索过程轨迹，记录候选演化和进度。
+- performance_report.json
+  - 机器可读结果摘要，适合程序化分析。
+- performance_report.md
+  - 人类可读报告，适合实验记录和论文附录。
+
+### 构建与运行证据
+- build_and_test.log
+  - 最关键诊断日志，包含 build/test 细节。
+- top_images/task-single/build.log
+  - 单配置构建日志，定位镜像构建失败时很有用。
+- top_images/task-single/config
+  - 运行配置快照。
+- top_images/task-single/kraft.yaml
+  - 关键运行配置文件。
+
+### 二进制与打包
+- top_images/task-single/nginx_kvm-x86_64
+  - 可执行镜像二进制。
+- top_images/task-single/nginx_kvm-x86_64.dbg
+  - 带调试符号版本。
+- top_images.tar.gz
+  - 打包归档，便于迁移或交付。
+
+## 10. 重启网站与运行维护
+### 本机重启（推荐）
+\`\`\`bash
+fuser -k 8080/tcp
+cd /home/tibless/Desktop/auto_flex/website
+/home/tibless/Desktop/auto_flex/.venv/bin/python app.py
+\`\`\`
+
+访问地址：
+- http://127.0.0.1:8080/
+
+### 重启后的行为
+- 已完成作业会从 jobs 元数据恢复。
+- 中断中的 running 作业会标记为 failed，避免僵尸状态。
+
+## 11. 常见故障与排查
+### 页面打开但作业不更新
+1. 先点“刷新”。
+2. 检查后端是否仍在 8080 端口监听。
+
+### Stage A 成功但 Stage B 失败
+1. 看 build_and_test.log 第一条硬错误。
+2. 看 params 是否与 bench 默认值冲突。
+3. 确认 migrated_source.zip 是否来自对应 Stage A。
+
+### 看不到产物
+1. 确认你当前选中的 job_id。
+2. failed 作业可能仅有日志，产物不完整。
+
+### 日志太长难以定位
+1. 复制 log。
+2. 搜索关键词：error, failed, traceback, permission, not found。
+
+## 12. Nginx 论文 demo 推荐流程
+1. 运行 Stage A，输入 nginx 源 zip。
+2. 下载 Stage A 的 migrated_source.zip。
+3. 运行 Stage B，选择 test_bench=fig06-nginx。
+4. 等待 succeeded，下载：
+   - benchmark_nginx.csv
+   - performance_report.json
+   - search_progress.csv
+   - top_images.tar.gz
+5. 将以上文件用于论文图和结果复查。
+
+## 13. 结果归档与复现实践
+建议每次实验保存如下最小集合：
+1. 输入 zip
+2. params 快照
+3. command
+4. 关键日志（至少 build_and_test.log）
+5. 关键产物（report + csv + tar.gz）
+
+做到以上五项后，后续复验、对比和答辩解释会稳定很多。
+`;
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function inlineMarkdown(text) {
+  let out = escapeHtml(text);
+  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  out = out.replace(/`([^`]+)`/g, "<code>$1</code>");
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  return out;
+}
+
+function markdownToHtmlLite(markdown) {
+  const lines = String(markdown || "").split(/\r?\n/);
+  const html = [];
+  let inCode = false;
+  let inUl = false;
+  let inOl = false;
+  let codeBuf = [];
+
+  const closeLists = () => {
+    if (inUl) {
+      html.push("</ul>");
+      inUl = false;
+    }
+    if (inOl) {
+      html.push("</ol>");
+      inOl = false;
+    }
+  };
+
+  for (const raw of lines) {
+    const line = raw || "";
+    const trim = line.trim();
+
+    if (trim.startsWith("```")) {
+      if (!inCode) {
+        closeLists();
+        inCode = true;
+        codeBuf = [];
+      } else {
+        html.push(`<pre><code>${escapeHtml(codeBuf.join("\n"))}</code></pre>`);
+        inCode = false;
+        codeBuf = [];
+      }
+      continue;
+    }
+
+    if (inCode) {
+      codeBuf.push(line);
+      continue;
+    }
+
+    if (trim === "") {
+      closeLists();
+      continue;
+    }
+
+    const h = trim.match(/^(#{1,3})\s+(.+)$/);
+    if (h) {
+      closeLists();
+      const lv = h[1].length;
+      html.push(`<h${lv}>${inlineMarkdown(h[2])}</h${lv}>`);
+      continue;
+    }
+
+    const ol = trim.match(/^\d+\.\s+(.+)$/);
+    if (ol) {
+      if (!inOl) {
+        closeLists();
+        html.push("<ol>");
+        inOl = true;
+      }
+      html.push(`<li>${inlineMarkdown(ol[1])}</li>`);
+      continue;
+    }
+
+    const ul = trim.match(/^[-*]\s+(.+)$/);
+    if (ul) {
+      if (!inUl) {
+        closeLists();
+        html.push("<ul>");
+        inUl = true;
+      }
+      html.push(`<li>${inlineMarkdown(ul[1])}</li>`);
+      continue;
+    }
+
+    closeLists();
+    html.push(`<p>${inlineMarkdown(trim)}</p>`);
+  }
+
+  if (inCode) {
+    html.push(`<pre><code>${escapeHtml(codeBuf.join("\n"))}</code></pre>`);
+  }
+  closeLists();
+
+  return html.join("\n");
+}
 
 const theme = createTheme({
   palette: {
@@ -251,6 +555,7 @@ function App() {
   const [stageBFile, setStageBFile] = React.useState(null);
   const [testBenches, setTestBenches] = React.useState([]);
   const [stageB, setStageB] = React.useState(BASE_STAGE_B);
+  const [helpOpen, setHelpOpen] = React.useState(false);
 
   const loadJobs = React.useCallback(async () => {
     const data = await fetchJSON("/api/jobs");
@@ -390,6 +695,13 @@ function App() {
   );
 
   const currentBench = testBenches.find((x) => x.id === stageB.test_bench) || null;
+  const helpHtml = React.useMemo(() => {
+    const builtIn = markdownToHtmlLite(HELP_MARKDOWN);
+    if (typeof window !== "undefined" && window.marked && typeof window.marked.parse === "function") {
+      return window.marked.parse(HELP_MARKDOWN);
+    }
+    return builtIn;
+  }, []);
   const ansiLogParts = React.useMemo(() => parseAnsiLogToSpans(logText || ""), [logText]);
   const commandText = selectedJob?.command || "-";
   const paramText = React.useMemo(() => JSON.stringify(selectedJob?.params || {}, null, 2), [selectedJob]);
@@ -500,7 +812,18 @@ function App() {
       <CssBaseline />
       <AppBar position="sticky" color="inherit" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" color="primary.main">AutoFlex Workflow Platform</Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="h6" color="primary.main">AutoFlex Workflow Platform</Typography>
+            <Tooltip title="使用帮助">
+              <IconButton
+                size="small"
+                onClick={() => setHelpOpen(true)}
+                sx={{ border: "1px solid", borderColor: "primary.main", width: 26, height: 26 }}
+              >
+                <Typography sx={{ fontSize: 14, lineHeight: 1, color: "primary.main", fontWeight: 700 }}>?</Typography>
+              </IconButton>
+            </Tooltip>
+          </Stack>
           <Box sx={{ flex: 1 }} />
           <Button onClick={() => { loadJobs(); loadJobDetail(); streamLog(); }}>
             刷新
@@ -758,6 +1081,37 @@ function App() {
           </Grid>
         </Grid>
       </Container>
+
+      <Dialog open={helpOpen} onClose={() => setHelpOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>使用帮助（Markdown）</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            sx={{
+              "& h1, & h2, & h3": { mt: 1.2, mb: 1, fontWeight: 700 },
+              "& h1": { fontSize: "1.4rem" },
+              "& h2": { fontSize: "1.15rem" },
+              "& h3": { fontSize: "1rem" },
+              "& p": { mb: 1 },
+              "& ul": { pl: 2.5, mb: 1 },
+              "& li": { mb: 0.4 },
+              "& code": { fontFamily: "JetBrains Mono", bgcolor: "#f1f5f9", px: 0.4, borderRadius: 0.5 },
+              "& pre": {
+                fontFamily: "JetBrains Mono",
+                bgcolor: "#0b1220",
+                color: "#d7e3ff",
+                p: 1,
+                borderRadius: 1,
+                overflowX: "auto",
+              },
+            }}
+            dangerouslySetInnerHTML={{ __html: helpHtml }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => copyText(HELP_MARKDOWN, "帮助文档 Markdown")}>复制 Markdown</Button>
+          <Button variant="contained" onClick={() => setHelpOpen(false)}>关闭</Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }

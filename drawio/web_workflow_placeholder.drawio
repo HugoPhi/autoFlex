@@ -1,0 +1,151 @@
+<mxfile host="Electron" agent="Mozilla/5.0" version="29.6.6">
+  <diagram name="Web Workflow Placeholder" id="web-workflow-placeholder">
+    <mxGraphModel dx="1200" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="&lt;font face=&quot;宋体-简&quot; style=&quot;font-size:16px;font-weight:bold;&quot;&gt;AutoFlex Web 自动化平台运行流程（占位图）&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="900" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lane_ui" value="&lt;font face=&quot;宋体-简&quot;&gt;用户与前端&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Browser / React + Material UI)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="490" height="740" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lane_orch" value="&lt;font face=&quot;宋体-简&quot;&gt;后端编排层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Flask Job Orchestrator)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="555" y="80" width="490" height="740" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lane_exec" value="&lt;font face=&quot;宋体-简&quot;&gt;执行层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Scripts + Runtime + Artifacts)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="80" width="490" height="740" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u1" value="&lt;font face=&quot;宋体-简&quot;&gt;上传&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; source_zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;提交 Stage A&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
+          <mxGeometry x="20" y="50" width="200" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u2" value="&lt;font face=&quot;宋体-简&quot;&gt;选择&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; migrated_source.zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;提交 Stage B + test bench&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
+          <mxGeometry x="20" y="250" width="230" height="82" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u3" value="&lt;font face=&quot;宋体-简&quot;&gt;轮询作业状态与日志&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/jobs, /log-stream&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
+          <mxGeometry x="20" y="455" width="220" height="74" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u4" value="&lt;font face=&quot;宋体-简&quot;&gt;下载产物&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/jobs/&lt;/font&gt;&lt;font face=&quot;宋体-简&quot;&gt;id&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/download&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
+          <mxGeometry x="20" y="630" width="220" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o1" value="&lt;font face=&quot;宋体-简&quot;&gt;创建 Stage A 作业&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=queued&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;metadata.json&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
+          <mxGeometry x="20" y="50" width="230" height="86" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o2" value="&lt;font face=&quot;宋体-简&quot;&gt;启动&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; run_code_porting_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=running&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
+          <mxGeometry x="20" y="160" width="255" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o3" value="&lt;font face=&quot;宋体-简&quot;&gt;创建 Stage B 作业&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=queued-&amp;gt;running&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
+          <mxGeometry x="20" y="290" width="230" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o4" value="&lt;font face=&quot;宋体-简&quot;&gt;日志偏移读取&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;offset/chunk/complete&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
+          <mxGeometry x="20" y="455" width="230" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o5" value="&lt;font face=&quot;宋体-简&quot;&gt;成功路径&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=succeeded&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f7e7;strokeColor=#82b366;" vertex="1" parent="lane_orch">
+          <mxGeometry x="20" y="600" width="205" height="68" as="geometry" />
+        </mxCell>
+
+        <mxCell id="o6" value="&lt;font face=&quot;宋体-简&quot;&gt;失败路径&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=failed&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;保留错误与日志&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" vertex="1" parent="lane_orch">
+          <mxGeometry x="255" y="600" width="210" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="&lt;font face=&quot;Times New Roman&quot;&gt;run_code_porting_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;生成迁移结果&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
+          <mxGeometry x="20" y="150" width="235" height="76" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" value="&lt;font face=&quot;Times New Roman&quot;&gt;migrated_source.zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;迁移报告 / run.log&lt;/font&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
+          <mxGeometry x="275" y="150" width="180" height="76" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" value="&lt;font face=&quot;Times New Roman&quot;&gt;run_config_search_nginx_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;真实构建/测试/搜索&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
+          <mxGeometry x="20" y="320" width="250" height="86" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" value="&lt;font face=&quot;Times New Roman&quot;&gt;benchmark_nginx.csv&lt;br/&gt;performance_report.json&lt;br/&gt;search_progress.csv&lt;br/&gt;top_images.tar.gz&lt;/font&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
+          <mxGeometry x="285" y="315" width="170" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" value="&lt;font face=&quot;宋体-简&quot;&gt;失败证据&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;return_code != 0&lt;br/&gt;error + log retained&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" vertex="1" parent="lane_exec">
+          <mxGeometry x="20" y="600" width="220" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note1" value="&lt;font face=&quot;宋体-简&quot; style=&quot;font-size:12px;font-weight:bold;&quot;&gt;证据链（可复现）&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Input + Params + Command + Log + Artifacts&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;支持复验、诊断与答辩追溯&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#f8f9fa;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="705" width="360" height="105" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_u1_o1" edge="1" parent="1" source="u1" target="o1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o1_o2" edge="1" parent="1" source="o1" target="o2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o2_e1" edge="1" parent="1" source="o2" target="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e1_e2" edge="1" parent="1" source="e1" target="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e2_u2" edge="1" parent="1" source="e2" target="u2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#82b366;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_u2_o3" edge="1" parent="1" source="u2" target="o3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6c8ebf;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o3_e3" edge="1" parent="1" source="o3" target="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e3_e4" edge="1" parent="1" source="e3" target="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o3_o4" edge="1" parent="1" source="o3" target="o4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o4_u3" edge="1" parent="1" source="o4" target="u3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6c8ebf;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e4_o5" edge="1" parent="1" source="e4" target="o5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o5_u4" edge="1" parent="1" source="o5" target="u4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e3_o6" edge="1" parent="1" source="e3" target="o6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_o6_e5" edge="1" parent="1" source="o6" target="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge_e5_u3" edge="1" parent="1" source="e5" target="u3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
