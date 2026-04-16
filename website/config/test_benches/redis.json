@@ -1,0 +1,16 @@
+{
+  "id": "fig06-redis",
+  "name": "fig06 redis throughput",
+  "description": "ASPLOS22 fig-06 redis benchmark with REQ-oriented baseline.",
+  "app": "redis",
+  "defaults": {
+    "baseline_metric": "REQ",
+    "baseline_threshold": "120000",
+    "num_compartments": "3",
+    "top_k": "3",
+    "host_cores": "3,4",
+    "wayfinder_cores": "1,2",
+    "test_iterations": "3",
+    "overlay_subdir": ""
+  }
+}

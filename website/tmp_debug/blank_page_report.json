@@ -1,0 +1,15 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "screenshot": "/home/tibless/Desktop/auto_flex/website/tmp_debug/blank_page_debug.png",
+  "body_text_len": 1073,
+  "body_html_len": 166301,
+  "console": [
+    {
+      "type": "warning",
+      "text": "You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/"
+    }
+  ],
+  "page_errors": [],
+  "request_failed": [],
+  "request_http_4xx_5xx": []
+}

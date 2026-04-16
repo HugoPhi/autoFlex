@@ -1,0 +1,16 @@
+{
+  "id": "your-bench-id",
+  "name": "human readable bench name",
+  "description": "short description of this bench",
+  "app": "nginx",
+  "defaults": {
+    "baseline_metric": "REQ",
+    "baseline_threshold": "45000",
+    "num_compartments": "3",
+    "top_k": "3",
+    "host_cores": "3,4",
+    "wayfinder_cores": "1,2",
+    "test_iterations": "3",
+    "overlay_subdir": ""
+  }
+}

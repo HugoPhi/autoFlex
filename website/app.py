@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import shlex
 import subprocess
 import threading
@@ -16,6 +17,7 @@ from flask import Flask, Response, jsonify, render_template, request, send_file
 WEB_ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = WEB_ROOT.parent
 JOBS_ROOT = WEB_ROOT / "jobs"
+TEST_BENCH_CONFIG_ROOT = WEB_ROOT / "config" / "test_benches"
 
 app = Flask(__name__)
 
@@ -39,6 +41,72 @@ class Job:
 
 JOBS: Dict[str, Job] = {}
 LOCK = threading.Lock()
+
+
+def load_test_bench_configs() -> Dict[str, Dict[str, Any]]:
+    configs: Dict[str, Dict[str, Any]] = {}
+    if not TEST_BENCH_CONFIG_ROOT.exists():
+        return configs
+
+    for path in sorted(TEST_BENCH_CONFIG_ROOT.glob("*.json")):
+        if path.stem.lower() == "template":
+            continue
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            bench_id = str(raw.get("id", "")).strip()
+            app_name = str(raw.get("app", "")).strip().lower()
+            if not bench_id or app_name not in {"nginx", "redis"}:
+                continue
+
+            defaults = raw.get("defaults")
+            if not isinstance(defaults, dict):
+                defaults = {}
+
+            configs[bench_id] = {
+                "id": bench_id,
+                "name": str(raw.get("name", bench_id)),
+                "description": str(raw.get("description", "")),
+                "app": app_name,
+                "defaults": {k: str(v) for k, v in defaults.items()},
+                "config_file": str(path.relative_to(WEB_ROOT)),
+            }
+        except Exception:
+            continue
+
+    return configs
+
+
+def get_test_bench_or_400(bench_id: str) -> tuple[Optional[Dict[str, Any]], Optional[Response]]:
+    benches = load_test_bench_configs()
+    bench = benches.get(bench_id)
+    if bench is None:
+        return None, jsonify({"error": f"unknown test_bench: {bench_id}"}),
+    return bench, None
+
+
+def _parse_delete_ids(payload: Any) -> List[str]:
+    if not isinstance(payload, dict):
+        return []
+    ids = payload.get("job_ids")
+    if not isinstance(ids, list):
+        return []
+    out: List[str] = []
+    for x in ids:
+        if isinstance(x, str) and x.strip():
+            out.append(x.strip())
+    return out
+
+
+def _delete_job(job_id: str) -> tuple[bool, str]:
+    job = JOBS.get(job_id)
+    if not job:
+        return False, "not_found"
+    if job.status in {"queued", "running"}:
+        return False, "still_active"
+
+    JOBS.pop(job_id, None)
+    shutil.rmtree(JOBS_ROOT / job_id, ignore_errors=True)
+    return True, "deleted"
 
 
 def now_ts() -> float:
@@ -253,21 +321,33 @@ def create_workflow_config_search_job() -> Response:
     if not filename.lower().endswith(".zip"):
         return jsonify({"error": "source_zip must be a .zip file"}), 400
 
-    app_name = (request.form.get("app") or "nginx").strip().lower()
-    if app_name not in {"nginx", "redis"}:
-        return jsonify({"error": "app must be nginx or redis"}), 400
+    test_bench = (request.form.get("test_bench") or "").strip()
+    if not test_bench:
+        return jsonify({"error": "missing test_bench"}), 400
 
-    baseline_metric = (request.form.get("baseline_metric") or "REQ").strip()
+    bench, bench_error = get_test_bench_or_400(test_bench)
+    if bench_error is not None:
+        return bench_error
+    assert bench is not None
+
+    app_name = str(bench["app"])
+    defaults = bench.get("defaults") if isinstance(bench, dict) else {}
+    if not isinstance(defaults, dict):
+        defaults = {}
+
+    baseline_metric = (request.form.get("baseline_metric") or str(defaults.get("baseline_metric", "REQ"))).strip()
     baseline_threshold = (request.form.get("baseline_threshold") or "").strip()
+
+    overlay_subdir = (request.form.get("overlay_subdir") or str(defaults.get("overlay_subdir", ""))).strip()
+    num_compartments = (request.form.get("num_compartments") or str(defaults.get("num_compartments", "3"))).strip()
+    host_cores = (request.form.get("host_cores") or str(defaults.get("host_cores", "3,4"))).strip()
+    wayfinder_cores = (request.form.get("wayfinder_cores") or str(defaults.get("wayfinder_cores", "1,2"))).strip()
+    test_iterations = (request.form.get("test_iterations") or str(defaults.get("test_iterations", "3"))).strip()
+    top_k = (request.form.get("top_k") or str(defaults.get("top_k", "3"))).strip()
+    if not baseline_threshold:
+        baseline_threshold = str(defaults.get("baseline_threshold", "")).strip()
     if not baseline_threshold:
         return jsonify({"error": "missing baseline_threshold"}), 400
-
-    overlay_subdir = (request.form.get("overlay_subdir") or "").strip()
-    num_compartments = (request.form.get("num_compartments") or "3").strip()
-    host_cores = (request.form.get("host_cores") or "3,4").strip()
-    wayfinder_cores = (request.form.get("wayfinder_cores") or "1,2").strip()
-    test_iterations = (request.form.get("test_iterations") or "3").strip()
-    top_k = (request.form.get("top_k") or "3").strip()
 
     job_id = uuid.uuid4().hex[:12]
     job_dir = JOBS_ROOT / job_id
@@ -277,6 +357,7 @@ def create_workflow_config_search_job() -> Response:
     source_zip.save(str(source_zip_path))
 
     params = {
+        "test_bench": test_bench,
         "app": app_name,
         "source_zip_path": str(source_zip_path),
         "overlay_subdir": overlay_subdir,
@@ -306,6 +387,12 @@ def list_jobs() -> Response:
     return jsonify({"jobs": data})
 
 
+@app.get("/api/config/test-benches")
+def list_test_benches() -> Response:
+    benches = list(load_test_bench_configs().values())
+    return jsonify({"test_benches": benches})
+
+
 @app.get("/api/jobs/<job_id>")
 def get_job(job_id: str) -> Response:
     job = JOBS.get(job_id)
@@ -314,6 +401,45 @@ def get_job(job_id: str) -> Response:
 
     artifacts = list_files_recursive(Path(job.output_dir), limit=2000) if job.output_dir else []
     return jsonify({"job": asdict(job), "artifacts": artifacts})
+
+
+@app.delete("/api/jobs/<job_id>")
+def delete_job(job_id: str) -> Response:
+    with LOCK:
+        deleted, reason = _delete_job(job_id)
+    if deleted:
+        return jsonify({"ok": True, "job_id": job_id})
+    if reason == "still_active":
+        return jsonify({"error": "cannot delete queued/running job"}), 409
+    return jsonify({"error": "job not found"}), 404
+
+
+@app.post("/api/jobs/delete-batch")
+def delete_jobs_batch() -> Response:
+    job_ids = _parse_delete_ids(request.get_json(silent=True) or {})
+    if not job_ids:
+        return jsonify({"error": "missing job_ids"}), 400
+
+    deleted: List[str] = []
+    skipped_active: List[str] = []
+    not_found: List[str] = []
+
+    with LOCK:
+        for job_id in job_ids:
+            ok, reason = _delete_job(job_id)
+            if ok:
+                deleted.append(job_id)
+            elif reason == "still_active":
+                skipped_active.append(job_id)
+            else:
+                not_found.append(job_id)
+
+    return jsonify({
+        "ok": True,
+        "deleted": deleted,
+        "skipped_active": skipped_active,
+        "not_found": not_found,
+    })
 
 
 @app.get("/api/jobs/<job_id>/log-stream")
