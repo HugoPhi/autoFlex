@@ -1,0 +1,168 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --edge: #d8dee9;
+  --ink: #111827;
+  --sub: #4b5563;
+  --accent: #0f766e;
+  --accent-2: #0a5a54;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: linear-gradient(135deg, #eef3fb 0%, #f7f9fd 60%, #edf6f3 100%);
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.page {
+  max-width: 1600px;
+  margin: 20px auto;
+  padding: 0 16px 24px;
+}
+
+.hero h1 { margin: 0; }
+.hero p { margin: 6px 0 0; color: var(--sub); }
+
+.layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.left-panel,
+.viewer-panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.two-col {
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+input,
+select {
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  padding: 8px;
+  background: #fff;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.btn:hover { background: var(--accent-2); }
+.btn.secondary { background: #475569; }
+
+.hint {
+  margin: 2px 0 10px;
+  color: var(--sub);
+  font-size: 0.9rem;
+}
+
+.viewer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.jobs-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--edge);
+  text-align: left;
+  padding: 7px;
+  font-size: 0.92rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status.queued { background: #fde68a; }
+.status.running { background: #bfdbfe; }
+.status.succeeded { background: #bbf7d0; }
+.status.failed { background: #fecaca; }
+
+.meta-box {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.meta-box pre,
+.log-box {
+  margin: 6px 0 0;
+  padding: 8px;
+  background: #0b1220;
+  color: #d7e3ff;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.log-card {
+  min-height: 420px;
+}
+
+.log-box {
+  height: 420px;
+  overflow: auto;
+}
+
+.artifacts-box {
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.mono {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

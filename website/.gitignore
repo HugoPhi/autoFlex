@@ -1,0 +1,4 @@
+jobs/*
+!jobs/.keep
+linked/*
+!linked/.keep
