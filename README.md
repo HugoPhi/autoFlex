@@ -21,7 +21,7 @@ FlexOS 通过可组合的隔离机制打开了安全/性能联合优化空间，
 
 ## 核心创新点
 
-### 1. 规则驱动的自动迁移流水线（autoGen）
+### 1. 规则驱动的自动迁移流水线
 
 基于 [autoGen/flexos_porthelper_py.py](autoGen/flexos_porthelper_py.py) 与规则文档 [autoGen/AUTO_MIGRATION_RULES.md](autoGen/AUTO_MIGRATION_RULES.md)，迁移流程由三层组成：
 
@@ -31,7 +31,7 @@ FlexOS 通过可组合的隔离机制打开了安全/性能联合优化空间，
 
 该设计把“可自动化”的迁移模式显式化，并允许对规则命中与漏改进行版本化统计。
 
-### 2. 偏序建模与期望剪枝搜索（search）
+### 2. 偏序建模与期望剪枝搜索
 
 基于 [search/dag_poset_search.py](search/dag_poset_search.py) 与实验说明 [search/EXPERIMENT_BASELINE_GUIDE.md](search/EXPERIMENT_BASELINE_GUIDE.md)，配置空间被建模为 DAG 偏序图：
 
@@ -45,9 +45,9 @@ $$
 E_i = p\cdot a_i + (1-p)\cdot d_i
 $$
 
-其中 $a_i$ 为候选集中祖先规模，$d_i$ 为候选集中后代规模，$p$ 为在线估计的可行概率。
+其中 $a_i$ 为候选集中祖先规模， $d_i$ 为候选集中后代规模， $p$ 为在线估计的可行概率。
 
-### 3. 统一绘图编排（根目录单入口）
+### 3. 统一绘图编排
 
 本仓库所有绘图统一由根目录脚本 [generate_figure.py](generate_figure.py) 调度，配置在 [plot-config.yaml](plot-config.yaml)。
 
@@ -63,157 +63,56 @@ $$
 
 ## Web 自动化平台（启动、使用、日志与产物）
 
-本仓库提供本地 Web 平台入口：
-- 目录： [website](website)
-- 作用：将 Stage A（自动迁移）与 Stage B（配置搜索）变为可视化作业流程
 
-### 1. 启动方式
+### Web 平台一览
 
-在仓库根目录执行：
+| 类别 | 步骤/功能 | 说明 |
+|------|-----------|------|
+| 启动 | 1. 启动服务 | `fuser -k 8080/tcp && cd website && .venv/bin/python app.py` |
+|      | 2. 访问页面 | http://127.0.0.1:8080/ |
+| 页面结构 | 左侧：Stage A | 上传原始源码 zip，自动迁移 |
+|      | 左侧：Stage B | 上传迁移后源码 zip，选择 test bench/参数，配置搜索 |
+|      | 左侧：产物下载 | 下载当前作业产物 |
+|      | 右侧：Job Console | 作业状态、详情、日志、单删/批量删 |
+|      | 顶栏 | 刷新、帮助（内置文档） |
+| Stage A 流程 | 1. 上传源码 zip | |
+|      | 2. 开始迁移 | |
+|      | 3. 查看日志/详情 | |
+|      | 4. 下载 migrated_source.zip | 用于 Stage B |
+| Stage B 流程 | 1. 上传 migrated_source.zip | |
+|      | 2. 选择 test bench | 如 fig06-nginx/fig06-redis |
+|      | 3. 配置参数 | baseline_threshold/num_compartments/host_cores/wayfinder_cores/test_iterations/top_k |
+|      | 4. 开始搜索 | |
+|      | 5. 下载产物 | |
+| 日志与作业 | 状态 | queued/running/succeeded/failed |
+|      | 详情字段 | command/params/return_code/error |
+|      | 日志建议 | 优先看首条硬错误，结合 command/params/log 定位 |
+| 产物说明 | benchmark_nginx.csv | 基准数据，统计/绘图用 |
+|      | build_and_test.log | 构建与测试日志 |
+|      | performance_report.json | 机器可读摘要 |
+|      | performance_report.md | 人类可读报告 |
+|      | search_progress.csv | 搜索轨迹数据 |
+|      | top_images.tar.gz | 镜像与相关文件归档 |
+|      | top_images/task-single/build.log | 单配置构建日志 |
+|      | top_images/task-single/config | 运行配置快照 |
+|      | top_images/task-single/kraft.yaml | 构建关键配置 |
+|      | top_images/task-single/nginx_kvm-x86_64(.dbg) | 产出二进制/调试版 |
+| 维护 | 重启服务 | 同启动命令 |
+|      | 重启后 | 已完成作业恢复，running 标记为 failed |
+|      | 清理作业 | 支持单个/批量删除 |
+| 论文推荐流程 | 1. 启动服务 | |
+|      | 2. Stage A 上传源码 zip | |
+|      | 3. 观察日志/详情 | |
+|      | 4. 下载 migrated_source.zip | |
+|      | 5. Stage B 上传 migrated_source.zip | |
+|      | 6. 选择 test bench/参数 | |
+|      | 7. 开始搜索 | |
+|      | 8. 下载关键产物 | benchmark_nginx.csv/performance_report.json/md/search_progress.csv/top_images.tar.gz |
+|      | 9. 归档 | CSV/报告/命令/参数/日志/产物 |
+| 常见问题 | 页面不更新 | 刷新页面，确认 8080 端口 |
+|      | Stage B 失败 | 先查 build_and_test.log 首条硬错误，再查 command/params |
+|      | 产物为空 | 检查 job_id，failed 作业无完整产物 |
 
-```bash
-fuser -k 8080/tcp
-cd website
-/home/tibless/Desktop/auto_flex/.venv/bin/python app.py
-```
-
-浏览器访问：
-
-```text
-http://127.0.0.1:8080/
-```
-
-### 2. 页面功能概览
-
-1. 左侧
-- Stage A 提交区：上传原始源码 zip，执行自动迁移。
-- Stage B 提交区：上传迁移后源码 zip，选择 test bench 与搜索参数。
-- 产物下载区：下载当前选中作业的产物文件。
-
-2. 右侧
-- Job Console：查看作业状态，支持查看、单删、批量删除。
-- 作业详情：查看 status、return_code、command、params。
-- 实时日志：增量日志流（支持 ANSI 颜色显示）。
-
-3. 顶栏
-- 刷新按钮。
-- 帮助按钮（?）：内置详细使用文档（Markdown 渲染）。
-
-### 3. Stage A 使用流程
-
-1. 上传原始源码压缩包（source_zip）。
-2. 点击“开始迁移”。
-3. 在 Job Console 选择该作业，查看详情与日志。
-4. 成功后从产物区下载 migrated_source.zip（用于 Stage B 输入）。
-
-### 4. Stage B 使用流程
-
-1. 上传 Stage A 产物 migrated_source.zip。
-2. 选择 test bench（如 fig06-nginx / fig06-redis）。
-3. 根据需要调整参数：baseline_threshold / num_compartments / host_cores / wayfinder_cores / test_iterations / top_k。
-4. 点击“开始搜索”。
-5. 在日志中观察 build/test/search 过程；完成后下载产物。
-
-### 5. 日志与字段解释
-
-1. 状态
-- queued：已入队
-- running：执行中
-- succeeded：成功
-- failed：失败
-
-2. 作业详情核心字段
-- command：真实执行命令
-- params：本次参数快照
-- return_code：脚本返回码（0 通常为成功）
-- error：后端捕获异常摘要
-
-3. 日志阅读建议
-- 优先看第一条硬错误，不要先看末尾级联错误。
-- 结合 command + params + log 一起定位问题。
-
-### 6. 产物说明（重点）
-
-以下是 Stage B（nginx）常见产物：
-
-1. benchmark_nginx.csv
-- 基准数据，供后续统计/绘图。
-
-2. build_and_test.log
-- 构建与测试详细日志。
-
-3. performance_report.json
-- 机器可读结果摘要。
-
-4. performance_report.md
-- 人类可读报告文本。
-
-5. search_progress.csv
-- 搜索过程轨迹数据。
-
-6. top_images.tar.gz
-- 镜像与相关文件打包归档。
-
-7. top_images/task-single/build.log
-- 单配置构建日志。
-
-8. top_images/task-single/config
-- 运行配置快照。
-
-9. top_images/task-single/kraft.yaml
-- Kraftrun/构建关键配置文件。
-
-10. top_images/task-single/nginx_kvm-x86_64(.dbg)
-- 产出的二进制与调试版本。
-
-### 7. 网站重启与维护
-
-1. 重启服务
-
-```bash
-fuser -k 8080/tcp
-cd /home/tibless/Desktop/auto_flex/website
-/home/tibless/Desktop/auto_flex/.venv/bin/python app.py
-```
-
-2. 重启后行为
-- 已完成作业会恢复显示。
-- 中断中的 running 作业会被标记为 failed（防止僵尸状态）。
-
-3. 清理作业
-- 支持单个清除。
-- 支持全选与批量删除。
-
-### 8. 论文 nginx demo 详细流程（推荐）
-
-以下流程用于论文系统展示，且与你当前仓库流程对齐。
-
-1. 启动 Web 服务。
-2. Stage A 上传 nginx 源码 zip，提交作业。
-3. 观察 Stage A 日志与详情，等待 succeeded。
-4. 下载 Stage A 产物 migrated_source.zip。
-5. Stage B 上传 migrated_source.zip，选择 test_bench=fig06-nginx。
-6. 保持默认参数或按实验设定调整阈值、轮次和 cores。
-7. 提交 Stage B 作业，观察实时日志中的 build/test/search。
-8. 等待 succeeded 后下载关键产物：
-- benchmark_nginx.csv
-- performance_report.json
-- performance_report.md
-- search_progress.csv
-- top_images.tar.gz
-9. 将 CSV/报告用于图表生成与论文结果说明。
-10. 将 command + params + log + artifacts 一并归档，确保后续可复验。
-
-### 9. 常见问题（Web 相关）
-
-1. 页面打开但作业不更新
-- 点刷新；确认服务是否运行在 8080。
-
-2. Stage B 失败
-- 先看 build_and_test.log 第一硬错误；再核对 command 与 params。
-
-3. 产物为空
-- 先确认选中的 job_id；failed 作业可能无完整产物。
 
 ## 实验设计
 
@@ -314,57 +213,53 @@ cd /home/tibless/Desktop/auto_flex/website
 
 ## 复现指南
 
-### 0. 三条工作流的运行方式差异（重要）
+### 0. 复现入口优先级（AE 推荐）
 
-1. asplos22-ae
-- 通过 Makefile 执行实验准备与采样（dependencies/prepare/run）。
-- 本仓库不再使用 Makefile 作为绘图入口。
+建议按以下优先级使用入口，避免流程混杂：
 
-2. search
-- 主要入口是脚本 `search/run_debug_generate.sh`。
-- 该脚本是“数据处理 + 搜索评估 + 绘图”一体化流水线，会直接产出 CSV、DOT、SVG、PNG。
+1. **统一出图入口（推荐）**：`generate_figure.py`
+2. **模块一体化入口**：`search/run_debug_generate.sh`、`autoGen/evaluate_flexos_porthelper_py.py`
+3. **原始 AE 采样入口**：`asplos22-ae/Makefile`
+4. **作业化入口（Web）**：`website/app.py`
+5. **调试/维护入口**：各目录 `scripts/` 与实验内 `build/test/start-scripts`
 
-3. autoGen
-- 运行分两段：先评测，再绘图。
-- 评测入口：`autoGen/evaluate_flexos_porthelper_py.py`（生成 projects/*/{raw,manual,auto} 与 summary）。
-- 绘图入口：`autoGen/plot_manual_effort_reduction.py`（读取 eval 结果目录后画图）。
+### 1. 主流程 A（论文 AE 复现，CLI 推荐）
 
-4. 统一调度
-- 根目录 `generate_figure.py` 负责统一调度各目标。
-- 其中 `--target search` 会触发 search 的全流水线；`--target auto_migration_effort` 默认只基于既有 eval 目录绘图。
-
-### 1. asplos22-ae：实验准备与采样（Makefile）
-
-先按 [asplos22-ae/README.md](asplos22-ae/README.md) 准备环境，并在 shell 中设置 token：
+#### Step A1: 原始实验准备与采样（asplos22-ae）
 
 ```bash
 export KRAFT_TOKEN="<your_github_token>"
-```
-
-在仓库根目录执行（全量）：
-
-```bash
 cd asplos22-ae
 make dependencies
 make prepare
 make run
 ```
 
-按图号执行（示例）：
+按图号局部执行示例：
 
 ```bash
 cd asplos22-ae
-make prepare-fig-06
-make run-fig-06
-make prepare-fig-09
-make run-fig-09
+make prepare-fig-06 && make run-fig-06
+make prepare-fig-09 && make run-fig-09
 ```
 
-说明：上述流程只负责依赖准备与实验采样，不作为本仓库推荐绘图入口。
+#### Step A2: 根目录统一出图（推荐）
 
-### 2. search：一体化搜索实验与绘图（脚本）
+```bash
+cd /home/tibless/Desktop/auto_flex
+python3 generate_figure.py --list
+python3 generate_figure.py --all
+```
 
-在仓库根目录执行（推荐，和当前项目脚本一致）：
+按目标出图示例：
+
+```bash
+python3 generate_figure.py --target search
+python3 generate_figure.py --target auto_migration_effort
+python3 generate_figure.py --target figure06 --target figure07 --target figure09
+```
+
+### 2. 主流程 B（search 一体化）
 
 ```bash
 PYTHON_BIN="$PWD/.venv/bin/python" \
@@ -373,54 +268,178 @@ OUTPUT_DIR="$PWD/figures/search" \
 bash search/run_debug_generate.sh
 ```
 
-该命令会一次性生成：
+该流程会串行执行偏序图构建、假设验证、DAG 搜索、baseline 评估与多组对比绘图。
 
-1. 偏序图、搜索轨迹、假设验证图（SVG/PNG）。
-2. baseline 评估 CSV（detail/agg/focus/top5）及对应对比图。
-
-### 3. autoGen：先评测，再统计，再绘图（两段式）
-
-在仓库根目录执行（评测 + 规则统计 + 工作量图）：
+### 3. 主流程 C（autoGen 一体化）
 
 ```bash
 $PWD/.venv/bin/python autoGen/evaluate_flexos_porthelper_py.py \
-	--dataset-root autoGen/dataset \
-	--out-dir autoGen/eval_results/flexos_py_plus_v11
+  --dataset-root autoGen/dataset \
+  --out-dir autoGen/eval_results/flexos_py_plus_v11
 
 $PWD/.venv/bin/python autoGen/compute_rule_match_stats.py \
-	--eval-dir autoGen/eval_results/flexos_py_plus_v11
+  --eval-dir autoGen/eval_results/flexos_py_plus_v11
 
 $PWD/.venv/bin/python autoGen/plot_manual_effort_reduction.py \
-	--eval-dir $PWD/autoGen/eval_results/flexos_py_plus_v11 \
-	--formats svg png \
-	--output-root figures/autogen
+  --eval-dir $PWD/autoGen/eval_results/flexos_py_plus_v11 \
+  --formats svg png \
+  --output-root figures/autogen
 ```
 
-单文件迁移与漏洞扫描（可选）：
+单文件迁移+检测（可选）：
 
 ```bash
 bash autoGen/flexos_migrate_vuln_pipeline.sh \
-	--target-file autoGen/third_party/unikraft/lib/uktime/time.c
+  --target-file autoGen/third_party/unikraft/lib/uktime/time.c
 ```
 
-### 4. 根目录统一调度绘图（唯一推荐出图入口）
-
-在仓库根目录执行：
+### 4. 主流程 D（Web 作业化复现）
 
 ```bash
-python3 generate_figure.py --list
+cd website
+bash scripts/setup_links.sh
+python3 -m pip install -r requirements.txt
+python3 app.py
+```
+
+访问 `http://127.0.0.1:8080/`，通过页面执行：
+
+1. Stage A（自动迁移）：后端执行 `website/scripts/run_code_porting_from_zip.py`
+2. Stage B（配置搜索）：后端执行 `website/scripts/run_config_search_nginx_from_zip.py`
+
+### 5. 全工程目录覆盖与脚本索引（主表）
+
+| 目录 | 角色 | 推荐入口 | 相关脚本类型 |
+|---|---|---|---|
+| `.` | 总调度层 | `generate_figure.py` | Python、Shell、YAML、Make 模板 |
+| `autoGen/` | 自动迁移与评测 | `evaluate_flexos_porthelper_py.py` | Python、Shell |
+| `search/` | 偏序搜索与分析绘图 | `run_debug_generate.sh` | Python、Shell |
+| `website/` | Web 作业平台 | `app.py` | Python、Shell |
+| `asplos22-ae/` | 原始 AE 采样框架 | `Makefile` | Makefile、Python、Shell |
+| `drawio/` | 图形草图生成 | `draw.py` | Python |
+| `paper/` | 论文编译 | `Makefile` | Makefile、Python |
+| `figures/` | 图表产物归档 | 无执行脚本 | 结果目录 |
+| `debug_log/` | 运行日志文档 | 无执行脚本 | Markdown 文档 |
+| `.debugs/` | 临时调试脚本 | `plot_matched_calls_diff.py` | Python（debug） |
+
+### 6. 分目录脚本清单（全量）
+
+#### 6.1 根目录（调度与配置）
+
+| 脚本/文件 | 分类 | 作用 | 典型命令 |
+|---|---|---|---|
+| `generate_figure.py` | Recommended | 全仓统一绘图调度（读取 `plot-config.yaml`） | `python3 generate_figure.py --all` |
+| `generate_all_plots.sh` | Optional | `generate_figure.py --all` 封装 | `bash generate_all_plots.sh` |
+| `plot-config-tool.py` | Optional | 查看/初始化绘图配置项 | `python3 plot-config-tool.py list` |
+| `plot-config.yaml` | Recommended | 目标绘图命令与收集规则配置 | 编辑后配合 `generate_figure.py` |
+| `plot.mk` | Optional | 通用绘图 Makefile 模板 | 作为 include 模板使用 |
+
+#### 6.2 autoGen（自动迁移）
+
+| 脚本 | 分类 | 作用 | 典型命令 |
+|---|---|---|---|
+| `autoGen/flexos_porthelper_py.py` | Recommended | 单文件迁移（cscope+spatch+后处理） | `python3 autoGen/flexos_porthelper_py.py --source-root ... --target-file ...` |
+| `autoGen/evaluate_flexos_porthelper_py.py` | Recommended | 批量评测 auto/manual 对齐并输出 summary | `python3 autoGen/evaluate_flexos_porthelper_py.py --dataset-root autoGen/dataset --out-dir autoGen/eval_results/flexos_py_plus_v11` |
+| `autoGen/compute_rule_match_stats.py` | Recommended | 统计规则级 `(lib,function)` 命中 | `python3 autoGen/compute_rule_match_stats.py --eval-dir autoGen/eval_results/flexos_py_plus_v11` |
+| `autoGen/plot_manual_effort_reduction.py` | Recommended | 输出人工工作量下降图 | `python3 autoGen/plot_manual_effort_reduction.py --eval-dir ... --output-root figures/autogen` |
+| `autoGen/flexos_migrate_vuln_pipeline.sh` | Optional | 迁移+仪器化+运行时 gate 检查+漏洞扫描 | `bash autoGen/flexos_migrate_vuln_pipeline.sh --target-file ...` |
+
+#### 6.3 search（配置搜索）
+
+| 脚本 | 分类 | 作用 |
+|---|---|---|
+| `search/run_debug_generate.sh` | Recommended | 全流程总入口（构图/验证/搜索/评估/绘图） |
+| `search/fig08_build_poset_python.py` | Recommended | 根据 config-map 重建偏序图 DOT/SVG/PNG |
+| `search/validate_all_hypothesis.py` | Recommended | 批量验证假设并生成 violations 与散点图 |
+| `search/dag_poset_search_cli.py` | Recommended | 运行 DAG 搜索并输出 summary/trace |
+| `search/evaluate_search_baselines_multi.py` | Recommended | 多阈值多种子 baseline 评估 |
+| `search/plot_search_baseline_multi_metric.py` | Recommended | 聚合指标对比图 |
+| `search/plot_search_baseline_by_threshold.py` | Recommended | 分阈值面板图 |
+| `search/select_useful_thresholds_for_ours.py` | Optional | 筛选重点阈值生成 focus 子集 |
+| `search/fig08_plot_nginx_search_path.py` | Optional | nginx 搜索路径图 |
+| `search/epsilon_exceedance_stats.py` | Optional | 异常边 exceedance 统计 |
+| `search/hypothesis.py` | Optional | 单次假设验证 CLI |
+| `search/plot_search_baseline_comparison.py` | Optional | 旧版 summary 对比图 |
+| `search/plot_single_query_pruning.py` | Optional | 单查询剪枝示意图 |
+| `search/fig08_plot.sh` | Debug/Maintenance | 用 graphviz 直接渲染 fig08 DOT |
+
+快速运行（单脚本）示例：
+
+```bash
+python3 search/dag_poset_search_cli.py --threshold-list "[45000,302000,140200]"
+python3 search/validate_all_hypothesis.py --out-dir figures/search
+```
+
+#### 6.4 website（Web 平台与作业后端）
+
+| 脚本 | 分类 | 作用 |
+|---|---|---|
+| `website/app.py` | Recommended | Flask 作业平台，提供 Stage A/B API 与日志流 |
+| `website/scripts/setup_links.sh` | Recommended | 创建 `website/linked` 到项目主目录软链接 |
+| `website/scripts/run_code_porting_from_zip.py` | Recommended | Stage A：zip 输入 -> migrated_source + report |
+| `website/scripts/run_config_search_nginx_from_zip.py` | Recommended | Stage B：zip 输入 -> build/test/search + artifacts |
+| `website/scripts/run_wayfinder_build_from_zip.sh` | Optional | Wayfinder 覆盖构建辅助脚本 |
+| `website/scripts/debug_blank_page.py` | Debug/Maintenance | Playwright 空白页诊断脚本 |
+
+#### 6.5 asplos22-ae（原始实验框架）
+
+**顶层编排**
+
+| 文件 | 分类 | 作用 |
+|---|---|---|
+| `asplos22-ae/Makefile` | Recommended | `dependencies/prepare/run/plot/clean` 与按图号目标编排 |
+
+**各实验目录入口**
+
+| 实验目录 | 入口 | 说明 |
+|---|---|---|
+| `fig-06_nginx-redis-perm` | `Makefile` + `apps/*/{build.sh,test.sh,plot.py}` + `plot_fig06.py` | Wayfinder 任务生成、构建、测试、拆分图输出 |
+| `fig-07_nginx-redis-normalized` | `Makefile` + `plot_fig07.py` + `plot_scatter.py` | 基于 fig06 数据生成标准化散点图 |
+| `fig-09_iperf-throughput` | `Makefile` + `plot_fig09.py` + `docker-data/*.sh` | iPerf 构建/运行/启动脚本 |
+| `fig-10_sqlite-exec-time` | `Makefile` + `docker-data/run.sh` + `docker-data/start-scripts/*.sh` | SQLite 多后端 benchmark |
+| `fig-11_flexos-alloc-latency` | `Makefile` + `docker-data/run.sh` + `toggle-kpti.sh` + `tools/benchmark_linux.sh` | 微基准 + KPTI on/off 测量 |
+| `tab-01_porting-effort` | `Makefile` | Porting effort 手动测量容器环境 |
+
+**辅助脚本**
+
+| 脚本 | 分类 | 作用 |
+|---|---|---|
+| `asplos22-ae/scripts/fig06/nginx_watch.sh` | Debug/Maintenance | 检查 nginx Wayfinder 结果目录可执行产物完整性 |
+| `asplos22-ae/scripts/fig06/redis_watch.sh` | Debug/Maintenance | 检查 redis Wayfinder 结果目录可执行产物完整性 |
+| `asplos22-ae/scripts/fig06/csv_tab.sh` | Debug/Maintenance | CSV 快速对齐显示 |
+
+#### 6.6 drawio 与 paper
+
+| 路径 | 分类 | 作用 | 典型命令 |
+|---|---|---|---|
+| `drawio/draw.py` | Optional | Graphviz 生成紧凑剪枝示意图 | `python3 drawio/draw.py` |
+| `paper/drawio/draw.py` | Optional | 论文目录中的同类绘图脚本 | `python3 paper/drawio/draw.py` |
+| `paper/Makefile` | Recommended | `xelatex -> bibtex -> xelatex*2` 编译论文 | `cd paper && make pdf` |
+
+### 7. 目录边界与无脚本目录说明
+
+以下目录主要存放结果或文档，本身不提供执行脚本：
+
+1. `figures/`：统一图表输出归档。
+2. `debug_log/`：调试记录与阶段性说明文档。
+3. `autoGen/dataset/`、`search/data/`：输入数据与配置映射。
+
+### 8. 最小可复现实验命令集（建议直接复制）
+
+```bash
+# 1) 搜索主线一体化
+PYTHON_BIN="$PWD/.venv/bin/python" PNG_DPI=300 OUTPUT_DIR="$PWD/figures/search" bash search/run_debug_generate.sh
+
+# 2) 自动迁移主线一体化
+$PWD/.venv/bin/python autoGen/evaluate_flexos_porthelper_py.py --dataset-root autoGen/dataset --out-dir autoGen/eval_results/flexos_py_plus_v11
+$PWD/.venv/bin/python autoGen/compute_rule_match_stats.py --eval-dir autoGen/eval_results/flexos_py_plus_v11
+$PWD/.venv/bin/python autoGen/plot_manual_effort_reduction.py --eval-dir $PWD/autoGen/eval_results/flexos_py_plus_v11 --formats svg png --output-root figures/autogen
+
+# 3) 根目录统一出图
 python3 generate_figure.py --all
 ```
 
-按目标分组绘图示例：
-
-```bash
-python3 generate_figure.py --target search
-python3 generate_figure.py --target auto_migration_effort
-python3 generate_figure.py --target figure06 --target figure07 --target figure09
-```
-
-如需更高分辨率 PNG，可在配置中调整 dpi，详见 [PLOTTING_GUIDE.md](PLOTTING_GUIDE.md)。
+如需查看各脚本详细参数，统一使用 `--help`。
 
 ## 结果解读与边界
 
