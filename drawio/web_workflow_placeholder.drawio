@@ -1,150 +1,235 @@
-<mxfile host="Electron" agent="Mozilla/5.0" version="29.6.6">
-  <diagram name="Web Workflow Placeholder" id="web-workflow-placeholder">
-    <mxGraphModel dx="1200" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram id="AutoFlex_Paper_Ver" name="Version A: 论文标准版">
+    <mxGraphModel dx="895" dy="581" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
-        <mxCell id="title" value="&lt;font face=&quot;宋体-简&quot; style=&quot;font-size:16px;font-weight:bold;&quot;&gt;AutoFlex Web 自动化平台运行流程（占位图）&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="350" y="20" width="900" height="36" as="geometry" />
+        <mxCell id="ooF_savAyr2fyLrDL_zL-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#F8CECC;strokeColor=#DBB5B4;" value="" vertex="1">
+          <mxGeometry height="240" width="789.34" x="630.66" y="440" as="geometry" />
         </mxCell>
-
-        <mxCell id="lane_ui" value="&lt;font face=&quot;宋体-简&quot;&gt;用户与前端&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Browser / React + Material UI)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="40" y="80" width="490" height="740" as="geometry" />
+        <mxCell id="ooF_savAyr2fyLrDL_zL-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F1F8E9;strokeColor=#D5E8D4;" value="" vertex="1">
+          <mxGeometry height="100" width="790" x="630" y="330" as="geometry" />
         </mxCell>
-
-        <mxCell id="lane_orch" value="&lt;font face=&quot;宋体-简&quot;&gt;后端编排层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Flask Job Orchestrator)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="555" y="80" width="490" height="740" as="geometry" />
+        <mxCell id="ooF_savAyr2fyLrDL_zL-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#E8F4FD;strokeColor=#BFCBDE;" value="" vertex="1">
+          <mxGeometry height="140" width="790" x="630" y="180" as="geometry" />
         </mxCell>
-
-        <mxCell id="lane_exec" value="&lt;font face=&quot;宋体-简&quot;&gt;执行层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (Scripts + Runtime + Artifacts)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="80" width="490" height="740" as="geometry" />
-        </mxCell>
-
-        <mxCell id="u1" value="&lt;font face=&quot;宋体-简&quot;&gt;上传&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; source_zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;提交 Stage A&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
-          <mxGeometry x="20" y="50" width="200" height="72" as="geometry" />
-        </mxCell>
-
-        <mxCell id="u2" value="&lt;font face=&quot;宋体-简&quot;&gt;选择&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; migrated_source.zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;提交 Stage B + test bench&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
-          <mxGeometry x="20" y="250" width="230" height="82" as="geometry" />
-        </mxCell>
-
-        <mxCell id="u3" value="&lt;font face=&quot;宋体-简&quot;&gt;轮询作业状态与日志&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/jobs, /log-stream&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
-          <mxGeometry x="20" y="455" width="220" height="74" as="geometry" />
-        </mxCell>
-
-        <mxCell id="u4" value="&lt;font face=&quot;宋体-简&quot;&gt;下载产物&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/jobs/&lt;/font&gt;&lt;font face=&quot;宋体-简&quot;&gt;id&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/download&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="lane_ui">
-          <mxGeometry x="20" y="630" width="220" height="72" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o1" value="&lt;font face=&quot;宋体-简&quot;&gt;创建 Stage A 作业&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=queued&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;metadata.json&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
-          <mxGeometry x="20" y="50" width="230" height="86" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o2" value="&lt;font face=&quot;宋体-简&quot;&gt;启动&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; run_code_porting_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=running&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
-          <mxGeometry x="20" y="160" width="255" height="78" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o3" value="&lt;font face=&quot;宋体-简&quot;&gt;创建 Stage B 作业&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=queued-&amp;gt;running&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
-          <mxGeometry x="20" y="290" width="230" height="72" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o4" value="&lt;font face=&quot;宋体-简&quot;&gt;日志偏移读取&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;offset/chunk/complete&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d6b656;" vertex="1" parent="lane_orch">
-          <mxGeometry x="20" y="455" width="230" height="72" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o5" value="&lt;font face=&quot;宋体-简&quot;&gt;成功路径&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=succeeded&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f7e7;strokeColor=#82b366;" vertex="1" parent="lane_orch">
-          <mxGeometry x="20" y="600" width="205" height="68" as="geometry" />
-        </mxCell>
-
-        <mxCell id="o6" value="&lt;font face=&quot;宋体-简&quot;&gt;失败路径&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;status=failed&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;保留错误与日志&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" vertex="1" parent="lane_orch">
-          <mxGeometry x="255" y="600" width="210" height="78" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e1" value="&lt;font face=&quot;Times New Roman&quot;&gt;run_code_porting_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;生成迁移结果&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
-          <mxGeometry x="20" y="150" width="235" height="76" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e2" value="&lt;font face=&quot;Times New Roman&quot;&gt;migrated_source.zip&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;迁移报告 / run.log&lt;/font&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
-          <mxGeometry x="275" y="150" width="180" height="76" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e3" value="&lt;font face=&quot;Times New Roman&quot;&gt;run_config_search_nginx_from_zip.py&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;真实构建/测试/搜索&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
-          <mxGeometry x="20" y="320" width="250" height="86" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e4" value="&lt;font face=&quot;Times New Roman&quot;&gt;benchmark_nginx.csv&lt;br/&gt;performance_report.json&lt;br/&gt;search_progress.csv&lt;br/&gt;top_images.tar.gz&lt;/font&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="lane_exec">
-          <mxGeometry x="285" y="315" width="170" height="120" as="geometry" />
-        </mxCell>
-
-        <mxCell id="e5" value="&lt;font face=&quot;宋体-简&quot;&gt;失败证据&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;return_code != 0&lt;br/&gt;error + log retained&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#b85450;" vertex="1" parent="lane_exec">
-          <mxGeometry x="20" y="600" width="220" height="78" as="geometry" />
-        </mxCell>
-
-        <mxCell id="note1" value="&lt;font face=&quot;宋体-简&quot; style=&quot;font-size:12px;font-weight:bold;&quot;&gt;证据链（可复现）&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Input + Params + Command + Log + Artifacts&lt;/font&gt;&lt;br/&gt;&lt;font face=&quot;宋体-简&quot;&gt;支持复验、诊断与答辩追溯&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#f8f9fa;strokeColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="1160" y="705" width="360" height="105" as="geometry" />
-        </mxCell>
-
-        <mxCell id="edge_u1_o1" edge="1" parent="1" source="u1" target="o1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;endArrow=block;">
+        <mxCell id="ooF_savAyr2fyLrDL_zL-9" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4C8076;strokeWidth=2;endSize=2;" target="obXHMVoCH5VPY4moeZJs-3" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o1_o2" edge="1" parent="1" source="o1" target="o2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;" value="&lt;font face=&quot;宋体-简&quot;&gt;用户上传&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;source.zip&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(Stage A)&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="70" x="660" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-10" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#4C8076;strokeWidth=2;endSize=2;" target="obXHMVoCH5VPY4moeZJs-8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o2_e1" edge="1" parent="1" source="o2" target="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font face=&quot;宋体-简&quot;&gt;用户提交&lt;/font&gt;&lt;div&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/workflows/ code-porting&lt;/font&gt;&lt;/p&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="90" x="760" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;用户选择&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;migrated_source.zip&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;进入&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; Stage B&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="110" x="930" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-19" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#4C8076;strokeWidth=2;endSize=2;curved=0;arcSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1207" y="340" />
+              <mxPoint x="1039" y="340" />
+            </Array>
+            <mxPoint x="1207" y="270" as="sourcePoint" />
+            <mxPoint x="1039" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;用户选择&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; test bench&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(&lt;/font&gt;&lt;font face=&quot;宋体-简&quot;&gt;如&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; fig06-nginx&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;)&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;并提交参数&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="110" x="1047" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-13" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4C8076;endSize=2;" target="obXHMVoCH5VPY4moeZJs-11" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_e1_e2" edge="1" parent="1" source="e1" target="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;后端创建&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;job&amp;nbsp;&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;并写&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; metadata.json&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="180.17" x="714.9200000000001" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-27" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4C8076;endSize=2;strokeWidth=2;" target="obXHMVoCH5VPY4moeZJs-12" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_e2_u2" edge="1" parent="1" source="e2" target="u2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#82b366;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;后端创建&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; Stage B job&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="140" x="980" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-1" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=0;arcSize=20;strokeColor=#4C8076;strokeWidth=2;endSize=2;" target="ooF_savAyr2fyLrDL_zL-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_u2_o3" edge="1" parent="1" source="u2" target="o3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6c8ebf;">
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-2" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#4C8076;strokeWidth=2;endSize=2;" target="ooF_savAyr2fyLrDL_zL-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o3_e3" edge="1" parent="1" source="o3" target="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-3" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;curved=0;strokeColor=#4C8076;strokeWidth=2;endSize=2;" target="ooF_savAyr2fyLrDL_zL-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_e3_e4" edge="1" parent="1" source="e3" target="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;启动&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;run_code_porting_from_zip.py&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="725" y="506" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-28" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4C8076;strokeWidth=2;endSize=3;curved=0;arcSize=8;" target="obXHMVoCH5VPY4moeZJs-13" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o3_o4" edge="1" parent="1" source="o3" target="o4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;启动&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;run _config_search_nginx_&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;from_zip.py&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="60" width="160" x="970" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-39" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endSize=2;strokeColor=#74A15B;arcSize=20;curved=0;" target="ooF_savAyr2fyLrDL_zL-36">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o4_u3" edge="1" parent="1" source="o4" target="u3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6c8ebf;">
+        <mxCell id="ooF_savAyr2fyLrDL_zL-42" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#EA6B66;strokeWidth=2;endSize=2;curved=0;" target="ooF_savAyr2fyLrDL_zL-41">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_e4_o5" edge="1" parent="1" source="e4" target="o5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;endArrow=block;">
+        <mxCell id="obXHMVoCH5VPY4moeZJs-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;真实构建与测试&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(build/test/search)&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="40" width="110" x="995" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-29" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="90" width="164" x="1253" y="546" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-14" parent="obXHMVoCH5VPY4moeZJs-29" style="rounded=1;whiteSpace=wrap;html=1;align=left;arcSize=8;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="150" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-15" parent="obXHMVoCH5VPY4moeZJs-29" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;benchmark_nginx.csv&lt;/font&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="20" width="130" x="34" y="3" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-17" parent="obXHMVoCH5VPY4moeZJs-29" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;performance_report.*&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="130" x="34" y="23" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-18" parent="obXHMVoCH5VPY4moeZJs-29" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;search_progress.csv&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="130" x="34" y="43" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-21" parent="obXHMVoCH5VPY4moeZJs-29" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;top_images.tar.gz&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="130" x="34" y="63" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-22" parent="obXHMVoCH5VPY4moeZJs-29" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMTQzLjEyNTIxMzYyMzA0Njg4IDYxLjc5ODQ4NDgwMjI0NjA5NCA3MzUuMTEzNTg2NDI1NzgxMiA4OTYuNzc1MzkwNjI1IiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxNDMuNTc2ODcyMzQ4Nzg1NCIgaGVpZ2h0PSIxNzUuMTUxNDQzNDgxNDQ1MyI+PHBhdGggZD0iTTYzNy4xOTQ4NjIgMTEzLjcxNDkwMWwwIDE4OS4zOTY1ODEgMTgyLjM0NjAwMSAwTDY0OS4xNTAxNDggMTEzLjcxNDkwMSA2MzcuMTk0ODYyIDExMy43MTQ5MDF6TTgxNi42ODI3NjkgODk2Ljk1OTYwNWM2LjI3Njk2LTYuMjc1OTM3IDEwLjI1NTU3NS0xNC44MzE4IDEwLjI1NTU3NS0yNC41Mjg2NUw4MjYuOTM4MzQ0IDM1NS4wMTg2ODlsLTE5NS40NjE3MTcgMCAwIDBjLTEyLjUzNDQ3OCAwLTI0LjQ4OTc2NC01LjEzODAyLTMyLjQ2NzQ1OS0xMy42OTM4ODRsMCAwYy04LjU1NTg2My03Ljk4NTg4Mi0xMy42NzQ0NDEtMTkuMzkxNjUyLTEzLjY3NDQ0MS0zMi41MTU1NTRMNTg1LjMzNDcyNyAxMTMuNzE0OTAxIDIyOS4xNjk5MzUgMTEzLjcxNDkwMWwwIDBjLTkuNjg1NTkzIDAtMTguMjMyMjQ3IDMuNDE4ODY2LTI0LjQ5ODk3NCA5LjY5Njg1LTYuMjY3NzUgNi4yNzY5Ni05LjY5Njg1IDE0LjgzMjgyMy05LjY5Njg1IDI0LjUyOTY3M2wwIDAgMCA3MjQuNDg5NTMyIDAgMGMwIDkuNjk2ODUgMy40MjkwOTkgMTguMjUyNzEzIDkuNjk2ODUgMjQuNTI4NjUgNi4yNjc3NSA2LjI3Nzk4NCAxNC44MTMzODEgMTAuMjc2MDQxIDI0LjQ5ODk3NCAxMC4yNzYwNDFsMCAwIDU2My4wMjMwNyAwIDAgMEM4MDEuODY4MzY1IDkwNy4yMzU2NDYgODEwLjQyNTI1MiA5MDMuMjM2NTY2IDgxNi42ODI3NjkgODk2Ljk1OTYwNUw4MTYuNjgyNzY5IDg5Ni45NTk2MDV6TTIyOS4xNjk5MzUgNjEuNzk4NDg1bDQ0Mi4yMTE1NDEgMCAyLjgzODY1MSAwIDEuNzE5MTU0IDEuNzA4OTIxTDg3Ni41MTg1NTIgMjg0Ljg1MDU4M2wxLjcyMDE3OCAxLjcxOTE1NCAwIDIuMjc4OTAzIDAgNTgzLjU4MzMzOGMwIDIzLjk2ODkwMS05LjY5Njg1IDQ1LjYzOTQ1Ni0yNS4wNzEwMDIgNjEuMDUxNDcxbDAgMGMtMTUuMzkyNTcyIDE1LjM5MzU5NS0zNy4wNDQ3MDggMjUuMDkwNDQ1LTYwLjk3NDcyMyAyNS4wOTA0NDVsMCAwLTU2My4wMjMwNyAwIDAgMGMtMjMuMzYwMDM0IDAtNDUuMDIxMzgtOS42OTY4NS02MC45NzQ3MjMtMjUuMDkwNDQ1LTE1LjM4MzM2Mi0xNS40MTMwMzgtMjUuMDY5OTc5LTM3LjA4MjU3LTI1LjA2OTk3OS02MS4wNTE0NzFMMTQzLjEyNTIzMyAxNDcuOTQxNDI0YzAtMjMuMzg5NzEgOS42ODY2MTYtNDUuMDcwNDk4IDI1LjA2OTk3OS02MS4wNDMyODVDMTg0LjE0ODU1NSA3MS40OTQzMTEgMjA1LjgwOTkwMSA2MS43OTg0ODUgMjI5LjE2OTkzNSA2MS43OTg0ODVMMjI5LjE2OTkzNSA2MS43OTg0ODV6IiBmaWxsPSIjMjMxOTE1Ii8+PC9zdmc+;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="13.37" width="11" x="19" y="6.6299999999999955" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-23" parent="obXHMVoCH5VPY4moeZJs-29" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMTQzLjEyNTIxMzYyMzA0Njg4IDYxLjc5ODQ4NDgwMjI0NjA5NCA3MzUuMTEzNTg2NDI1NzgxMiA4OTYuNzc1MzkwNjI1IiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxNDMuNTc2ODcyMzQ4Nzg1NCIgaGVpZ2h0PSIxNzUuMTUxNDQzNDgxNDQ1MyI+PHBhdGggZD0iTTYzNy4xOTQ4NjIgMTEzLjcxNDkwMWwwIDE4OS4zOTY1ODEgMTgyLjM0NjAwMSAwTDY0OS4xNTAxNDggMTEzLjcxNDkwMSA2MzcuMTk0ODYyIDExMy43MTQ5MDF6TTgxNi42ODI3NjkgODk2Ljk1OTYwNWM2LjI3Njk2LTYuMjc1OTM3IDEwLjI1NTU3NS0xNC44MzE4IDEwLjI1NTU3NS0yNC41Mjg2NUw4MjYuOTM4MzQ0IDM1NS4wMTg2ODlsLTE5NS40NjE3MTcgMCAwIDBjLTEyLjUzNDQ3OCAwLTI0LjQ4OTc2NC01LjEzODAyLTMyLjQ2NzQ1OS0xMy42OTM4ODRsMCAwYy04LjU1NTg2My03Ljk4NTg4Mi0xMy42NzQ0NDEtMTkuMzkxNjUyLTEzLjY3NDQ0MS0zMi41MTU1NTRMNTg1LjMzNDcyNyAxMTMuNzE0OTAxIDIyOS4xNjk5MzUgMTEzLjcxNDkwMWwwIDBjLTkuNjg1NTkzIDAtMTguMjMyMjQ3IDMuNDE4ODY2LTI0LjQ5ODk3NCA5LjY5Njg1LTYuMjY3NzUgNi4yNzY5Ni05LjY5Njg1IDE0LjgzMjgyMy05LjY5Njg1IDI0LjUyOTY3M2wwIDAgMCA3MjQuNDg5NTMyIDAgMGMwIDkuNjk2ODUgMy40MjkwOTkgMTguMjUyNzEzIDkuNjk2ODUgMjQuNTI4NjUgNi4yNjc3NSA2LjI3Nzk4NCAxNC44MTMzODEgMTAuMjc2MDQxIDI0LjQ5ODk3NCAxMC4yNzYwNDFsMCAwIDU2My4wMjMwNyAwIDAgMEM4MDEuODY4MzY1IDkwNy4yMzU2NDYgODEwLjQyNTI1MiA5MDMuMjM2NTY2IDgxNi42ODI3NjkgODk2Ljk1OTYwNUw4MTYuNjgyNzY5IDg5Ni45NTk2MDV6TTIyOS4xNjk5MzUgNjEuNzk4NDg1bDQ0Mi4yMTE1NDEgMCAyLjgzODY1MSAwIDEuNzE5MTU0IDEuNzA4OTIxTDg3Ni41MTg1NTIgMjg0Ljg1MDU4M2wxLjcyMDE3OCAxLjcxOTE1NCAwIDIuMjc4OTAzIDAgNTgzLjU4MzMzOGMwIDIzLjk2ODkwMS05LjY5Njg1IDQ1LjYzOTQ1Ni0yNS4wNzEwMDIgNjEuMDUxNDcxbDAgMGMtMTUuMzkyNTcyIDE1LjM5MzU5NS0zNy4wNDQ3MDggMjUuMDkwNDQ1LTYwLjk3NDcyMyAyNS4wOTA0NDVsMCAwLTU2My4wMjMwNyAwIDAgMGMtMjMuMzYwMDM0IDAtNDUuMDIxMzgtOS42OTY4NS02MC45NzQ3MjMtMjUuMDkwNDQ1LTE1LjM4MzM2Mi0xNS40MTMwMzgtMjUuMDY5OTc5LTM3LjA4MjU3LTI1LjA2OTk3OS02MS4wNTE0NzFMMTQzLjEyNTIzMyAxNDcuOTQxNDI0YzAtMjMuMzg5NzEgOS42ODY2MTYtNDUuMDcwNDk4IDI1LjA2OTk3OS02MS4wNDMyODVDMTg0LjE0ODU1NSA3MS40OTQzMTEgMjA1LjgwOTkwMSA2MS43OTg0ODUgMjI5LjE2OTkzNSA2MS43OTg0ODVMMjI5LjE2OTkzNSA2MS43OTg0ODV6IiBmaWxsPSIjMjMxOTE1Ii8+PC9zdmc+;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="13.37" width="11" x="19" y="26.629999999999995" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-27" parent="obXHMVoCH5VPY4moeZJs-29" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMTQzLjEyNTIxMzYyMzA0Njg4IDYxLjc5ODQ4NDgwMjI0NjA5NCA3MzUuMTEzNTg2NDI1NzgxMiA4OTYuNzc1MzkwNjI1IiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxNDMuNTc2ODcyMzQ4Nzg1NCIgaGVpZ2h0PSIxNzUuMTUxNDQzNDgxNDQ1MyI+PHBhdGggZD0iTTYzNy4xOTQ4NjIgMTEzLjcxNDkwMWwwIDE4OS4zOTY1ODEgMTgyLjM0NjAwMSAwTDY0OS4xNTAxNDggMTEzLjcxNDkwMSA2MzcuMTk0ODYyIDExMy43MTQ5MDF6TTgxNi42ODI3NjkgODk2Ljk1OTYwNWM2LjI3Njk2LTYuMjc1OTM3IDEwLjI1NTU3NS0xNC44MzE4IDEwLjI1NTU3NS0yNC41Mjg2NUw4MjYuOTM4MzQ0IDM1NS4wMTg2ODlsLTE5NS40NjE3MTcgMCAwIDBjLTEyLjUzNDQ3OCAwLTI0LjQ4OTc2NC01LjEzODAyLTMyLjQ2NzQ1OS0xMy42OTM4ODRsMCAwYy04LjU1NTg2My03Ljk4NTg4Mi0xMy42NzQ0NDEtMTkuMzkxNjUyLTEzLjY3NDQ0MS0zMi41MTU1NTRMNTg1LjMzNDcyNyAxMTMuNzE0OTAxIDIyOS4xNjk5MzUgMTEzLjcxNDkwMWwwIDBjLTkuNjg1NTkzIDAtMTguMjMyMjQ3IDMuNDE4ODY2LTI0LjQ5ODk3NCA5LjY5Njg1LTYuMjY3NzUgNi4yNzY5Ni05LjY5Njg1IDE0LjgzMjgyMy05LjY5Njg1IDI0LjUyOTY3M2wwIDAgMCA3MjQuNDg5NTMyIDAgMGMwIDkuNjk2ODUgMy40MjkwOTkgMTguMjUyNzEzIDkuNjk2ODUgMjQuNTI4NjUgNi4yNjc3NSA2LjI3Nzk4NCAxNC44MTMzODEgMTAuMjc2MDQxIDI0LjQ5ODk3NCAxMC4yNzYwNDFsMCAwIDU2My4wMjMwNyAwIDAgMEM4MDEuODY4MzY1IDkwNy4yMzU2NDYgODEwLjQyNTI1MiA5MDMuMjM2NTY2IDgxNi42ODI3NjkgODk2Ljk1OTYwNUw4MTYuNjgyNzY5IDg5Ni45NTk2MDV6TTIyOS4xNjk5MzUgNjEuNzk4NDg1bDQ0Mi4yMTE1NDEgMCAyLjgzODY1MSAwIDEuNzE5MTU0IDEuNzA4OTIxTDg3Ni41MTg1NTIgMjg0Ljg1MDU4M2wxLjcyMDE3OCAxLjcxOTE1NCAwIDIuMjc4OTAzIDAgNTgzLjU4MzMzOGMwIDIzLjk2ODkwMS05LjY5Njg1IDQ1LjYzOTQ1Ni0yNS4wNzEwMDIgNjEuMDUxNDcxbDAgMGMtMTUuMzkyNTcyIDE1LjM5MzU5NS0zNy4wNDQ3MDggMjUuMDkwNDQ1LTYwLjk3NDcyMyAyNS4wOTA0NDVsMCAwLTU2My4wMjMwNyAwIDAgMGMtMjMuMzYwMDM0IDAtNDUuMDIxMzgtOS42OTY4NS02MC45NzQ3MjMtMjUuMDkwNDQ1LTE1LjM4MzM2Mi0xNS40MTMwMzgtMjUuMDY5OTc5LTM3LjA4MjU3LTI1LjA2OTk3OS02MS4wNTE0NzFMMTQzLjEyNTIzMyAxNDcuOTQxNDI0YzAtMjMuMzg5NzEgOS42ODY2MTYtNDUuMDcwNDk4IDI1LjA2OTk3OS02MS4wNDMyODVDMTg0LjE0ODU1NSA3MS40OTQzMTEgMjA1LjgwOTkwMSA2MS43OTg0ODUgMjI5LjE2OTkzNSA2MS43OTg0ODVMMjI5LjE2OTkzNSA2MS43OTg0ODV6IiBmaWxsPSIjMjMxOTE1Ii8+PC9zdmc+;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="13.37" width="11" x="19" y="47.629999999999995" as="geometry" />
+        </mxCell>
+        <mxCell id="obXHMVoCH5VPY4moeZJs-28" parent="obXHMVoCH5VPY4moeZJs-29" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMTQzLjEyNTIxMzYyMzA0Njg4IDYxLjc5ODQ4NDgwMjI0NjA5NCA3MzUuMTEzNTg2NDI1NzgxMiA4OTYuNzc1MzkwNjI1IiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxNDMuNTc2ODcyMzQ4Nzg1NCIgaGVpZ2h0PSIxNzUuMTUxNDQzNDgxNDQ1MyI+PHBhdGggZD0iTTYzNy4xOTQ4NjIgMTEzLjcxNDkwMWwwIDE4OS4zOTY1ODEgMTgyLjM0NjAwMSAwTDY0OS4xNTAxNDggMTEzLjcxNDkwMSA2MzcuMTk0ODYyIDExMy43MTQ5MDF6TTgxNi42ODI3NjkgODk2Ljk1OTYwNWM2LjI3Njk2LTYuMjc1OTM3IDEwLjI1NTU3NS0xNC44MzE4IDEwLjI1NTU3NS0yNC41Mjg2NUw4MjYuOTM4MzQ0IDM1NS4wMTg2ODlsLTE5NS40NjE3MTcgMCAwIDBjLTEyLjUzNDQ3OCAwLTI0LjQ4OTc2NC01LjEzODAyLTMyLjQ2NzQ1OS0xMy42OTM4ODRsMCAwYy04LjU1NTg2My03Ljk4NTg4Mi0xMy42NzQ0NDEtMTkuMzkxNjUyLTEzLjY3NDQ0MS0zMi41MTU1NTRMNTg1LjMzNDcyNyAxMTMuNzE0OTAxIDIyOS4xNjk5MzUgMTEzLjcxNDkwMWwwIDBjLTkuNjg1NTkzIDAtMTguMjMyMjQ3IDMuNDE4ODY2LTI0LjQ5ODk3NCA5LjY5Njg1LTYuMjY3NzUgNi4yNzY5Ni05LjY5Njg1IDE0LjgzMjgyMy05LjY5Njg1IDI0LjUyOTY3M2wwIDAgMCA3MjQuNDg5NTMyIDAgMGMwIDkuNjk2ODUgMy40MjkwOTkgMTguMjUyNzEzIDkuNjk2ODUgMjQuNTI4NjUgNi4yNjc3NSA2LjI3Nzk4NCAxNC44MTMzODEgMTAuMjc2MDQxIDI0LjQ5ODk3NCAxMC4yNzYwNDFsMCAwIDU2My4wMjMwNyAwIDAgMEM4MDEuODY4MzY1IDkwNy4yMzU2NDYgODEwLjQyNTI1MiA5MDMuMjM2NTY2IDgxNi42ODI3NjkgODk2Ljk1OTYwNUw4MTYuNjgyNzY5IDg5Ni45NTk2MDV6TTIyOS4xNjk5MzUgNjEuNzk4NDg1bDQ0Mi4yMTE1NDEgMCAyLjgzODY1MSAwIDEuNzE5MTU0IDEuNzA4OTIxTDg3Ni41MTg1NTIgMjg0Ljg1MDU4M2wxLjcyMDE3OCAxLjcxOTE1NCAwIDIuMjc4OTAzIDAgNTgzLjU4MzMzOGMwIDIzLjk2ODkwMS05LjY5Njg1IDQ1LjYzOTQ1Ni0yNS4wNzEwMDIgNjEuMDUxNDcxbDAgMGMtMTUuMzkyNTcyIDE1LjM5MzU5NS0zNy4wNDQ3MDggMjUuMDkwNDQ1LTYwLjk3NDcyMyAyNS4wOTA0NDVsMCAwLTU2My4wMjMwNyAwIDAgMGMtMjMuMzYwMDM0IDAtNDUuMDIxMzgtOS42OTY4NS02MC45NzQ3MjMtMjUuMDkwNDQ1LTE1LjM4MzM2Mi0xNS40MTMwMzgtMjUuMDY5OTc5LTM3LjA4MjU3LTI1LjA2OTk3OS02MS4wNTE0NzFMMTQzLjEyNTIzMyAxNDcuOTQxNDI0YzAtMjMuMzg5NzEgOS42ODY2MTYtNDUuMDcwNDk4IDI1LjA2OTk3OS02MS4wNDMyODVDMTg0LjE0ODU1NSA3MS40OTQzMTEgMjA1LjgwOTkwMSA2MS43OTg0ODUgMjI5LjE2OTkzNSA2MS43OTg0ODVMMjI5LjE2OTkzNSA2MS43OTg0ODV6IiBmaWxsPSIjMjMxOTE1Ii8+PC9zdmc+;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="13.37" width="11" x="19" y="66.63" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-2" parent="1" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NiIgaGVpZ2h0PSIxMTYiIHZpZXdCb3g9IjcgMiA4NiAxMTYiIGZpbGw9Im5vbmUiPiYjeGE7ICAmI3hhOyAgPHBhdGggZD0iTTEwIDVWMTE1SDkwVjMwTDY1IDVIMTBaIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOyAgJiN4YTsgIDxwYXRoIGQ9Ik02NSA1VjMwSDkwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOzwvc3ZnPg==;" value="" vertex="1">
+          <mxGeometry height="40" width="29.66" x="725" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-3" parent="1" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NiIgaGVpZ2h0PSIxMTYiIHZpZXdCb3g9IjcgMiA4NiAxMTYiIGZpbGw9Im5vbmUiPiYjeGE7ICAmI3hhOyAgPHBhdGggZD0iTTEwIDVWMTE1SDkwVjMwTDY1IDVIMTBaIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOyAgJiN4YTsgIDxwYXRoIGQ9Ik02NSA1VjMwSDkwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOyAgJiN4YTsgIDxsaW5lIHgxPSIyNSIgeTE9IjUwIiB4Mj0iNzUiIHkyPSI1MCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4mI3hhOyAgPGxpbmUgeDE9IjI1IiB5MT0iNjUiIHgyPSI3NSIgeTI9IjY1IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPiYjeGE7ICA8bGluZSB4MT0iMjUiIHkxPSI4MCIgeDI9Ijc1IiB5Mj0iODAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+JiN4YTsgIDxsaW5lIHgxPSIyNSIgeTE9Ijk1IiB4Mj0iNTUiIHkyPSI5NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4mI3hhOzwvc3ZnPg==;" value="" vertex="1">
+          <mxGeometry height="40" width="29.66" x="790.17" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-20" edge="1" parent="1" source="ooF_savAyr2fyLrDL_zL-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#4C8076;strokeWidth=2;endSize=2;curved=0;arcSize=8;" target="obXHMVoCH5VPY4moeZJs-6">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_o5_u4" edge="1" parent="1" source="o5" target="u4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;endArrow=block;">
+        <mxCell id="ooF_savAyr2fyLrDL_zL-5" parent="1" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;editableCssRules=.*;image=data:image/svg+xml,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NiIgaGVpZ2h0PSIxMTYiIHZpZXdCb3g9IjcgMiA4NiAxMTYiIGZpbGw9Im5vbmUiPiYjeGE7ICAmI3hhOyAgPHBhdGggZD0iTTEwIDVWMTE1SDkwVjMwTDY1IDVIMTBaIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOyAgJiN4YTsgIDxwYXRoIGQ9Ik02NSA1VjMwSDkwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4mI3hhOyAgJiN4YTsgIDxsaW5lIHgxPSIyNSIgeTE9IjUwIiB4Mj0iNzUiIHkyPSI1MCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4mI3hhOyAgPGxpbmUgeDE9IjI1IiB5MT0iNjUiIHgyPSI3NSIgeTI9IjY1IiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPiYjeGE7ICA8bGluZSB4MT0iMjUiIHkxPSI4MCIgeDI9Ijc1IiB5Mj0iODAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+JiN4YTsgIDxsaW5lIHgxPSIyNSIgeTE9Ijk1IiB4Mj0iNTUiIHkyPSI5NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4mI3hhOzwvc3ZnPg==;" value="" vertex="1">
+          <mxGeometry height="40" width="29.66" x="855.34" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Times New Roman&quot;&gt;+&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="30" x="754.66" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Times New Roman&quot;&gt;+&lt;/font&gt;" vertex="1">
+          <mxGeometry height="20" width="30" x="820" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#E8F4FD;align=left;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;&quot;&gt;用户与前端&lt;/font&gt;&lt;span style=&quot;font-family: &amp;quot;Times New Roman&amp;quot;; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(Browser / React + Material UI)&lt;/span&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="7" width="260" x="632.66" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#F1F8E9;align=left;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;&quot;&gt;后端编排层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot; style=&quot;&quot;&gt;(Flask Job Orchestrator)&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="17" width="260" x="630.66" y="332" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="30" width="190" x="910" y="279" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#F8CECC;align=left;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;&quot;&gt;执行层&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot; style=&quot;&quot;&gt;(Scripts + Experiment Runtime + Artifacts)&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="17" width="317.34" x="631.66" y="443" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-40" edge="1" parent="1" source="ooF_savAyr2fyLrDL_zL-36" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;endSize=2;strokeColor=#74A15B;curved=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="obXHMVoCH5VPY4moeZJs-14">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1242" y="660.037037037037" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-36" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#82B366;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;succeeded&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="70" x="1170" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-44" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="20" width="70" x="1170" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-41" parent="ooF_savAyr2fyLrDL_zL-44" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7817E;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;failed&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-45" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF1CC;strokeColor=#000000;align=center;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;证据链注释&lt;/b&gt;&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;输入&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(input zip)+&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;参数快照&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(params)+&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;命令快照&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (command)+&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;日志 &lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt;(log)&lt;/font&gt;&lt;font face=&quot;宋体-简&quot;&gt;+产物&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot;&gt; (artifacts)&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;支持复现、诊断、审计&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="110" width="190" x="1219" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-57" edge="1" parent="1" source="ooF_savAyr2fyLrDL_zL-46" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;endSize=2;strokeWidth=1;dashed=1;strokeColor=#999999;curved=0;" target="ooF_savAyr2fyLrDL_zL-45">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1172" y="490" />
+              <mxPoint x="1267" y="490" />
+              <mxPoint x="1267" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-46" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;错误信息+日志保留+可重试&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="13" width="154" x="1134" y="502" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-48" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;&lt;font face=&quot;Times New Roman&quot; style=&quot;&quot;&gt;migrated_&lt;/font&gt;&lt;span style=&quot;font-family: &amp;quot;Times New Roman&amp;quot;; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;source.zip&lt;/span&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="16" width="80.17" x="690" y="636" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-51" edge="1" parent="1" source="ooF_savAyr2fyLrDL_zL-49" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;endSize=2;dashed=1;curved=0;arcSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="805" y="660" />
+              <mxPoint x="940" y="660" />
+              <mxPoint x="940" y="460" />
+            </Array>
+            <mxPoint x="1210" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-49" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font size=&quot;1&quot; face=&quot;宋体-简&quot;&gt;迁移报告&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="16" width="50" x="780" y="636" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-50" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font size=&quot;1&quot; face=&quot;Times New Roman&quot;&gt;run.log&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="16" width="50" x="844.66" y="634" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-58" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="obXHMVoCH5VPY4moeZJs-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1430" y="591" />
+              <mxPoint x="1430" y="360" />
+              <mxPoint x="1170" y="360" />
+              <mxPoint x="1170" y="395" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-59" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;rotation=90;" value="&lt;font face=&quot;宋体-简&quot; style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;状态写回&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="33" width="100" x="1400" y="397" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-60" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;" value="&lt;p class=&quot;p1&quot; style=&quot;font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; margin: 0px;&quot;&gt;&lt;font face=&quot;宋体-简&quot;&gt;提交&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; margin: 0px;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;/api/workflows/&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; margin: 0px;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;config-search&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="90" x="1163" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ooF_savAyr2fyLrDL_zL-61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;" value="&lt;p class=&quot;p1&quot; style=&quot;font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; margin: 0px;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;text-align: start;&quot;&gt;前端轮询&lt;/font&gt;&lt;font face=&quot;Times New Roman&quot; style=&quot;text-align: start;&quot;&gt;jobs+log-stream&lt;/font&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;text-align: start;&quot;&gt;展&lt;/font&gt;&lt;/p&gt;&lt;p class=&quot;p1&quot; style=&quot;font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; margin: 0px;&quot;&gt;&lt;font face=&quot;宋体-简&quot; style=&quot;&quot;&gt;示详情、日志、产物下载&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="50" width="150" x="1259" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2EBF2;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;queued&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="60" x="1055" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2EBF2;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;queued&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="60" x="830" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2EBF2;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;running&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="60" x="819.83" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2EBF2;strokeColor=#000000;arcSize=50;strokeWidth=1;" value="&lt;p class=&quot;p1&quot; style=&quot;margin: 0px; font-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alternates: normal; font-size-adjust: none; font-language-override: normal; font-kerning: auto; font-optical-sizing: auto; font-feature-settings: normal; font-variation-settings: normal; font-variant-position: normal; font-variant-emoji: normal; font-stretch: normal; line-height: normal; text-align: start;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;running&lt;/font&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="20" width="60" x="1064" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-9" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="ooF_savAyr2fyLrDL_zL-61">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1430" y="591" />
+              <mxPoint x="1430" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="y8OyxzZAlVUTpjUTwu5g-11" edge="1" parent="1" source="obXHMVoCH5VPY4moeZJs-14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;curved=0;endSize=2;strokeColor=#999999;arcSize=8;dashed=1;" target="ooF_savAyr2fyLrDL_zL-45">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="edge_e3_o6" edge="1" parent="1" source="e3" target="o6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="edge_o6_e5" edge="1" parent="1" source="o6" target="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <mxCell id="edge_e5_u3" edge="1" parent="1" source="e5" target="u3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;endArrow=block;dashed=1;">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
       </root>
     </mxGraphModel>
   </diagram>
