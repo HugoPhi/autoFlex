@@ -1,11 +1,13 @@
 {
-  "id": "fig06-redis",
-  "name": "fig06 redis throughput",
-  "description": "ASPLOS22 fig-06 redis benchmark with REQ-oriented baseline.",
+  "id": "fig06-redis-set",
+  "name": "fig06 redis SET throughput",
+  "description": "ASPLOS22 fig-06 redis benchmark (SET metric).",
   "app": "redis",
+  "single_test_script": "website/scripts/run_single_query_test.py",
+  "single_test_args": [],
   "defaults": {
-    "baseline_metric": "REQ",
-    "baseline_threshold": "120000",
+    "baseline_metric": "SET",
+    "baseline_threshold": "369000",
     "num_compartments": "3",
     "top_k": "3",
     "host_cores": "3,4",

@@ -82,8 +82,6 @@ const HELP_MARKDOWN = `# AutoFlex Workflow Platform 使用手册
 - 产生迁移输出与迁移日志
 
 ### 你应该关注
-- status：是否 succeeded
-- return_code：是否 0
 - command：调用了哪个脚本、用的是什么输入
 - 产物：是否出现 migrated_source.zip 和报告
 
@@ -102,6 +100,7 @@ const HELP_MARKDOWN = `# AutoFlex Workflow Platform 使用手册
 - 日志中的 build/test/search 阶段边界
 - 是否出现 fallback 提示（若主链路失败）
 - 产物是否包含 benchmark/performance/search_progress/top_images
+- timing_report.md / task_timings.csv：每个配置的构建时间和测试时间
 
 ## 6. test bench 机制与扩展方式
 test bench 来源于配置文件目录：
@@ -124,8 +123,9 @@ test bench 来源于配置文件目录：
 ### 详情字段
 - job_id：本次运行唯一编号
 - kind：作业类型
-- return_code：脚本返回码（0=成功）
-- error：后端捕获异常（若有）
+- app：目标应用（若是 config search）
+- test_bench：所选测试基准（若是 config search）
+- queue_time / run_time / total_time：三个阶段时长
 - command：真实执行命令（建议重点审查）
 - params：本次参数快照（复现时关键）
 
@@ -224,8 +224,9 @@ cd /home/tibless/Desktop/auto_flex/website
 3. command
 4. 关键日志（至少 build_and_test.log）
 5. 关键产物（report + csv + tar.gz）
+6. timing_report.md / task_timings.csv
 
-做到以上五项后，后续复验、对比和答辩解释会稳定很多。
+做到以上六项后，后续复验、对比和答辩解释会稳定很多。
 `;
 
 function escapeHtml(text) {
@@ -527,6 +528,8 @@ async function fetchJSON(url, init) {
 }
 
 function App() {
+  const LOG_PAGE_SIZE = 1024 * 1024;
+
   const BASE_STAGE_B = {
     test_bench: "",
     baseline_metric: "REQ",
@@ -545,16 +548,24 @@ function App() {
   const [selectedJob, setSelectedJob] = React.useState(null);
   const [artifacts, setArtifacts] = React.useState([]);
   const [logText, setLogText] = React.useState("");
-  const [logOffset, setLogOffset] = React.useState(0);
+  const [logPage, setLogPage] = React.useState(-1);
+  const [logPageInput, setLogPageInput] = React.useState("");
+  const [logTotalPages, setLogTotalPages] = React.useState(0);
+  const [logTotalBytes, setLogTotalBytes] = React.useState(0);
   const [logComplete, setLogComplete] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [notice, setNotice] = React.useState("");
   const logRef = React.useRef(null);
+  const [clockTs, setClockTs] = React.useState(() => Date.now());
+  const logReqSeqRef = React.useRef(0);
 
   const [stageAFile, setStageAFile] = React.useState(null);
   const [stageBFile, setStageBFile] = React.useState(null);
   const [testBenches, setTestBenches] = React.useState([]);
   const [stageB, setStageB] = React.useState(BASE_STAGE_B);
+  const [configDialogOpen, setConfigDialogOpen] = React.useState(false);
+  const [configJsonText, setConfigJsonText] = React.useState("");
+  const [configImportError, setConfigImportError] = React.useState("");
   const [helpOpen, setHelpOpen] = React.useState(false);
 
   const loadJobs = React.useCallback(async () => {
@@ -579,29 +590,42 @@ function App() {
     }
   }, []);
 
-  const loadJobDetail = React.useCallback(async () => {
-    if (!selectedJobId) return;
-    const data = await fetchJSON(`/api/jobs/${selectedJobId}`);
+  const loadJobDetail = React.useCallback(async (jobIdArg) => {
+    const jobId = jobIdArg || selectedJobId;
+    if (!jobId) return;
+    const data = await fetchJSON(`/api/jobs/${jobId}`);
     setSelectedJob(data.job || null);
     setArtifacts(data.artifacts || []);
   }, [selectedJobId]);
 
-  const streamLog = React.useCallback(async () => {
-    if (!selectedJobId || logComplete) return;
-    const data = await fetchJSON(`/api/jobs/${selectedJobId}/log-stream?offset=${logOffset}`);
-    const chunk = data.chunk || "";
-    if (chunk) {
-      setLogText((prev) => prev + chunk);
-      setLogOffset(data.offset || 0);
+  const loadLogPage = React.useCallback(async (jobIdArg, pageArg, options = {}) => {
+    const jobId = jobIdArg || selectedJobId;
+    if (!jobId) return;
+    const shouldResetScroll = Boolean(options.resetScroll);
+    const requestedPage = Number.isInteger(pageArg) ? pageArg : logPage;
+    const targetPage = requestedPage < 0 ? 2147483647 : requestedPage;
+    const reqSeq = ++logReqSeqRef.current;
+    const data = await fetchJSON(
+      `/api/jobs/${jobId}/log-stream?page=${targetPage}&page_size=${LOG_PAGE_SIZE}`
+    );
+    if (reqSeq !== logReqSeqRef.current) {
+      return;
+    }
+    setLogText(data.chunk || "");
+    const resolvedPage = Number.isInteger(data.page) ? data.page : 0;
+    if (requestedPage < 0 && resolvedPage !== logPage) {
+      setLogPage(resolvedPage);
+    }
+    setLogTotalPages(Number.isInteger(data.total_pages) ? data.total_pages : 0);
+    setLogTotalBytes(Number.isInteger(data.total_bytes) ? data.total_bytes : 0);
+    setLogComplete(Boolean(data.complete));
+    if (shouldResetScroll) {
       requestAnimationFrame(() => {
         if (!logRef.current) return;
-        const el = logRef.current;
-        const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 24;
-        if (nearBottom) el.scrollTop = el.scrollHeight;
+        logRef.current.scrollTop = 0;
       });
     }
-    setLogComplete(Boolean(data.complete));
-  }, [selectedJobId, logOffset, logComplete]);
+  }, [selectedJobId, logPage]);
 
   React.useEffect(() => {
     loadJobs().catch((e) => setNotice(String(e)));
@@ -615,7 +639,10 @@ function App() {
       setSelectedJob(null);
       setArtifacts([]);
       setLogText("");
-      setLogOffset(0);
+      setLogPage(-1);
+      setLogPageInput("");
+      setLogTotalPages(0);
+      setLogTotalBytes(0);
       setLogComplete(false);
     }
   }, [jobs, selectedJobId]);
@@ -624,19 +651,37 @@ function App() {
     const timer = setInterval(() => {
       loadJobs().catch(() => {});
       loadJobDetail().catch(() => {});
-      streamLog().catch(() => {});
     }, 1500);
     return () => clearInterval(timer);
-  }, [loadJobs, loadJobDetail, streamLog]);
+  }, [loadJobs, loadJobDetail]);
+
+  React.useEffect(() => {
+    if (!selectedJobId || logPage < 0) return;
+    loadLogPage(selectedJobId, logPage, { resetScroll: true }).catch(() => {});
+  }, [selectedJobId, logPage, loadLogPage]);
+
+  React.useEffect(() => {
+    const t = setInterval(() => setClockTs(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  React.useEffect(() => {
+    if (logPage < 0) return;
+    setLogPageInput(String(logPage + 1));
+  }, [logPage]);
 
   const pickJob = async (jobId) => {
     if (selectedJobId !== jobId) {
       setSelectedJobId(jobId);
       setLogText("");
-      setLogOffset(0);
+      setLogPage(-1);
+      setLogPageInput("");
+      setLogTotalPages(0);
+      setLogTotalBytes(0);
       setLogComplete(false);
     }
-    await loadJobDetail();
+    await loadJobDetail(jobId);
+    await loadLogPage(jobId, -1, { resetScroll: true });
   };
 
   const submitStageA = async () => {
@@ -695,6 +740,13 @@ function App() {
   );
 
   const currentBench = testBenches.find((x) => x.id === stageB.test_bench) || null;
+  const selectedJobBench = React.useMemo(() => {
+    const benchId = selectedJob?.params?.test_bench;
+    if (!benchId) return null;
+    return testBenches.find((x) => x.id === benchId) || null;
+  }, [selectedJob, testBenches]);
+  const selectedJobApp = selectedJob?.params?.app || selectedJobBench?.app || "-";
+  const selectedJobTestBench = selectedJob?.params?.test_bench || "-";
   const helpHtml = React.useMemo(() => {
     const builtIn = markdownToHtmlLite(HELP_MARKDOWN);
     if (typeof window !== "undefined" && window.marked && typeof window.marked.parse === "function") {
@@ -707,6 +759,45 @@ function App() {
   const paramText = React.useMemo(() => JSON.stringify(selectedJob?.params || {}, null, 2), [selectedJob]);
   const commandParts = React.useMemo(() => highlightShellCommand(commandText), [commandText]);
   const paramParts = React.useMemo(() => highlightJson(paramText), [paramText]);
+
+  const formatDuration = React.useCallback((seconds) => {
+    const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+    const h = Math.floor(safe / 3600);
+    const m = Math.floor((safe % 3600) / 60);
+    const s = safe % 60;
+    const hh = String(h).padStart(2, "0");
+    const mm = String(m).padStart(2, "0");
+    const ss = String(s).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  }, []);
+
+  const timing = React.useMemo(() => {
+    if (!selectedJob) {
+      return { queue: "-", run: "-", total: "-" };
+    }
+    const created = Number(selectedJob.created_at || 0);
+    const started = Number(selectedJob.started_at || 0);
+    const finished = Number(selectedJob.finished_at || 0);
+    const nowSec = clockTs / 1000;
+
+    const queueSec = started > 0
+      ? Math.max(0, started - created)
+      : Math.max(0, nowSec - created);
+
+    const runSec = started > 0
+      ? Math.max(0, (finished > 0 ? finished : nowSec) - started)
+      : 0;
+
+    const totalSec = created > 0
+      ? Math.max(0, (finished > 0 ? finished : nowSec) - created)
+      : 0;
+
+    return {
+      queue: formatDuration(queueSec),
+      run: formatDuration(runSec),
+      total: formatDuration(totalSec),
+    };
+  }, [selectedJob, clockTs, formatDuration]);
 
   const copyText = async (text, label) => {
     try {
@@ -729,6 +820,62 @@ function App() {
       ...bench.defaults,
       test_bench: bench.id,
     }));
+  };
+
+  const applyStageBConfigJson = (raw) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      setConfigImportError(`JSON 解析失败: ${String(e)}`);
+      return;
+    }
+
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      setConfigImportError("配置必须是 JSON 对象");
+      return;
+    }
+
+    const allowedKeys = [
+      "test_bench",
+      "baseline_metric",
+      "baseline_threshold",
+      "num_compartments",
+      "top_k",
+      "host_cores",
+      "wayfinder_cores",
+      "test_iterations",
+      "overlay_subdir",
+    ];
+
+    const normalized = {};
+    allowedKeys.forEach((k) => {
+      if (Object.prototype.hasOwnProperty.call(parsed, k)) {
+        normalized[k] = String(parsed[k]);
+      }
+    });
+
+    if (normalized.test_bench) {
+      applyBench(normalized.test_bench);
+      setStageB((prev) => ({ ...prev, ...normalized }));
+    } else {
+      setStageB((prev) => ({ ...prev, ...normalized }));
+    }
+
+    setConfigImportError("");
+    setConfigDialogOpen(false);
+    setNotice("配置 JSON 已应用");
+  };
+
+  const handleConfigFileUpload = async (file) => {
+    if (!file) return;
+    try {
+      const text = await file.text();
+      setConfigJsonText(text);
+      applyStageBConfigJson(text);
+    } catch (e) {
+      setConfigImportError(`读取文件失败: ${String(e)}`);
+    }
   };
 
   const isAllSelected = jobs.length > 0 && selectedIds.length === jobs.length;
@@ -759,11 +906,31 @@ function App() {
         setSelectedJob(null);
         setArtifacts([]);
         setLogText("");
-        setLogOffset(0);
+        setLogPage(-1);
+        setLogPageInput("");
+        setLogTotalPages(0);
+        setLogTotalBytes(0);
         setLogComplete(false);
       }
       await loadJobs();
       setNotice(`已清除作业 ${jobId}`);
+    } catch (e) {
+      setNotice(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const stopOneJob = async (jobId) => {
+    setBusy(true);
+    setNotice("");
+    try {
+      await fetchJSON(`/api/jobs/${jobId}/stop`, { method: "POST" });
+      await loadJobs();
+      if (selectedJobId === jobId) {
+        await loadJobDetail(jobId);
+      }
+      setNotice(`已发送停止请求 ${jobId}`);
     } catch (e) {
       setNotice(String(e));
     } finally {
@@ -790,7 +957,10 @@ function App() {
         setSelectedJob(null);
         setArtifacts([]);
         setLogText("");
-        setLogOffset(0);
+        setLogPage(-1);
+        setLogPageInput("");
+        setLogTotalPages(0);
+        setLogTotalBytes(0);
         setLogComplete(false);
       }
       await loadJobs();
@@ -825,7 +995,7 @@ function App() {
             </Tooltip>
           </Stack>
           <Box sx={{ flex: 1 }} />
-          <Button onClick={() => { loadJobs(); loadJobDetail(); streamLog(); }}>
+          <Button onClick={() => { loadJobs(); loadJobDetail(); loadLogPage(selectedJobId, logPage, { resetScroll: false }); }}>
             刷新
           </Button>
         </Toolbar>
@@ -900,6 +1070,17 @@ function App() {
                       <Grid item xs={12} sm={6}>{textField("overlay_subdir", "overlay_subdir（压缩包子目录）")}</Grid>
                     </Grid>
 
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => {
+                        setConfigImportError("");
+                        setConfigDialogOpen(true);
+                      }}
+                    >
+                      Upload/Paste Config JSON
+                    </Button>
+
                     <Typography variant="body2" color="text.secondary">sudo 已固定启用，不再提供页面开关。</Typography>
                     <Button
                       variant="contained"
@@ -967,6 +1148,15 @@ function App() {
                             <Button size="small" variant="outlined" onClick={() => pickJob(j.id)}>view</Button>
                             <Button
                               size="small"
+                              color="warning"
+                              variant="outlined"
+                              disabled={busy || (j.status !== "running" && j.status !== "queued")}
+                              onClick={() => stopOneJob(j.id)}
+                            >
+                              停止
+                            </Button>
+                            <Button
+                              size="small"
                               color="error"
                               variant="outlined"
                               disabled={busy || j.status === "running" || j.status === "queued"}
@@ -989,11 +1179,6 @@ function App() {
                   {selectedJob ? (
                     <Paper variant="outlined" sx={{ p: 1.2, bgcolor: "#f8fafc" }}>
                       <Stack spacing={1.2}>
-                        <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems={{ sm: "center" }}>
-                          <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 700 }}>Job Snapshot</Typography>
-                          <Chip size="small" color={statusColor(selectedJob.status)} label={selectedJob.status} />
-                        </Stack>
-
                         <Grid container spacing={1}>
                           <Grid item xs={12} sm={6}>
                             <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
@@ -1009,16 +1194,32 @@ function App() {
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
-                              <Typography variant="caption" color="text.secondary">return_code</Typography>
-                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{String(selectedJob.return_code)}</Typography>
+                              <Typography variant="caption" color="text.secondary">app</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{selectedJobApp}</Typography>
                             </Paper>
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
-                              <Typography variant="caption" color="text.secondary">error</Typography>
-                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem", color: selectedJob.error ? "error.main" : "text.primary" }}>
-                                {selectedJob.error || "-"}
-                              </Typography>
+                              <Typography variant="caption" color="text.secondary">test_bench</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{selectedJobTestBench}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">queue_time（排队时长）</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{timing.queue}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">run_time（运行时长）</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{timing.run}</Typography>
+                            </Paper>
+                          </Grid>
+                          <Grid item xs={12} sm={4}>
+                            <Paper variant="outlined" sx={{ p: 1, bgcolor: "#ffffff" }}>
+                              <Typography variant="caption" color="text.secondary">total_time（总时长）</Typography>
+                              <Typography sx={{ fontFamily: "JetBrains Mono", fontSize: "0.85rem" }}>{timing.total}</Typography>
                             </Paper>
                           </Grid>
                         </Grid>
@@ -1060,6 +1261,68 @@ function App() {
                 <CardContent>
                   <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                     <Typography variant="h6" sx={{ flex: 1 }}>实时日志</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {logTotalPages > 0 ? `页 ${logPage + 1}/${logTotalPages}` : "页 0/0"}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      每页 1MB · 总 {Math.max(1, Math.ceil(logTotalBytes / (1024 * 1024)))}MB
+                    </Typography>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={!selectedJobId || logTotalPages <= 0 || logPage <= 0}
+                      onClick={() => setLogPage((p) => Math.max(0, p - 1))}
+                    >
+                      上一页
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={!selectedJobId || logTotalPages <= 0 || logPage >= logTotalPages - 1}
+                      onClick={() => setLogPage((p) => Math.min(logTotalPages - 1, p + 1))}
+                    >
+                      下一页
+                    </Button>
+                    <TextField
+                      size="small"
+                      type="number"
+                      label="页码"
+                      value={logPageInput}
+                      onChange={(e) => setLogPageInput(e.target.value)}
+                      sx={{ width: 88 }}
+                      inputProps={{ min: 1, max: Math.max(1, logTotalPages) }}
+                    />
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={!selectedJobId || logTotalPages <= 0}
+                      onClick={() => {
+                        const n = Number.parseInt(logPageInput, 10);
+                        if (Number.isNaN(n)) return;
+                        const clamped = Math.max(1, Math.min(logTotalPages, n));
+                        setLogPage(clamped - 1);
+                      }}
+                    >
+                      跳转
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      disabled={!selectedJobId || logTotalPages <= 0}
+                      onClick={() => setLogPage(Math.max(0, logTotalPages - 1))}
+                    >
+                      最新页
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      component="a"
+                      href={selectedJobId ? `/api/jobs/${selectedJobId}/log-download` : "#"}
+                      download
+                      disabled={!selectedJobId}
+                    >
+                      下载日志
+                    </Button>
                     <Button size="small" variant="outlined" onClick={() => copyText(logText || "", "log")}>复制</Button>
                   </Stack>
                   <Paper
@@ -1072,15 +1335,60 @@ function App() {
                         ? ansiLogParts.map((part, idx) => (
                             <span key={idx} style={part.style}>{part.text}</span>
                           ))
-                        : "请选择作业"}
+                        : (selectedJobId ? "该页暂无日志" : "请选择作业")}
                     </pre>
                   </Paper>
                 </CardContent>
               </Card>
+
             </Stack>
           </Grid>
         </Grid>
       </Container>
+
+      <Dialog open={configDialogOpen} onClose={() => setConfigDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Upload / Paste Config JSON</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={1.2}>
+            {configImportError && <Alert severity="error">{configImportError}</Alert>}
+            <Paper
+              variant="outlined"
+              sx={{ p: 1.5, borderStyle: "dashed", textAlign: "center", color: "text.secondary" }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                const f = e.dataTransfer?.files?.[0];
+                handleConfigFileUpload(f);
+              }}
+            >
+              <Typography variant="body2">拖拽 JSON 文件到这里，或点击下方按钮上传</Typography>
+            </Paper>
+            <Button variant="outlined" component="label">
+              选择 JSON 文件
+              <input
+                hidden
+                type="file"
+                accept="application/json,.json,text/plain"
+                onChange={(e) => handleConfigFileUpload(e.target.files?.[0] || null)}
+              />
+            </Button>
+            <TextField
+              multiline
+              minRows={10}
+              label="Paste JSON"
+              value={configJsonText}
+              onChange={(e) => setConfigJsonText(e.target.value)}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfigDialogOpen(false)}>取消</Button>
+          <Button variant="contained" onClick={() => applyStageBConfigJson(configJsonText)}>应用</Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={helpOpen} onClose={() => setHelpOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>使用帮助（Markdown）</DialogTitle>

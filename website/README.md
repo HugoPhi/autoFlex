@@ -39,6 +39,7 @@ Open: http://127.0.0.1:8080
 - Notes:
   - `sudo -E` is forced by backend.
   - If wayfinder path fails, script falls back to single-config real build+test.
+  - Runner script is selected by the chosen test bench config (`runner_script`), so different benches can execute different scripts.
 - Output artifacts:
   - `top_images.tar.gz`
   - `benchmark_<app>.csv`
@@ -52,3 +53,46 @@ Open: http://127.0.0.1:8080
 - UI uses incremental log stream API:
   - `GET /api/jobs/<job_id>/log-stream?offset=<n>`
 - Supports long-running job observation and scrollback.
+
+## Test bench extensibility
+
+Test bench definitions are loaded from `website/config/test_benches/*.json`.
+
+Each bench can define its own Stage B runner script:
+
+- `runner_script`: script path, absolute or relative to project root.
+- `runner_args`: optional extra CLI arguments appended to the runner command.
+- `defaults`: default form values shown/used in UI submission.
+
+Example (`website/config/test_benches/template.json`):
+
+```json
+{
+  "id": "your-bench-id",
+  "name": "human readable bench name",
+  "description": "short description of this bench",
+  "app": "nginx",
+  "runner_script": "website/scripts/run_config_search_nginx_from_zip.py",
+  "runner_args": [],
+  "defaults": {
+    "baseline_metric": "REQ",
+    "baseline_threshold": "45000",
+    "num_compartments": "3",
+    "top_k": "3",
+    "host_cores": "3,4",
+    "wayfinder_cores": "1,2",
+    "test_iterations": "3",
+    "overlay_subdir": ""
+  }
+}
+```
+
+Backend implementation location:
+
+- Bench config load: `website/app.py` (`load_test_bench_configs` reads `runner_script` / `runner_args`)
+- Stage B command build: `website/app.py` (`build_command` resolves and executes bench-defined `runner_script`)
+- Stage B job creation: `website/app.py` (`create_workflow_config_search_job` persists selected bench runner into `params`)
+
+Compatibility note:
+
+- A custom `runner_script` should accept the same Stage B CLI options currently passed by backend (`--job-id`, `--source-zip`, `--experiment-dir`, `--work-root`, `--app`, `--num-compartments`, `--host-cores`, `--wayfinder-cores`, `--test-iterations`, `--baseline-metric`, `--baseline-threshold`, `--top-k`, `--use-sudo`, and optional `--overlay-subdir`).

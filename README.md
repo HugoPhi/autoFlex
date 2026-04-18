@@ -82,6 +82,7 @@ $$
 | Stage B 流程 | 1. 上传 migrated_source.zip | |
 |      | 2. 选择 test bench | 如 fig06-nginx/fig06-redis |
 |      | 3. 配置参数 | baseline_threshold/num_compartments/host_cores/wayfinder_cores/test_iterations/top_k |
+|      | 3.1 bench 可扩展 | 每个 bench 可在 `website/config/test_benches/*.json` 定义 `runner_script`/`runner_args` 指定具体测试脚本 |
 |      | 4. 开始搜索 | |
 |      | 5. 下载产物 | |
 | 日志与作业 | 状态 | queued/running/succeeded/failed |

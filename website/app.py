@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import csv
+import re
 import shutil
 import shlex
 import subprocess
@@ -9,6 +11,7 @@ import threading
 import time
 import uuid
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -41,6 +44,8 @@ class Job:
 
 JOBS: Dict[str, Job] = {}
 LOCK = threading.Lock()
+RUNNING_PROCS: Dict[str, subprocess.Popen[str]] = {}
+STOP_REQUESTED: set[str] = set()
 
 
 def load_test_bench_configs() -> Dict[str, Dict[str, Any]]:
@@ -62,12 +67,22 @@ def load_test_bench_configs() -> Dict[str, Dict[str, Any]]:
             if not isinstance(defaults, dict):
                 defaults = {}
 
+            single_test_script = str(raw.get("single_test_script", "website/scripts/run_single_query_test.py")).strip()
+            single_test_args_raw = raw.get("single_test_args", [])
+            single_test_args: List[str] = []
+            if isinstance(single_test_args_raw, list):
+                for item in single_test_args_raw:
+                    if isinstance(item, str) and item.strip():
+                        single_test_args.append(item.strip())
+
             configs[bench_id] = {
                 "id": bench_id,
                 "name": str(raw.get("name", bench_id)),
                 "description": str(raw.get("description", "")),
                 "app": app_name,
                 "defaults": {k: str(v) for k, v in defaults.items()},
+                "single_test_script": single_test_script,
+                "single_test_args": single_test_args,
                 "config_file": str(path.relative_to(WEB_ROOT)),
             }
         except Exception:
@@ -132,12 +147,243 @@ def list_files_recursive(base: Path, limit: int = 3000) -> List[str]:
     return out
 
 
+def resolve_job_log_path(job: Job) -> Path | None:
+    log_candidates: List[Path] = []
+    if job.log_file:
+        log_candidates.append(Path(job.log_file))
+    if job.output_dir:
+        log_candidates.append(Path(job.output_dir) / "build_and_test.log")
+    return next((p for p in log_candidates if p.is_file()), None)
+
+
 def safe_resolve_under(base: Path, rel_path: str) -> Path:
     candidate = (base / rel_path).resolve()
     base_resolved = base.resolve()
     if base_resolved not in candidate.parents and candidate != base_resolved:
         raise ValueError("path escapes base directory")
     return candidate
+
+
+def resolve_script_under_project(script_path: str) -> Path:
+    raw = (script_path or "").strip()
+    if not raw:
+        raise ValueError("missing script path")
+
+    candidate = Path(raw)
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    candidate = candidate.resolve()
+
+    project_resolved = PROJECT_ROOT.resolve()
+    if project_resolved not in candidate.parents and candidate != project_resolved:
+        raise ValueError("script path escapes project root")
+    if not candidate.is_file():
+        raise ValueError(f"script not found: {candidate}")
+    return candidate
+
+
+SEARCH_PROGRESS_RE = re.compile(
+    r"^\[search-progress\]\s+query=(\d+)\s+task=([0-9a-f]{32})\s+metric=([0-9.]+)\s+threshold=([0-9.]+)\s+feasible=(\d+)"
+)
+SCHEDULE_BUILD_RE = re.compile(r"Scheduling task run ([0-9a-f]{32})-build")
+RFC3339_RE = re.compile(r'time="([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.+-]+)"')
+
+
+def _parse_rfc3339(ts: str) -> Optional[float]:
+    try:
+        return datetime.fromisoformat(ts).timestamp()
+    except Exception:
+        return None
+
+
+def _read_search_progress_rows(job: Job) -> List[Dict[str, Any]]:
+    out: List[Dict[str, Any]] = []
+    if not job.output_dir:
+        return out
+    progress_csv = Path(job.output_dir) / "search_progress.csv"
+    if not progress_csv.is_file():
+        return out
+
+    with progress_csv.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            taskid = str(row.get("taskid", "")).strip()
+            query_str = str(row.get("query", "")).strip()
+            if not taskid or not query_str:
+                continue
+            try:
+                q = int(query_str)
+            except Exception:
+                continue
+            out.append(
+                {
+                    "query": q,
+                    "taskid": taskid,
+                    "metric": float(row.get("metric", 0.0) or 0.0),
+                    "threshold": float(row.get("threshold", 0.0) or 0.0),
+                    "feasible": int(float(row.get("feasible", 0) or 0)) == 1,
+                    "remaining": int(float(row.get("remaining", 0) or 0)),
+                }
+            )
+    return out
+
+
+def _extract_build_time_windows_from_log(log_path: Path) -> Dict[str, Dict[str, Optional[float]]]:
+    windows: Dict[str, Dict[str, Optional[float]]] = {}
+    current_task: Optional[str] = None
+    first_ts: Optional[float] = None
+    last_ts: Optional[float] = None
+
+    with log_path.open("r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            m_sched = SCHEDULE_BUILD_RE.search(line)
+            if m_sched:
+                if current_task is not None:
+                    windows[current_task] = {
+                        "build_start_ts": first_ts,
+                        "build_end_ts": last_ts,
+                    }
+                current_task = m_sched.group(1)
+                first_ts = None
+                last_ts = None
+                continue
+
+            if current_task is None:
+                continue
+
+            for ts_s in RFC3339_RE.findall(line):
+                ts = _parse_rfc3339(ts_s)
+                if ts is None:
+                    continue
+                if first_ts is None:
+                    first_ts = ts
+                last_ts = ts
+
+    if current_task is not None:
+        windows[current_task] = {
+            "build_start_ts": first_ts,
+            "build_end_ts": last_ts,
+        }
+    return windows
+
+
+def _extract_test_phase_window_from_log(log_path: Path) -> Dict[str, Optional[float]]:
+    in_test_phase = False
+    first_ts: Optional[float] = None
+    last_ts: Optional[float] = None
+
+    with log_path.open("r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            if line.startswith("$") and " test-app-" in line:
+                in_test_phase = True
+                continue
+            if line.startswith("$") and in_test_phase:
+                break
+            if not in_test_phase:
+                continue
+            for ts_s in RFC3339_RE.findall(line):
+                ts = _parse_rfc3339(ts_s)
+                if ts is None:
+                    continue
+                if first_ts is None:
+                    first_ts = ts
+                last_ts = ts
+
+    return {
+        "test_phase_start_ts": first_ts,
+        "test_phase_end_ts": last_ts,
+    }
+
+
+def _task_build_log_mtime(job: Job, taskid: str) -> Optional[float]:
+    if not job.id:
+        return None
+    work_root = JOBS_ROOT / job.id / "work"
+    if not work_root.is_dir():
+        return None
+
+    patterns = [
+        f"tmp-*/wayfinder-build-*/results/{taskid}/usr/src/unikraft/apps/*/build.log",
+        f"tmp-*/wayfinder-build-*/results/{taskid}/build.log",
+    ]
+    for pat in patterns:
+        for p in work_root.glob(pat):
+            try:
+                if p.is_file():
+                    return p.stat().st_mtime
+            except Exception:
+                continue
+    return None
+
+
+def compute_query_timings(job: Job) -> Dict[str, Any]:
+    rows = _read_search_progress_rows(job)
+    if not rows:
+        return {
+            "rows": [],
+            "summary": {
+                "query_count": 0,
+                "has_per_query_build_timing": False,
+                "has_per_query_test_timing": False,
+                "note": "no search_progress.csv found",
+            },
+        }
+
+    log_path = resolve_job_log_path(job)
+    build_windows: Dict[str, Dict[str, Optional[float]]] = {}
+    test_phase: Dict[str, Optional[float]] = {"test_phase_start_ts": None, "test_phase_end_ts": None}
+    if log_path and log_path.is_file():
+        build_windows = _extract_build_time_windows_from_log(log_path)
+        test_phase = _extract_test_phase_window_from_log(log_path)
+
+    with_build = 0
+    out_rows: List[Dict[str, Any]] = []
+    for r in rows:
+        taskid = r["taskid"]
+        bw = build_windows.get(taskid, {})
+        start_ts = bw.get("build_start_ts")
+        end_ts = bw.get("build_end_ts")
+
+        # runc timestamp logs are second-level and can collapse to 0s.
+        if isinstance(start_ts, (int, float)):
+            mtime_end = _task_build_log_mtime(job, taskid)
+            if isinstance(mtime_end, (int, float)):
+                if end_ts is None or (isinstance(end_ts, (int, float)) and mtime_end > end_ts):
+                    end_ts = mtime_end
+
+        build_dur = None
+        if isinstance(start_ts, (int, float)) and isinstance(end_ts, (int, float)) and end_ts >= start_ts:
+            build_dur = end_ts - start_ts
+            with_build += 1
+
+        out_rows.append(
+            {
+                **r,
+                "build_start_ts": start_ts,
+                "build_end_ts": end_ts,
+                "build_duration_sec": build_dur,
+                "test_duration_sec": None,
+            }
+        )
+
+    return {
+        "rows": out_rows,
+        "summary": {
+            "query_count": len(out_rows),
+            "has_per_query_build_timing": with_build > 0,
+            "has_per_query_test_timing": False,
+            "test_phase_start_ts": test_phase.get("test_phase_start_ts"),
+            "test_phase_end_ts": test_phase.get("test_phase_end_ts"),
+            "test_phase_duration_sec": (
+                (test_phase["test_phase_end_ts"] - test_phase["test_phase_start_ts"])
+                if isinstance(test_phase.get("test_phase_start_ts"), (int, float))
+                and isinstance(test_phase.get("test_phase_end_ts"), (int, float))
+                and test_phase["test_phase_end_ts"] >= test_phase["test_phase_start_ts"]
+                else None
+            ),
+            "note": "build timing is per-query from run.log timestamps; test timing is only available as aggregate phase timing in current logs.",
+        },
+    }
 
 
 def build_command(job_id: str, kind: str, params: Dict[str, Any]) -> tuple[List[str], Path, Path]:
@@ -172,6 +418,14 @@ def build_command(job_id: str, kind: str, params: Dict[str, Any]) -> tuple[List[
         experiment_dir = PROJECT_ROOT / "asplos22-ae" / "experiments" / "fig-06_nginx-redis-perm"
         job_root = JOBS_ROOT / job_id
         script = WEB_ROOT / "scripts" / "run_config_search_nginx_from_zip.py"
+        single_test_script = str(params.get("single_test_script") or "website/scripts/run_single_query_test.py")
+        single_test_args_raw = params.get("single_test_args")
+        single_test_args: List[str] = []
+        if isinstance(single_test_args_raw, list):
+            for item in single_test_args_raw:
+                if isinstance(item, str) and item.strip():
+                    single_test_args.append(item.strip())
+        single_test_script_path = resolve_script_under_project(single_test_script)
 
         cmd = [
             "python3",
@@ -202,7 +456,11 @@ def build_command(job_id: str, kind: str, params: Dict[str, Any]) -> tuple[List[
             top_k,
             "--use-sudo",
             "1",
+            "--single-test-script",
+            str(single_test_script_path),
         ]
+        for arg in single_test_args:
+            cmd.extend(["--single-test-arg", arg])
         if overlay_subdir:
             cmd.extend(["--overlay-subdir", overlay_subdir])
 
@@ -235,15 +493,26 @@ def run_job(job: Job) -> None:
                 stderr=subprocess.STDOUT,
                 text=True,
             )
+            with LOCK:
+                RUNNING_PROCS[job.id] = proc
             rc = proc.wait()
 
         with LOCK:
+            was_stopped = job.id in STOP_REQUESTED
+            STOP_REQUESTED.discard(job.id)
+            RUNNING_PROCS.pop(job.id, None)
             job.return_code = rc
             job.finished_at = now_ts()
-            job.status = "succeeded" if rc == 0 else "failed"
+            if was_stopped:
+                job.status = "failed"
+                job.error = "stopped by user"
+            else:
+                job.status = "succeeded" if rc == 0 else "failed"
             persist_job(job)
     except Exception as exc:  # noqa: BLE001
         with LOCK:
+            STOP_REQUESTED.discard(job.id)
+            RUNNING_PROCS.pop(job.id, None)
             job.status = "failed"
             job.finished_at = now_ts()
             job.error = str(exc)
@@ -360,6 +629,8 @@ def create_workflow_config_search_job() -> Response:
         "test_bench": test_bench,
         "app": app_name,
         "source_zip_path": str(source_zip_path),
+        "single_test_script": str(bench.get("single_test_script", "website/scripts/run_single_query_test.py")),
+        "single_test_args": bench.get("single_test_args") if isinstance(bench.get("single_test_args"), list) else [],
         "overlay_subdir": overlay_subdir,
         "num_compartments": num_compartments,
         "host_cores": host_cores,
@@ -403,6 +674,16 @@ def get_job(job_id: str) -> Response:
     return jsonify({"job": asdict(job), "artifacts": artifacts})
 
 
+@app.get("/api/jobs/<job_id>/query-timings")
+def get_job_query_timings(job_id: str) -> Response:
+    job = JOBS.get(job_id)
+    if not job:
+        return jsonify({"error": "job not found"}), 404
+
+    data = compute_query_timings(job)
+    return jsonify(data)
+
+
 @app.delete("/api/jobs/<job_id>")
 def delete_job(job_id: str) -> Response:
     with LOCK:
@@ -412,6 +693,42 @@ def delete_job(job_id: str) -> Response:
     if reason == "still_active":
         return jsonify({"error": "cannot delete queued/running job"}), 409
     return jsonify({"error": "job not found"}), 404
+
+
+@app.post("/api/jobs/<job_id>/stop")
+def stop_job(job_id: str) -> Response:
+    proc: Optional[subprocess.Popen[str]] = None
+
+    with LOCK:
+        job = JOBS.get(job_id)
+        if not job:
+            return jsonify({"error": "job not found"}), 404
+
+        if job.status == "queued":
+            job.status = "failed"
+            job.finished_at = now_ts()
+            job.error = "stopped by user"
+            persist_job(job)
+            return jsonify({"ok": True, "job_id": job_id, "state": "queued-cancelled"})
+
+        if job.status != "running":
+            return jsonify({"error": "job is not running"}), 409
+
+        proc = RUNNING_PROCS.get(job_id)
+        STOP_REQUESTED.add(job_id)
+
+    if proc is None:
+        return jsonify({"ok": True, "job_id": job_id, "state": "stop-requested-no-process"})
+
+    try:
+        proc.terminate()
+    except Exception:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+
+    return jsonify({"ok": True, "job_id": job_id, "state": "stop-requested"})
 
 
 @app.post("/api/jobs/delete-batch")
@@ -452,24 +769,81 @@ def get_job_log_stream(job_id: str) -> Response:
     if offset < 0:
         offset = 0
 
-    log_candidates: List[Path] = []
-    if job.log_file:
-        log_candidates.append(Path(job.log_file))
-    if job.output_dir:
-        log_candidates.append(Path(job.output_dir) / "build_and_test.log")
+    page_size = int(request.args.get("page_size", str(1024 * 1024)))
+    if page_size <= 0:
+        page_size = 1024 * 1024
+    page_size = min(page_size, 1024 * 1024)
 
-    log_path = next((p for p in log_candidates if p.is_file()), None)
+    log_path = resolve_job_log_path(job)
     if not log_path:
-        return jsonify({"chunk": "", "offset": 0, "complete": job.status in {"succeeded", "failed"}})
+        return jsonify({
+            "chunk": "",
+            "offset": 0,
+            "complete": job.status in {"succeeded", "failed"},
+            "page": 0,
+            "total_pages": 0,
+            "total_bytes": 0,
+            "page_size": page_size,
+        })
 
     data = log_path.read_text(encoding="utf-8", errors="ignore")
-    if offset > len(data):
-        offset = len(data)
+    total_bytes = len(data)
 
-    chunk = data[offset:]
-    new_offset = len(data)
+    page_arg = request.args.get("page")
+    if page_arg is not None:
+        page = int(page_arg)
+        if page < 0:
+            page = 0
+        if total_bytes == 0:
+            total_pages = 0
+            page = 0
+            chunk = ""
+        else:
+            total_pages = (total_bytes + page_size - 1) // page_size
+            if page >= total_pages:
+                page = total_pages - 1
+            start = page * page_size
+            end = min(start + page_size, total_bytes)
+            chunk = data[start:end]
+        complete = job.status in {"succeeded", "failed"}
+        return jsonify({
+            "chunk": chunk,
+            "offset": 0,
+            "complete": complete,
+            "page": page,
+            "total_pages": total_pages,
+            "total_bytes": total_bytes,
+            "page_size": page_size,
+        })
+
+    if offset > total_bytes:
+        offset = total_bytes
+
+    end = min(offset + page_size, total_bytes)
+    chunk = data[offset:end]
+    new_offset = end
     complete = job.status in {"succeeded", "failed"}
-    return jsonify({"chunk": chunk, "offset": new_offset, "complete": complete})
+    return jsonify({
+        "chunk": chunk,
+        "offset": new_offset,
+        "complete": complete,
+        "truncated": new_offset < total_bytes,
+        "total_bytes": total_bytes,
+        "page_size": page_size,
+    })
+
+
+@app.get("/api/jobs/<job_id>/log-download")
+def download_job_log(job_id: str) -> Response:
+    job = JOBS.get(job_id)
+    if not job:
+        return jsonify({"error": "job not found"}), 404
+
+    log_path = resolve_job_log_path(job)
+    if not log_path or not log_path.is_file():
+        return jsonify({"error": "log not found"}), 404
+
+    return send_file(str(log_path), as_attachment=True, download_name=f"{job_id}.log")
 
 
 @app.get("/api/jobs/<job_id>/download")

@@ -3,6 +3,8 @@
   "name": "human readable bench name",
   "description": "short description of this bench",
   "app": "nginx",
+  "single_test_script": "website/scripts/run_single_query_test.py",
+  "single_test_args": [],
   "defaults": {
     "baseline_metric": "REQ",
     "baseline_threshold": "45000",
