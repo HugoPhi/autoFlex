@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import signal
 import shutil
 import subprocess
 import tarfile
@@ -52,6 +54,7 @@ def run_cmd(
     log_path: Path,
     env: Dict[str, str] | None = None,
     label: str | None = None,
+    timeout_sec: int | None = None,
 ) -> float:
     start_ts = datetime.now(timezone.utc)
     start_iso = start_ts.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -62,8 +65,33 @@ def run_cmd(
         proc_env = dict(**subprocess.os.environ)
         if env:
             proc_env.update(env)
-        proc = subprocess.Popen(cmd, cwd=str(cwd), stdout=logf, stderr=subprocess.STDOUT, text=True, env=proc_env)
-        rc = proc.wait()
+        # Start child in its own process group so timeout cleanup can terminate
+        # nested subprocesses (e.g., sudo -> bash -> docker/test.sh).
+        proc = subprocess.Popen(
+            cmd,
+            cwd=str(cwd),
+            stdout=logf,
+            stderr=subprocess.STDOUT,
+            text=True,
+            env=proc_env,
+            start_new_session=True,
+        )
+        try:
+            rc = proc.wait(timeout=timeout_sec)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(proc.pid, signal.SIGTERM)
+            except Exception:
+                pass
+            try:
+                rc = proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                try:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                except Exception:
+                    pass
+                rc = proc.wait()
+            raise RuntimeError(f"command timed out after {timeout_sec}s: {' '.join(cmd)}")
         end_ts = datetime.now(timezone.utc)
         duration = (end_ts - start_ts).total_seconds()
         end_iso = end_ts.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -82,7 +110,7 @@ def append_log_line(log_path: Path, line: str) -> None:
 def run_single_query_evaluator(
     query_index: int,
     taskid: str,
-    task_dir: Path,
+    task_config: Dict[str, Any],
     app: str,
     baseline_metric: str,
     test_iterations: str,
@@ -93,21 +121,33 @@ def run_single_query_evaluator(
     single_test_script: Path,
     single_test_args: List[str],
     task_timing_log: Path,
+    per_query_timeout_sec: int,
 ) -> Dict[str, Any]:
     query_root = report_dir / "query_results"
     query_root.mkdir(parents=True, exist_ok=True)
     query_csv = query_root / f"query_{query_index:03d}_{taskid}.csv"
     query_json = query_root / f"query_{query_index:03d}_{taskid}.json"
+    query_cfg = query_root / f"query_{query_index:03d}_{taskid}_config.json"
     if query_csv.exists():
         query_csv.unlink()
     if query_json.exists():
         query_json.unlink()
+    query_cfg.write_text(json.dumps(task_config, ensure_ascii=True, indent=2), encoding="utf-8")
+
+    build_workspace = report_dir / "query_build_workspace"
+    build_script = (Path(__file__).resolve().parent / "run_wayfinder_build_from_zip.sh").resolve()
 
     cmd = [
         "python3",
         str(single_test_script),
-        "--task-dir",
-        str(task_dir),
+        "--task-id",
+        taskid,
+        "--task-config-json",
+        str(query_cfg),
+        "--build-script",
+        str(build_script),
+        "--build-work-root",
+        str(build_workspace),
         "--app",
         app,
         "--experiment-dir",
@@ -132,6 +172,7 @@ def run_single_query_evaluator(
         log_path,
         env={"FLEXOS_TASK_TIMING_LOG": str(task_timing_log)},
         label=f"query-{query_index:03d} task={taskid}",
+        timeout_sec=per_query_timeout_sec,
     )
     ended_at = utc_now_iso()
 
@@ -139,10 +180,12 @@ def run_single_query_evaluator(
         raise RuntimeError(f"single query result json missing: {query_json}")
     payload = json.loads(query_json.read_text(encoding="utf-8"))
     metric = float(payload.get("metric", 0.0) or 0.0)
+    task_dir = str(payload.get("task_dir", "")).strip()
 
     return {
         "query": query_index,
         "taskid": taskid,
+        "task_dir": task_dir,
         "metric": metric,
         "duration_sec": duration,
         "started_at": started_at,
@@ -171,13 +214,6 @@ def patch_experiment_for_overlay(exp_copy: Path, overlay_src: Path, app: str) ->
     wrap_build = app_dir / "build_wrapper.sh"
     wrap_build.write_text(make_build_wrapper_text(app, orig_build.read_text(encoding="utf-8")), encoding="utf-8")
     wrap_build.chmod(0o755)
-
-    test_script = app_dir / "test.sh"
-    if test_script.is_file():
-        test_text = test_script.read_text(encoding="utf-8")
-        patched_test_text = inject_task_timing_into_test_script(test_text, app)
-        if patched_test_text != test_text:
-            test_script.write_text(patched_test_text, encoding="utf-8")
 
     tpl = app_dir / "templates" / "wayfinder" / "template.yaml"
     text = tpl.read_text(encoding="utf-8")
@@ -415,6 +451,76 @@ def build_vectors(tasks: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, int]]
     return vectors
 
 
+def validate_task_config(task: Dict[str, Any]) -> Tuple[bool, str]:
+    try:
+        num_comp = int(str(task.get("NUM_COMPARTMENTS", "3") or "3"))
+    except Exception:
+        return False, "invalid NUM_COMPARTMENTS"
+    if num_comp <= 0:
+        return False, "NUM_COMPARTMENTS must be positive"
+
+    used: Set[int] = set()
+    for k, v in task.items():
+        if not k.endswith("_COMPARTMENT"):
+            continue
+        if k.startswith("COMPARTMENT"):
+            continue
+        try:
+            c = int(str(v))
+        except Exception:
+            return False, f"invalid integer in {k}"
+        if c < 1 or c > num_comp:
+            return False, f"{k} out of range [1,{num_comp}]"
+        used.add(c)
+
+    if not used:
+        return False, "no library compartments assigned"
+
+    max_used = max(used)
+    expected = set(range(1, max_used + 1))
+    if used != expected:
+        return False, f"non-contiguous compartments: used={sorted(used)}"
+
+    return True, "ok"
+
+
+def filter_safe_tasks(tasks: Dict[str, Dict[str, Any]]) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, str]]:
+    safe: Dict[str, Dict[str, Any]] = {}
+    dropped: Dict[str, str] = {}
+    for tid, payload in tasks.items():
+        ok, reason = validate_task_config(payload)
+        if ok:
+            safe[tid] = payload
+        else:
+            dropped[tid] = reason
+    return safe, dropped
+
+
+def build_hasse_edges(nodes: List[str], vectors: Dict[str, Dict[str, int]], keys: List[str]) -> List[Tuple[str, str]]:
+    edges: List[Tuple[str, str]] = []
+    for a in nodes:
+        for b in nodes:
+            if a == b:
+                continue
+            if not leq(vectors[a], vectors[b], keys):
+                continue
+            if not any(vectors[a].get(k, 0) < vectors[b].get(k, 0) for k in keys):
+                continue
+            covered = False
+            for c in nodes:
+                if c in {a, b}:
+                    continue
+                if leq(vectors[a], vectors[c], keys) and leq(vectors[c], vectors[b], keys):
+                    if any(vectors[a].get(k, 0) < vectors[c].get(k, 0) for k in keys) and any(
+                        vectors[c].get(k, 0) < vectors[b].get(k, 0) for k in keys
+                    ):
+                        covered = True
+                        break
+            if not covered:
+                edges.append((a, b))
+    return sorted(set(edges))
+
+
 def leq(a: Dict[str, int], b: Dict[str, int], keys: List[str]) -> bool:
     return all(a.get(k, 0) <= b.get(k, 0) for k in keys)
 
@@ -515,6 +621,8 @@ def run_balanced_live(
     query_detail_csv: Path,
     log_path: Path,
     evaluator: Callable[[int, str], Dict[str, Any]],
+    max_queries: int = 0,
+    feasible_target: int = 0,
 ) -> Tuple[SearchResult, Dict[str, float], List[Dict[str, Any]]]:
     C: Set[str] = set(nodes)
     R: Set[str] = set()
@@ -541,9 +649,14 @@ def run_balanced_live(
             "result_csv",
             "started_at",
             "ended_at",
+            "error",
         ])
 
         while C:
+            if max_queries > 0 and observed >= max_queries:
+                append_log_line(log_path, f"[search-limit] reached max_queries={max_queries}, stop early")
+                break
+
             p = (feasible_obs + 1) / (observed + 2)
             best = None
             best_score = -1.0
@@ -564,17 +677,36 @@ def run_balanced_live(
             )
             append_log_line(log_path, start_line)
 
-            detail = evaluator(observed, best)
+            eval_error = ""
+            try:
+                detail = evaluator(observed, best)
+            except Exception as exc:  # noqa: BLE001
+                eval_error = str(exc)
+                detail = {
+                    "query": observed,
+                    "taskid": best,
+                    "metric": 0.0,
+                    "duration_sec": 0.0,
+                    "started_at": utc_now_iso(),
+                    "ended_at": utc_now_iso(),
+                    "result_json": "",
+                    "result_csv": "",
+                    "error": eval_error,
+                }
+
             metric = float(detail.get("metric", 0.0) or 0.0)
-            perf[best] = metric
+            if not eval_error:
+                perf[best] = metric
             duration = float(detail.get("duration_sec", 0.0) or 0.0)
-            feasible = 1 if metric >= threshold else 0
+            feasible = 1 if (not eval_error and metric >= threshold) else 0
             end_line = (
                 f"========== QUERY {observed:03d} END =========="
                 f" task={best} threshold={threshold:.2f} metric={metric:.2f}"
                 f" feasible={feasible} duration={duration:.2f}s"
             )
             append_log_line(log_path, end_line)
+            if eval_error:
+                append_log_line(log_path, f"[query-error] query={observed} task={best} error={eval_error}")
 
             print(
                 f"[search-progress] query={observed} task={best} metric={metric:.2f} "
@@ -596,6 +728,7 @@ def run_balanced_live(
                 str(detail.get("result_csv", "")),
                 str(detail.get("started_at", "")),
                 str(detail.get("ended_at", "")),
+                str(eval_error or detail.get("error", "")),
             ])
             qfile.flush()
 
@@ -607,6 +740,9 @@ def run_balanced_live(
                 feasible_obs += 1
                 R.add(best)
                 C -= anc[best]
+                if feasible_target > 0 and len(R) >= feasible_target:
+                    append_log_line(log_path, f"[search-target] reached feasible_target={feasible_target}, stop early")
+                    break
             else:
                 C -= desc[best]
 
@@ -758,6 +894,8 @@ def main() -> int:
     parser.add_argument("--allow-fallback", default="0")
     parser.add_argument("--single-test-script", default="website/scripts/run_single_query_test.py")
     parser.add_argument("--single-test-arg", action="append", default=[])
+    parser.add_argument("--per-query-timeout-sec", default="900")
+    parser.add_argument("--max-queries", default="0")
     args = parser.parse_args()
 
     source_zip = Path(args.source_zip).resolve()
@@ -771,6 +909,8 @@ def main() -> int:
     if not single_test_script.is_file():
         raise SystemExit(f"single test script not found: {single_test_script}")
     single_test_args = [str(x) for x in (args.single_test_arg or [])]
+    per_query_timeout_sec = max(int(str(args.per_query_timeout_sec)), 60)
+    max_queries = max(int(str(args.max_queries)), 0)
 
     if not source_zip.is_file():
         raise SystemExit(f"source zip not found: {source_zip}")
@@ -806,11 +946,16 @@ def main() -> int:
 
     sudo_prefix: List[str] = ["sudo", "-n", "-E"] if str(args.use_sudo).lower() in {"1", "true", "yes"} else []
 
-    mode = "wayfinder"
+    mode = "per-query-config"
     selected_payload: List[Dict[str, Any]] = []
     frontier: List[str] = []
     query_details: List[Dict[str, Any]] = []
-    tasks_json: Path | None = None
+    tasks_map_path = exp_copy / "apps" / app / f"permutations-{args.num_compartments}.csv"
+    if not tasks_map_path.is_file():
+        tasks_map_path = exp_copy / "apps" / app / "permutations-3.csv"
+    if not tasks_map_path.is_file():
+        raise RuntimeError(f"missing permutations csv: {tasks_map_path}")
+
     bench_csv = report_dir / f"benchmark_{app}.csv"
     progress_csv = report_dir / "search_progress.csv"
     query_detail_csv = report_dir / "query_detail.csv"
@@ -818,108 +963,46 @@ def main() -> int:
     if not task_timing_log.exists():
         task_timing_log.write_text("phase,taskid,start_iso,end_iso,duration_sec,return_code\n", encoding="utf-8")
     phase_timings: List[Dict[str, Any]] = []
-    run_tmp = job_root / "work" / f"tmp-{app}"
-    run_tmp.mkdir(parents=True, exist_ok=True)
+    vectors: Dict[str, Dict[str, int]] = {}
 
     try:
-        wayfinder_src = job_root / "work" / "wayfinder-src"
-        wayfinder_bin = wayfinder_src / "dist" / "wayfinder"
-
-        if not wayfinder_bin.is_file():
-            if not wayfinder_src.is_dir():
-                cached_src = Path("/tmp/fig-06_nginx-redis-perm/wayfinder")
-                if cached_src.is_dir():
-                    shutil.copytree(cached_src, wayfinder_src)
-                else:
-                    duration = run_cmd(
-                        [
-                            "git",
-                            "clone",
-                            "--depth",
-                            "1",
-                            "--branch",
-                            "v0.1.0",
-                            "https://github.com/lancs-net/wayfinder.git",
-                            str(wayfinder_src),
-                        ],
-                        exp_copy,
-                        log_path,
-                        label="wayfinder clone",
-                        env={"FLEXOS_TASK_TIMING_LOG": str(task_timing_log)},
-                    )
-                    phase_timings.append({"label": "wayfinder clone", "duration_sec": duration, "return_code": 0})
-
-            duration = run_cmd(
-                ["make", "DOCKER=", "build"],
-                wayfinder_src,
-                log_path,
-                env={
-                    "GOPROXY": "https://goproxy.cn,direct",
-                    "GOSUMDB": "off",
-                    "GOFLAGS": "-buildvcs=false",
-                    "FLEXOS_TASK_TIMING_LOG": str(task_timing_log),
-                },
-                label="wayfinder build",
-            )
-            phase_timings.append({"label": "wayfinder build", "duration_sec": duration, "return_code": 0})
-
-            if not wayfinder_bin.is_file():
-                raise RuntimeError(f"wayfinder binary missing after local build: {wayfinder_bin}")
-
-        duration = run_cmd(
-            sudo_prefix
-            + [
-                "make",
-                f"TMPDIR={run_tmp}",
-                f"NUM_COMPARTMENTS={args.num_compartments}",
-                f"prepare-wayfinder-app-{app}",
-            ],
-            exp_copy,
-            log_path,
-            env={"FLEXOS_TASK_TIMING_LOG": str(task_timing_log)},
-            label=f"prepare {app}",
-        )
-        phase_timings.append({"label": f"prepare {app}", "duration_sec": duration, "return_code": 0})
-
-        duration = run_cmd(
-            sudo_prefix
-            + [
-                "make",
-                f"TMPDIR={run_tmp}",
-                f"NUM_COMPARTMENTS={args.num_compartments}",
-                f"HOST_CORES={args.host_cores}",
-                f"WAYFINDER_CORES={args.wayfinder_cores}",
-                f"WAYFINDER={wayfinder_bin}",
-                f"run-wayfinder-app-{app}",
-            ],
-            exp_copy,
-            log_path,
-            env={"FLEXOS_TASK_TIMING_LOG": str(task_timing_log)},
-            label=f"run-wayfinder {app}",
-        )
-        phase_timings.append({"label": f"run-wayfinder {app}", "duration_sec": duration, "return_code": 0})
-
-        results_dir = run_tmp / f"wayfinder-build-{app}" / "results"
-        tasks_json = results_dir / "tasks.json"
-        if not tasks_json.is_file():
-            raise RuntimeError(f"missing tasks.json: {tasks_json}")
-
-        tasks = parse_tasks(tasks_json)
-        nodes = sorted(tasks.keys())
+        tasks_all = parse_permutations_csv(tasks_map_path)
+        safe_tasks, dropped_tasks = filter_safe_tasks(tasks_all)
+        nodes = sorted(safe_tasks.keys())
         if not nodes:
-            raise RuntimeError("no tasks generated by wayfinder")
+            raise RuntimeError("no safe task configs after filtering")
 
-        vectors = build_vectors(tasks)
+        safe_space_csv = report_dir / "safe_search_space.csv"
+        with safe_space_csv.open("w", encoding="utf-8", newline="") as sf:
+            writer = csv.writer(sf)
+            writer.writerow(["taskid", "status", "reason"])
+            for tid in sorted(safe_tasks.keys()):
+                writer.writerow([tid, "safe", "ok"])
+            for tid, reason in sorted(dropped_tasks.items()):
+                writer.writerow([tid, "dropped", reason])
+
+        append_log_line(
+            log_path,
+            f"[safe-space] total={len(tasks_all)} safe={len(safe_tasks)} dropped={len(dropped_tasks)}",
+        )
+
+        vectors = build_vectors(safe_tasks)
         all_keys = sorted({k for tid in nodes for k in vectors[tid].keys()})
         anc, desc = closures(nodes, vectors, all_keys)
+        dag_edges = build_hasse_edges(nodes, vectors, all_keys)
+        dag_csv = report_dir / "search_dag_edges.csv"
+        with dag_csv.open("w", encoding="utf-8", newline="") as df:
+            writer = csv.writer(df)
+            writer.writerow(["src", "dst"])
+            writer.writerows(dag_edges)
+
         use_sudo = str(args.use_sudo).lower() in {"1", "true", "yes"}
 
         def evaluator(query_index: int, taskid: str) -> Dict[str, Any]:
-            task_dir = results_dir / taskid
             return run_single_query_evaluator(
                 query_index=query_index,
                 taskid=taskid,
-                task_dir=task_dir,
+                task_config=safe_tasks[taskid],
                 app=app,
                 baseline_metric=baseline_metric,
                 test_iterations=str(args.test_iterations),
@@ -930,6 +1013,7 @@ def main() -> int:
                 single_test_script=single_test_script,
                 single_test_args=single_test_args,
                 task_timing_log=task_timing_log,
+                per_query_timeout_sec=per_query_timeout_sec,
             )
 
         search_start = datetime.now(timezone.utc)
@@ -942,6 +1026,8 @@ def main() -> int:
             query_detail_csv=query_detail_csv,
             log_path=log_path,
             evaluator=evaluator,
+            max_queries=max_queries,
+            feasible_target=top_k,
         )
         search_end = datetime.now(timezone.utc)
         phase_timings.append(
@@ -966,14 +1052,20 @@ def main() -> int:
 
         img_out = artifacts / "top_images"
         img_out.mkdir(parents=True, exist_ok=True)
-        image_glob = "*nginx_kvm-x86_64*" if app == "nginx" else "*redis_kvm-x86_64*"
+        detail_by_task = {str(d.get("taskid", "")): d for d in query_details}
 
         for tid in selected:
-            src_task = results_dir / tid
+            src_task_raw = str(detail_by_task.get(tid, {}).get("task_dir", "")).strip()
+            if not src_task_raw:
+                continue
+            src_task = Path(src_task_raw)
+            if not src_task.is_dir():
+                continue
             dst_task = img_out / tid
             dst_task.mkdir(parents=True, exist_ok=True)
 
             copied = []
+            image_glob = "*nginx_kvm-x86_64*" if app == "nginx" else "*redis_kvm-x86_64*"
             for p in src_task.rglob(image_glob):
                 if p.is_file():
                     target = dst_task / p.name
@@ -1061,8 +1153,12 @@ def main() -> int:
         shutil.copy2(progress_csv, artifacts / "search_progress.csv")
     if query_detail_csv.is_file():
         shutil.copy2(query_detail_csv, artifacts / "query_detail.csv")
-    if tasks_json and tasks_json.is_file():
-        shutil.copy2(tasks_json, artifacts / "tasks.json")
+    if tasks_map_path.is_file():
+        shutil.copy2(tasks_map_path, artifacts / "tasks_map.csv")
+    if (report_dir / "safe_search_space.csv").is_file():
+        shutil.copy2(report_dir / "safe_search_space.csv", artifacts / "safe_search_space.csv")
+    if (report_dir / "search_dag_edges.csv").is_file():
+        shutil.copy2(report_dir / "search_dag_edges.csv", artifacts / "search_dag_edges.csv")
 
     report = {
         "job_id": args.job_id,

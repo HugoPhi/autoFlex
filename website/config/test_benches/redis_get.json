@@ -10,6 +10,7 @@
     "baseline_threshold": "446000",
     "num_compartments": "3",
     "top_k": "3",
+    "per_query_timeout_sec": "600",
     "host_cores": "3,4",
     "wayfinder_cores": "1,2",
     "test_iterations": "3",

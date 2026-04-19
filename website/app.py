@@ -329,40 +329,64 @@ def compute_query_timings(job: Job) -> Dict[str, Any]:
             },
         }
 
-    log_path = resolve_job_log_path(job)
-    build_windows: Dict[str, Dict[str, Optional[float]]] = {}
-    test_phase: Dict[str, Optional[float]] = {"test_phase_start_ts": None, "test_phase_end_ts": None}
-    if log_path and log_path.is_file():
-        build_windows = _extract_build_time_windows_from_log(log_path)
-        test_phase = _extract_test_phase_window_from_log(log_path)
+    detail_by_query: Dict[int, Dict[str, Any]] = {}
+    task_timing_by_task: Dict[str, Dict[str, float]] = {}
+
+    if job.output_dir:
+        detail_csv = Path(job.output_dir) / "query_detail.csv"
+        if detail_csv.is_file():
+            with detail_csv.open("r", encoding="utf-8", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    try:
+                        q = int(str(row.get("query", "")).strip())
+                    except Exception:
+                        continue
+                    detail_by_query[q] = {
+                        "test_duration_sec": float(row.get("test_duration_sec", 0.0) or 0.0),
+                    }
+
+        timings_csv = Path(job.output_dir) / "task_timings.csv"
+        if timings_csv.is_file():
+            with timings_csv.open("r", encoding="utf-8", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    taskid = str(row.get("taskid", "")).strip()
+                    phase = str(row.get("phase", "")).strip()
+                    if not taskid or phase not in {"build", "test"}:
+                        continue
+                    try:
+                        duration = float(row.get("duration_sec", 0.0) or 0.0)
+                    except Exception:
+                        duration = 0.0
+                    item = task_timing_by_task.setdefault(taskid, {"build_duration_sec": 0.0, "test_duration_sec": 0.0})
+                    key = "build_duration_sec" if phase == "build" else "test_duration_sec"
+                    item[key] += duration
 
     with_build = 0
+    with_test = 0
     out_rows: List[Dict[str, Any]] = []
     for r in rows:
         taskid = r["taskid"]
-        bw = build_windows.get(taskid, {})
-        start_ts = bw.get("build_start_ts")
-        end_ts = bw.get("build_end_ts")
+        q = int(r.get("query", 0) or 0)
+        per_task = task_timing_by_task.get(taskid, {})
+        build_dur = per_task.get("build_duration_sec")
+        test_dur = per_task.get("test_duration_sec")
+        if (test_dur is None or test_dur <= 0.0) and q in detail_by_query:
+            test_dur = detail_by_query[q].get("test_duration_sec")
 
-        # runc timestamp logs are second-level and can collapse to 0s.
-        if isinstance(start_ts, (int, float)):
-            mtime_end = _task_build_log_mtime(job, taskid)
-            if isinstance(mtime_end, (int, float)):
-                if end_ts is None or (isinstance(end_ts, (int, float)) and mtime_end > end_ts):
-                    end_ts = mtime_end
-
-        build_dur = None
-        if isinstance(start_ts, (int, float)) and isinstance(end_ts, (int, float)) and end_ts >= start_ts:
-            build_dur = end_ts - start_ts
+        if isinstance(build_dur, (int, float)) and build_dur > 0:
             with_build += 1
+        if isinstance(test_dur, (int, float)) and test_dur > 0:
+            with_test += 1
 
         out_rows.append(
             {
                 **r,
-                "build_start_ts": start_ts,
-                "build_end_ts": end_ts,
+                "build_start_ts": None,
+                "build_end_ts": None,
                 "build_duration_sec": build_dur,
-                "test_duration_sec": None,
+                "test_duration_sec": test_dur,
             }
         )
 
@@ -371,17 +395,11 @@ def compute_query_timings(job: Job) -> Dict[str, Any]:
         "summary": {
             "query_count": len(out_rows),
             "has_per_query_build_timing": with_build > 0,
-            "has_per_query_test_timing": False,
-            "test_phase_start_ts": test_phase.get("test_phase_start_ts"),
-            "test_phase_end_ts": test_phase.get("test_phase_end_ts"),
-            "test_phase_duration_sec": (
-                (test_phase["test_phase_end_ts"] - test_phase["test_phase_start_ts"])
-                if isinstance(test_phase.get("test_phase_start_ts"), (int, float))
-                and isinstance(test_phase.get("test_phase_end_ts"), (int, float))
-                and test_phase["test_phase_end_ts"] >= test_phase["test_phase_start_ts"]
-                else None
-            ),
-            "note": "build timing is per-query from run.log timestamps; test timing is only available as aggregate phase timing in current logs.",
+            "has_per_query_test_timing": with_test > 0,
+            "test_phase_start_ts": None,
+            "test_phase_end_ts": None,
+            "test_phase_duration_sec": None,
+            "note": "timings are read from query_detail.csv and task_timings.csv generated by per-query build+test flow.",
         },
     }
 
@@ -414,6 +432,8 @@ def build_command(job_id: str, kind: str, params: Dict[str, Any]) -> tuple[List[
         baseline_metric = str(params.get("baseline_metric", "REQ"))
         baseline_threshold = str(params.get("baseline_threshold", "45000"))
         top_k = str(params.get("top_k", "3"))
+        per_query_timeout_sec = str(params.get("per_query_timeout_sec", "900"))
+        max_queries = str(params.get("max_queries", "0"))
 
         experiment_dir = PROJECT_ROOT / "asplos22-ae" / "experiments" / "fig-06_nginx-redis-perm"
         job_root = JOBS_ROOT / job_id
@@ -458,6 +478,10 @@ def build_command(job_id: str, kind: str, params: Dict[str, Any]) -> tuple[List[
             "1",
             "--single-test-script",
             str(single_test_script_path),
+            "--per-query-timeout-sec",
+            per_query_timeout_sec,
+            "--max-queries",
+            max_queries,
         ]
         for arg in single_test_args:
             cmd.extend(["--single-test-arg", arg])
@@ -613,6 +637,8 @@ def create_workflow_config_search_job() -> Response:
     wayfinder_cores = (request.form.get("wayfinder_cores") or str(defaults.get("wayfinder_cores", "1,2"))).strip()
     test_iterations = (request.form.get("test_iterations") or str(defaults.get("test_iterations", "3"))).strip()
     top_k = (request.form.get("top_k") or str(defaults.get("top_k", "3"))).strip()
+    per_query_timeout_sec = (request.form.get("per_query_timeout_sec") or str(defaults.get("per_query_timeout_sec", "900"))).strip()
+    max_queries = (request.form.get("max_queries") or str(defaults.get("max_queries", "0"))).strip()
     if not baseline_threshold:
         baseline_threshold = str(defaults.get("baseline_threshold", "")).strip()
     if not baseline_threshold:
@@ -639,6 +665,8 @@ def create_workflow_config_search_job() -> Response:
         "baseline_metric": baseline_metric,
         "baseline_threshold": baseline_threshold,
         "top_k": top_k,
+        "per_query_timeout_sec": per_query_timeout_sec or "900",
+        "max_queries": max_queries or "0",
         "use_sudo": True,
     }
 

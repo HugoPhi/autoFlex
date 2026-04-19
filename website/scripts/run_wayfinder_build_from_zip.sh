@@ -6,14 +6,11 @@ usage() {
 Usage:
   run_wayfinder_build_from_zip.sh \
     --job-id <id> \
-    --experiment-dir <path> \
+    --experiment-dir <prepared fig06 path> \
     --app <nginx|redis> \
-    --source-zip <path.zip> \
     --work-root <path> \
-    [--overlay-subdir <relative/path/in/zip>] \
-    [--num-compartments <n>] \
-    [--host-cores "3,4"] \
-    [--wayfinder-cores "1,2"] \
+    --task-id <task id> \
+    --task-config-json <config json file> \
     [--use-sudo 0|1]
 EOF
 }
@@ -21,12 +18,9 @@ EOF
 JOB_ID=""
 EXPERIMENT_DIR=""
 APP=""
-SOURCE_ZIP=""
 WORK_ROOT=""
-OVERLAY_SUBDIR=""
-NUM_COMPARTMENTS="3"
-HOST_CORES="3,4"
-WAYFINDER_CORES="1,2"
+TASK_ID=""
+TASK_CONFIG_JSON=""
 USE_SUDO="0"
 
 while [[ $# -gt 0 ]]; do
@@ -34,19 +28,16 @@ while [[ $# -gt 0 ]]; do
     --job-id) JOB_ID="$2"; shift 2 ;;
     --experiment-dir) EXPERIMENT_DIR="$2"; shift 2 ;;
     --app) APP="$2"; shift 2 ;;
-    --source-zip) SOURCE_ZIP="$2"; shift 2 ;;
     --work-root) WORK_ROOT="$2"; shift 2 ;;
-    --overlay-subdir) OVERLAY_SUBDIR="$2"; shift 2 ;;
-    --num-compartments) NUM_COMPARTMENTS="$2"; shift 2 ;;
-    --host-cores) HOST_CORES="$2"; shift 2 ;;
-    --wayfinder-cores) WAYFINDER_CORES="$2"; shift 2 ;;
+    --task-id) TASK_ID="$2"; shift 2 ;;
+    --task-config-json) TASK_CONFIG_JSON="$2"; shift 2 ;;
     --use-sudo) USE_SUDO="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown arg: $1" >&2; usage; exit 1 ;;
   esac
 done
 
-if [[ -z "$JOB_ID" || -z "$EXPERIMENT_DIR" || -z "$APP" || -z "$SOURCE_ZIP" || -z "$WORK_ROOT" ]]; then
+if [[ -z "$JOB_ID" || -z "$EXPERIMENT_DIR" || -z "$APP" || -z "$WORK_ROOT" || -z "$TASK_ID" || -z "$TASK_CONFIG_JSON" ]]; then
   usage
   exit 1
 fi
@@ -61,114 +52,128 @@ if [[ ! -d "$EXPERIMENT_DIR" ]]; then
   exit 1
 fi
 
-if [[ ! -f "$SOURCE_ZIP" ]]; then
-  echo "source zip not found: $SOURCE_ZIP" >&2
+if [[ ! -f "$TASK_CONFIG_JSON" ]]; then
+  echo "task config json not found: $TASK_CONFIG_JSON" >&2
   exit 1
 fi
 
 mkdir -p "$WORK_ROOT"
-JOB_WORK="$WORK_ROOT/work"
-SRC_UNZIP="$WORK_ROOT/source"
-EXP_COPY="$JOB_WORK/fig-06_nginx-redis-perm"
+QUERY_ROOT="$WORK_ROOT/query-builds/$TASK_ID"
+OUT_TASK_DIR="$QUERY_ROOT/results/$TASK_ID"
+DOCKER_OUT="$QUERY_ROOT/docker_out"
 ART_DIR="$WORK_ROOT/artifacts"
-mkdir -p "$JOB_WORK" "$SRC_UNZIP" "$ART_DIR"
+mkdir -p "$OUT_TASK_DIR" "$DOCKER_OUT" "$ART_DIR"
 
-rm -rf "$EXP_COPY"
-cp -a "$EXPERIMENT_DIR" "$EXP_COPY"
-
-python3 - <<'PY' "$SOURCE_ZIP" "$SRC_UNZIP"
-import sys
-import zipfile
-from pathlib import Path
-
-zip_path = Path(sys.argv[1])
-out_dir = Path(sys.argv[2])
-out_dir.mkdir(parents=True, exist_ok=True)
-with zipfile.ZipFile(zip_path, "r") as zf:
-    zf.extractall(out_dir)
-print(f"unzipped={zip_path} -> {out_dir}")
-PY
-
-if [[ -n "$OVERLAY_SUBDIR" ]]; then
-  OVERLAY_SRC="$SRC_UNZIP/$OVERLAY_SUBDIR"
-else
-  OVERLAY_SRC="$SRC_UNZIP"
-fi
-
-if [[ ! -d "$OVERLAY_SRC" ]]; then
-  echo "overlay source dir not found: $OVERLAY_SRC" >&2
-  exit 1
-fi
-
-OVERLAY_DST="$EXP_COPY/_overlay/$APP"
-mkdir -p "$OVERLAY_DST"
-cp -a "$OVERLAY_SRC"/. "$OVERLAY_DST"/
-
-echo "overlay prepared: $OVERLAY_DST"
-
-APP_DIR="$EXP_COPY/apps/$APP"
-ORIG_BUILD="$APP_DIR/build.sh"
+APP_DIR="$EXPERIMENT_DIR/apps/$APP"
 WRAP_BUILD="$APP_DIR/build_wrapper.sh"
-if [[ ! -f "$ORIG_BUILD" ]]; then
-  echo "missing build script: $ORIG_BUILD" >&2
+if [[ ! -f "$WRAP_BUILD" ]]; then
+  echo "missing build wrapper script: $WRAP_BUILD" >&2
   exit 1
 fi
 
-cat > "$WRAP_BUILD" <<EOF
-#!/bin/bash
-set -euo pipefail
-if [[ -d /source-overlay ]]; then
-  cp -a /source-overlay/. /usr/src/unikraft/apps/$APP/
+KRAFT_TEMPLATE_DIR="$APP_DIR/templates/kraft"
+if [[ ! -d "$KRAFT_TEMPLATE_DIR" ]]; then
+  echo "missing kraft template dir: $KRAFT_TEMPLATE_DIR" >&2
+  exit 1
 fi
-EOF
-cat "$ORIG_BUILD" >> "$WRAP_BUILD"
-chmod +x "$WRAP_BUILD"
 
-TEMPLATE_FILE="$APP_DIR/templates/wayfinder/template.yaml"
-python3 - <<'PY' "$TEMPLATE_FILE" "$APP"
+OVERLAY_DIR="$EXPERIMENT_DIR/_overlay/$APP"
+if [[ ! -d "$OVERLAY_DIR" ]]; then
+  echo "overlay dir not found (expected to be prepared by runner): $OVERLAY_DIR" >&2
+  exit 1
+fi
+
+IMAGE_NAME="nginx_kvm-x86_64"
+APP_IMAGE="ghcr.io/project-flexos/nginx:latest"
+if [[ "$APP" == "redis" ]]; then
+  IMAGE_NAME="redis_kvm-x86_64"
+  APP_IMAGE="ghcr.io/project-flexos/redis:latest"
+fi
+
+ENV_FILE="$QUERY_ROOT/build.env"
+python3 - <<'PY' "$TASK_CONFIG_JSON" "$ENV_FILE"
+import json
+import re
 import sys
 from pathlib import Path
 
-tpl = Path(sys.argv[1])
-app = sys.argv[2]
-text = tpl.read_text(encoding="utf-8")
-text = text.replace(f"./apps/{app}/build.sh", f"./apps/{app}/build_wrapper.sh")
-marker = f"  - source: ./apps/{app}/templates/kraft\n    destination: /kraft-yaml-template\n"
-insert = marker + f"  - source: ./_overlay/{app}\n    destination: /source-overlay\n"
-if "/source-overlay" not in text:
-    text = text.replace(marker, insert)
-tpl.write_text(text, encoding="utf-8")
-print(f"patched template: {tpl}")
+config_path = Path(sys.argv[1])
+env_path = Path(sys.argv[2])
+data = json.loads(config_path.read_text(encoding="utf-8"))
+if not isinstance(data, dict):
+    raise SystemExit("task config must be a json object")
+
+items = {}
+for k, v in data.items():
+    key = str(k).strip().upper()
+    if key == "TASKID":
+        continue
+    if not re.match(r"^[A-Z0-9_]+$", key):
+        raise SystemExit(f"invalid env key: {key}")
+    items[key] = str(v).strip()
+
+if not items.get("NUM_COMPARTMENTS"):
+    items["NUM_COMPARTMENTS"] = "3"
+
+lines = [f"{k}={v}" for k, v in sorted(items.items())]
+env_path.parent.mkdir(parents=True, exist_ok=True)
+env_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 PY
 
 SUDO_PREFIX=()
 if [[ "$USE_SUDO" == "1" ]]; then
-  SUDO_PREFIX=(sudo -E)
+  SUDO_PREFIX=(sudo -n -E)
 fi
 
-pushd "$EXP_COPY" >/dev/null
+DOCKER_CMD=(
+  docker run --rm --entrypoint ""
+  --env-file "$ENV_FILE"
+  -e TEMPLDIR=/kraft-yaml-template
+  -v "$WRAP_BUILD:/build.sh:ro"
+  -v "$KRAFT_TEMPLATE_DIR:/kraft-yaml-template:ro"
+  -v "$OVERLAY_DIR:/source-overlay:ro"
+  -v "$DOCKER_OUT:/out"
+  "$APP_IMAGE"
+  bash -lc
+  "set -euo pipefail; /build.sh; mkdir -p /out/build; cp -av /usr/src/unikraft/apps/$APP/build/${IMAGE_NAME}* /out/build/; cp -av /usr/src/unikraft/apps/$APP/{kraft.yaml,config,build.log} /out/build/"
+)
 
-"${SUDO_PREFIX[@]}" make \
-  NUM_COMPARTMENTS="$NUM_COMPARTMENTS" \
-  prepare-wayfinder-app-"$APP"
+echo "[single-build] task=$TASK_ID app=$APP"
+echo "$ ${DOCKER_CMD[*]}"
+"${SUDO_PREFIX[@]}" "${DOCKER_CMD[@]}"
 
-"${SUDO_PREFIX[@]}" make \
-  NUM_COMPARTMENTS="$NUM_COMPARTMENTS" \
-  HOST_CORES="$HOST_CORES" \
-  WAYFINDER_CORES="$WAYFINDER_CORES" \
-  run-wayfinder-app-"$APP"
+APP_OUT_DIR="$OUT_TASK_DIR/usr/src/unikraft/apps/$APP"
+mkdir -p "$APP_OUT_DIR/build"
 
-popd >/dev/null
-
-RESULT_DIR="/tmp/fig-06_nginx-redis-perm/wayfinder-build-$APP/results"
-if [[ -d "$RESULT_DIR" ]]; then
-  tar -czf "$ART_DIR/$APP-results.tar.gz" -C "$RESULT_DIR" .
-  find "$RESULT_DIR" -type f | sed "s|$RESULT_DIR/||" | head -n 400 > "$ART_DIR/$APP-results-filelist.txt"
+cp -f "$DOCKER_OUT/build/$IMAGE_NAME" "$APP_OUT_DIR/build/$IMAGE_NAME"
+if [[ -f "$DOCKER_OUT/build/$IMAGE_NAME.dbg" ]]; then
+  cp -f "$DOCKER_OUT/build/$IMAGE_NAME.dbg" "$APP_OUT_DIR/build/$IMAGE_NAME.dbg"
 fi
+for f in build.log config kraft.yaml; do
+  if [[ -f "$DOCKER_OUT/build/$f" ]]; then
+    cp -f "$DOCKER_OUT/build/$f" "$APP_OUT_DIR/$f"
+  fi
+done
 
-cp -a "$EXP_COPY/apps/$APP/wayfinder-jobs" "$ART_DIR/" || true
-cp -a "$EXP_COPY/apps/$APP/templates/wayfinder" "$ART_DIR/" || true
-cp -a "$EXP_COPY/apps/$APP/build_wrapper.sh" "$ART_DIR/" || true
+python3 - <<'PY' "$TASK_CONFIG_JSON" "$QUERY_ROOT/build_meta.json" "$TASK_ID" "$APP" "$APP_OUT_DIR/build/$IMAGE_NAME"
+import json
+import sys
+from pathlib import Path
+
+cfg = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+meta_path = Path(sys.argv[2])
+task_id = sys.argv[3]
+app = sys.argv[4]
+image = Path(sys.argv[5])
+meta = {
+    "taskid": task_id,
+    "app": app,
+    "image": str(image),
+    "config": cfg,
+}
+meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8")
+PY
 
 echo "job_id=$JOB_ID"
 echo "artifact_dir=$ART_DIR"
+echo "task_dir=$OUT_TASK_DIR"
